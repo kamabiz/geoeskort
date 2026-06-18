@@ -50,7 +50,7 @@ export type Dictionary = {
     categoriesTitle: string;
     categoryAll: string;
     categories: Record<
-      'nightlife' | 'food' | 'travel' | 'culture',
+      'nightlife' | 'food' | 'travel' | 'culture' | 'dating',
       { label: string; desc: string }
     >;
   };

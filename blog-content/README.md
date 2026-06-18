@@ -18,6 +18,7 @@ Legacy `.md` files are treated as **Georgian (`ka`) only**.
 | `food` | Khinkali, khachapuri, Georgian wine, chacha, restaurants |
 | `travel` | Neighborhoods, transport, visas, money, safety, seasons |
 | `culture` | Electronic music scene, folk music, festivals, art, history |
+| `dating` | Dating culture, meeting people, apps, romance & etiquette |
 
 ## Publish API (multilingual)
 

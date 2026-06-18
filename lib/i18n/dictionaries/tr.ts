@@ -56,6 +56,7 @@ const tr: Dictionary = {
       food: { label: 'Yemek & İçecek', desc: 'Hinkali, şarap, restoranlar, Gürcü mutfağı' },
       travel: { label: 'Seyahat', desc: 'Semtler, ulaşım, vizeler, güvenlik' },
       culture: { label: 'Kültür', desc: 'Müzik, festivaller, sanat, tarih' },
+      dating: { label: 'Flört & Tanışma', desc: 'Flört kültürü, tanışma, uygulamalar ve görgü kuralları' },
     },
   },
   promo: {

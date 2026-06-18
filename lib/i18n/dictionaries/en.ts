@@ -56,6 +56,7 @@ const en: Dictionary = {
       food: { label: 'Food & Drink', desc: 'Khinkali, wine, restaurants, Georgian cuisine' },
       travel: { label: 'Travel', desc: 'Neighborhoods, transport, visas, safety tips' },
       culture: { label: 'Culture', desc: 'Music, festivals, art, history & traditions' },
+      dating: { label: 'Dating', desc: 'Dating culture, meeting people, apps & etiquette' },
     },
   },
   promo: {

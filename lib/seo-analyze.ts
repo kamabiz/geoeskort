@@ -52,7 +52,7 @@ export function extractExcerptFromContent(html: string, max = 155): string {
 }
 
 const TAG_SUGGESTIONS = [
-  'tbilisi', 'batumi', 'kutaisi', 'georgia', 'guide', 'nightlife', 'food', 'travel', 'culture',
+  'tbilisi', 'batumi', 'kutaisi', 'georgia', 'guide', 'nightlife', 'food', 'travel', 'culture', 'dating',
   'khinkali', 'wine', 'festival', 'restaurant', 'neighborhood',
 ];
 

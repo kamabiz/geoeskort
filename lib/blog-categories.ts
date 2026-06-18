@@ -40,6 +40,17 @@ export const BLOG_CATEGORIES = {
       'history', 'museum', 'theatre', 'theater', 'heritage', 'tradition',
     ],
   },
+  dating: {
+    slug: 'dating',
+    label: 'Dating',
+    description: 'Dating culture, meeting people, nightlife romance, apps & etiquette',
+    emoji: '💕',
+    keywords: [
+      'dating', 'date', 'dates', 'romance', 'relationship', 'relationships',
+      'meet', 'meeting', 'singles', 'flirt', 'love', 'couple', 'tinder',
+      'bumble', 'hinge', 'match', 'escort', 'companion', 'night out',
+    ],
+  },
 } as const;
 
 export type BlogCategorySlug = keyof typeof BLOG_CATEGORIES;
@@ -98,7 +109,7 @@ export function normalizeCategory(
   const raw = category?.trim().toLowerCase();
   if (raw) {
     if (isBlogCategorySlug(raw)) return raw;
-    throw new Error(`Invalid category "${category}". Use: nightlife, food, travel, culture`);
+    throw new Error(`Invalid category "${category}". Use: ${BLOG_CATEGORY_SLUGS.join(', ')}`);
   }
   return inferCategoryFromContent(title, content, tags);
 }

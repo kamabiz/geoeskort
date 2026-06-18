@@ -1,7 +1,7 @@
 import { JsonLd } from '@/components/JsonLd';
 import { BlogCard } from '@/components/BlogCard';
 import { BlogSidebar } from '@/components/BlogSidebar';
-import { isBlogCategorySlug } from '@/lib/blog-categories';
+import { isBlogCategorySlug, BLOG_CATEGORY_SLUGS } from '@/lib/blog-categories';
 import { getAllPosts } from '@/lib/blog';
 import { isLocale } from '@/lib/i18n/config';
 import { getDictionary } from '@/lib/i18n/get-dictionary';
@@ -16,10 +16,9 @@ type Props = { params: Promise<{ locale: string; category: string }> };
 export const revalidate = 60;
 
 export async function generateStaticParams() {
-  const categories = ['nightlife', 'food', 'travel', 'culture'];
   const locales = ['ka', 'en', 'ru', 'tr'] as Locale[];
   return locales.flatMap((locale) =>
-    categories.map((category) => ({ locale, category })),
+    BLOG_CATEGORY_SLUGS.map((category) => ({ locale, category })),
   );
 }
 
