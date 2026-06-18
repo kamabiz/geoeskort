@@ -1,9 +1,17 @@
 import Link from 'next/link';
-import type { BlogPost } from '@/lib/blog';
-import { formatDateKa } from '@/lib/blog';
+import type { BlogPost } from '@/lib/types/blog';
+import { formatDateKa } from '@/lib/format-date';
 
-export function BlogCard({ post, headingLevel = 'h2' }: { post: BlogPost; headingLevel?: 'h2' | 'h3' }) {
-  const Heading = headingLevel;
+type BlogCardProps = {
+  post: BlogPost;
+  headingLevel?: 'h2' | 'h3';
+};
+
+export function BlogCard({ post, headingLevel = 'h2' }: BlogCardProps) {
+  const title = (
+    <Link href={`/blog/${post.slug}/`}>{post.title}</Link>
+  );
+
   return (
     <article className="blog-card">
       <Link href={`/blog/${post.slug}/`}>
@@ -18,9 +26,11 @@ export function BlogCard({ post, headingLevel = 'h2' }: { post: BlogPost; headin
             {formatDateKa(post.publishedAt)}
           </time>
         </div>
-        <Heading className="blog-card__title">
-          <Link href={`/blog/${post.slug}/`}>{post.title}</Link>
-        </Heading>
+        {headingLevel === 'h3' ? (
+          <h3 className="blog-card__title">{title}</h3>
+        ) : (
+          <h2 className="blog-card__title">{title}</h2>
+        )}
         <p className="blog-card__excerpt">{post.excerpt}</p>
         <Link href={`/blog/${post.slug}/`} className="blog-card__read">
           წაიკითხე →

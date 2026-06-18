@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { JsonLd } from '@/components/JsonLd';
-import { formatDateKa, getAllPosts, getPostBySlug } from '@/lib/blog';
+import { formatDateKa } from '@/lib/format-date';
+import { getAllPosts, getPostBySlug } from '@/lib/blog';
 import { pageMetadata } from '@/lib/seo';
 import { SITE_NAME, SITE_URL } from '@/lib/site';
 

@@ -1,15 +1,8 @@
+import 'server-only';
+
 import fs from 'fs';
 import path from 'path';
-
-export type BlogPost = {
-  slug: string;
-  title: string;
-  excerpt: string;
-  category: string;
-  emoji: string;
-  publishedAt: string;
-  content: string;
-};
+import type { BlogPost } from '@/lib/types/blog';
 
 const CONTENT_DIR = path.join(process.cwd(), 'blog-content');
 
@@ -95,12 +88,4 @@ export function getAllPosts(): BlogPost[] {
 
 export function getPostBySlug(slug: string): BlogPost | undefined {
   return getAllPosts().find((p) => p.slug === slug);
-}
-
-export function formatDateKa(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString('ka-GE', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
 }
