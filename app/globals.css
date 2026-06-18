@@ -516,66 +516,6 @@ button, .btn, .nav-toggle {
   margin-bottom: 0;
 }
 
-/* Compact free/premium pill in hero */
-.hero__promo-pill {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  padding: 0.65rem 0.85rem;
-  background: rgba(125, 255, 178, 0.06);
-  border: 1px solid rgba(125, 255, 178, 0.22);
-  border-radius: var(--radius-sm);
-  text-decoration: none;
-  color: var(--text);
-  transition: border-color 0.2s, background 0.2s, transform 0.15s;
-}
-
-.hero__promo-pill--premium {
-  background: rgba(232, 168, 56, 0.08);
-  border-color: rgba(232, 168, 56, 0.28);
-}
-
-.hero__promo-pill:hover {
-  transform: translateY(-1px);
-  background: rgba(125, 255, 178, 0.1);
-  border-color: rgba(125, 255, 178, 0.35);
-  color: var(--text);
-}
-
-.hero__promo-pill--premium:hover {
-  background: rgba(232, 168, 56, 0.12);
-  border-color: rgba(232, 168, 56, 0.4);
-}
-
-.hero__promo-pill-icon {
-  font-size: 1.1rem;
-  line-height: 1;
-  flex-shrink: 0;
-}
-
-.hero__promo-pill-text {
-  display: flex;
-  flex-direction: column;
-  gap: 0.05rem;
-  min-width: 0;
-}
-
-.hero__promo-pill-text strong {
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: #7dffb2;
-}
-
-.hero__promo-pill--premium .hero__promo-pill-text strong {
-  color: var(--accent);
-}
-
-.hero__promo-pill-text span {
-  font-size: 0.68rem;
-  font-weight: 600;
-  color: var(--text-muted);
-}
-
 .hero__stats {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -643,13 +583,9 @@ button, .btn, .nav-toggle {
   }
 
   .hero--home .hero__story-cta {
-    flex: 1 1 14rem;
+    flex: 0 1 auto;
     width: auto;
-  }
-
-  .hero__promo-pill {
-    flex: 1 1 10rem;
-    min-width: 0;
+    max-width: 28rem;
   }
 
   .hero__stat-value {
@@ -833,21 +769,6 @@ button, .btn, .nav-toggle {
     max-width: 22rem;
     padding: 0.75rem 1rem;
     align-self: stretch;
-  }
-
-  .hero__promo-pill {
-    flex: 1 1 auto;
-    min-width: 11rem;
-    max-width: 16rem;
-    padding: 0.75rem 0.95rem;
-  }
-
-  .hero__promo-pill-text strong {
-    font-size: 0.85rem;
-  }
-
-  .hero__promo-pill-text span {
-    font-size: 0.72rem;
   }
 
   .hero__stats {
@@ -2603,11 +2524,43 @@ button, .btn, .nav-toggle {
   background: linear-gradient(160deg, rgba(125, 255, 178, 0.08), rgba(255, 255, 255, 0.02));
 }
 
+.forum-panel--free .forum-panel__title {
+  color: #7dffb2;
+}
+
 .forum-panel__desc {
   margin: 0 0 0.75rem;
   font-size: 0.78rem;
   line-height: 1.45;
   color: var(--text-muted);
+}
+
+.forum-panel__perks {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.85rem;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.forum-panel__perks li {
+  position: relative;
+  padding-left: 0.95rem;
+  font-size: 0.74rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+.forum-panel__perks li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: #7dffb2;
+  font-weight: 700;
+}
+
+.forum-panel--premium .forum-panel__perks li::before {
+  color: var(--accent);
 }
 
 .forum-panel__cta {

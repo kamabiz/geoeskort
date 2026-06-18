@@ -4,6 +4,7 @@ import { CommunityPostCard } from '@/components/community/CommunityPostCard';
 import { ForumSidebarExtras } from '@/components/community/ForumSidebarExtras';
 import { LatestCommentsSidebar } from '@/components/community/LatestCommentsSidebar';
 import { OnlineMembersSidebar } from '@/components/community/OnlineMembersSidebar';
+import { PromoBannerPanel } from '@/components/community/PromoBannerPanel';
 import type { PostWithAuthor } from '@/lib/community/posts';
 import { getCommunityDict } from '@/lib/i18n/community-dict';
 import { localePath } from '@/lib/i18n/paths';
@@ -109,6 +110,7 @@ export function HomeForumSection({
             />
             <LatestCommentsSidebar locale={locale} comments={latestComments} variant="modern" />
             <ForumSidebarExtras locale={locale} />
+            <PromoBannerPanel locale={locale} />
           </aside>
         </div>
       </div>

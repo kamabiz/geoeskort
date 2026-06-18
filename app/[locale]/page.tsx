@@ -3,7 +3,6 @@ import { JsonLd } from '@/components/JsonLd';
 import { BlogCard } from '@/components/BlogCard';
 import { HomeForumSection } from '@/components/community/HomeForumSection';
 import { HomeMobileHub } from '@/components/community/HomeMobileHub';
-import { PromoBannerPanel } from '@/components/community/PromoBannerPanel';
 import { getCurrentUser } from '@/lib/community/auth';
 import { getAllPosts } from '@/lib/blog';
 import {
@@ -126,7 +125,6 @@ export default async function HomePage({ params }: Props) {
                   </span>
                   <span className="hero__story-cta-arrow" aria-hidden>→</span>
                 </Link>
-                <PromoBannerPanel locale={locale} variant="hero" />
               </div>
             </div>
 
