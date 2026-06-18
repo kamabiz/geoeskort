@@ -36,6 +36,12 @@ export default async function AdminDashboardPage() {
       </header>
 
       <main className="admin-main">
+        {storage === 'unconfigured' && (
+          <div className="admin-alert admin-alert--error">
+            <strong>Production storage not configured.</strong> Vercel cannot write files to disk.
+            Go to Vercel Dashboard → Storage → Blob → Create → Connect to project, then redeploy.
+          </div>
+        )}
         {storage === 'filesystem' && (
           <div className="admin-alert admin-alert--info">
             Storage: local files. On Vercel, add <code>BLOB_READ_WRITE_TOKEN</code> env var for persistent posts.

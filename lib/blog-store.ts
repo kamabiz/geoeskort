@@ -8,13 +8,22 @@ import type { BlogPost, BlogPostInput } from '@/lib/types/blog';
 
 const CONTENT_DIR = path.join(process.cwd(), 'blog-content');
 const BLOB_PREFIX = 'blog-content/';
-const USE_BLOB = !!process.env.BLOB_READ_WRITE_TOKEN;
+const USE_BLOB = !!process.env.BLOB_READ_WRITE_TOKEN?.trim();
+
+const STORAGE_ERROR =
+  'Blog storage not configured on Vercel: go to Storage → Blob → Create → Connect to project (sets BLOB_READ_WRITE_TOKEN), then redeploy.';
+
+function assertCanWrite(): void {
+  if (USE_BLOB) return;
+  if (process.env.VERCEL) throw new Error(STORAGE_ERROR);
+}
 
 function filenameForSlug(slug: string): string {
   return `${slug}.md`;
 }
 
 function ensureContentDir(): void {
+  assertCanWrite();
   if (!fs.existsSync(CONTENT_DIR)) fs.mkdirSync(CONTENT_DIR, { recursive: true });
 }
 
@@ -41,8 +50,22 @@ function readFromFs(): { name: string; content: string }[] {
 }
 
 async function listRawPosts(): Promise<{ name: string; content: string }[]> {
-  if (USE_BLOB) return readFromBlob();
-  return readFromFs();
+  const fsPosts = readFromFs();
+  if (!USE_BLOB) return fsPosts;
+
+  const blobPosts = await readFromBlob();
+  const bySlug = new Map<string, { name: string; content: string }>();
+
+  for (const post of fsPosts) {
+    const parsed = parseMarkdown(post.content, post.name);
+    if (parsed) bySlug.set(parsed.slug, post);
+  }
+  for (const post of blobPosts) {
+    const parsed = parseMarkdown(post.content, post.name);
+    if (parsed) bySlug.set(parsed.slug, post);
+  }
+
+  return [...bySlug.values()];
 }
 
 function parseAll(rawPosts: { name: string; content: string }[], includeDrafts = false): BlogPost[] {
@@ -63,6 +86,7 @@ export async function getPostBySlugAsync(slug: string): Promise<BlogPost | undef
 }
 
 async function writePost(slug: string, markdown: string): Promise<void> {
+  assertCanWrite();
   const filename = filenameForSlug(slug);
   if (USE_BLOB) {
     await put(`${BLOB_PREFIX}${filename}`, markdown, {
@@ -78,6 +102,7 @@ async function writePost(slug: string, markdown: string): Promise<void> {
 }
 
 async function deletePostFile(slug: string): Promise<void> {
+  assertCanWrite();
   const filename = filenameForSlug(slug);
   if (USE_BLOB) {
     const { blobs } = await list({ prefix: `${BLOB_PREFIX}${filename}` });
@@ -117,6 +142,8 @@ export async function deletePost(slug: string): Promise<void> {
   await deletePostFile(slug);
 }
 
-export function getStorageMode(): 'blob' | 'filesystem' {
-  return USE_BLOB ? 'blob' : 'filesystem';
+export function getStorageMode(): 'blob' | 'filesystem' | 'unconfigured' {
+  if (USE_BLOB) return 'blob';
+  if (process.env.VERCEL) return 'unconfigured';
+  return 'filesystem';
 }

@@ -27,7 +27,11 @@ export async function POST(request: NextRequest) {
     });
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Failed to publish post';
-    const status = message.includes('already exists') ? 409 : 400;
+    const status = message.includes('already exists')
+      ? 409
+      : message.includes('Blog storage not configured')
+        ? 503
+        : 400;
     return NextResponse.json({ error: message }, { status });
   }
 }
