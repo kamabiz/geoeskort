@@ -103,6 +103,7 @@ export function HomeForumSection({
           </div>
 
           <aside className="forum-hub__aside">
+            <PromoBannerPanel locale={locale} />
             <OnlineMembersSidebar
               locale={locale}
               onlineMembers={presence.onlineMembers}
@@ -110,7 +111,6 @@ export function HomeForumSection({
             />
             <LatestCommentsSidebar locale={locale} comments={latestComments} variant="modern" />
             <ForumSidebarExtras locale={locale} />
-            <PromoBannerPanel locale={locale} />
           </aside>
         </div>
       </div>
