@@ -139,6 +139,11 @@ export type CommunityDict = {
     loginRequired: string;
     sendPlaceholder: string;
     send: string;
+    guestLimitTitle: string;
+    guestLimitBody: string;
+    guestRegister: string;
+    guestLogin: string;
+    guestLimitClose: string;
   };
   messages: {
     title: string;
@@ -430,12 +435,18 @@ const ka: CommunityDict = {
   },
   chat: {
     title: 'LIVE ჩათი',
-    lead: 'პირდაპირი ჩათი Premium წევრებისთვის — რეალურ დროში საუბარი.',
+    lead: 'პირდაპირი ჩათი რეალურ დროში — სტუმარს ერთი შეტყობინების გაგზავნა შეუძლია, სრული საუბარი რეგისტრაციის შემდეგ.',
     premiumRequired: 'LIVE ჩათი მხოლოდ Premium წევრებს ხელმისაწვდომია.',
     premiumBtn: 'Premium-ის გახსნა',
     loginRequired: 'ჩათში ჩასართავად შედით ანგარიშში.',
     sendPlaceholder: 'დაწერეთ შეტყობინება...',
     send: 'გაგზავნა',
+    guestLimitTitle: 'რეგისტრაცია საჭიროა',
+    guestLimitBody:
+      'სტუმარის რეჟიმში LIVE ჩათში მხოლოდ ერთი შეტყობინების გაგზავნა შეგიძლიათ. საუბრის გასაგრძელებლად დარეგისტრირდით ან შედით ანგარიშში.',
+    guestRegister: 'რეგისტრაცია',
+    guestLogin: 'ავტორიზაცია',
+    guestLimitClose: 'დახურვა',
   },
   messages: {
     title: 'პირადი წერილები',

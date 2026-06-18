@@ -1,5 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/community/auth';
+import {
+  createGuestUser,
+  displayChatUsername,
+  getGuestChatSession,
+  guestMessagesRemaining,
+  GUEST_MESSAGE_LIMIT,
+  setGuestChatCookie,
+} from '@/lib/community/guest-chat';
 import { isPremiumEnabled } from '@/lib/community/premium-config';
 import { touchUserActivity } from '@/lib/community/presence';
 import { prisma } from '@/lib/prisma';
@@ -18,11 +26,19 @@ function serializeMessage(m: {
     id: m.id,
     body: m.body,
     senderId: m.senderId,
-    senderUsername: m.sender.username,
+    senderUsername: displayChatUsername(m.sender.username),
     createdAt: m.createdAt.toISOString(),
     roomId: m.roomId,
     recipientId: m.recipientId,
   };
+}
+
+function guestStatusResponse(roomId: string, recipientId: string | null) {
+  if (roomId !== SOCKET_CONFIG.liveRoomId || recipientId) return null;
+  return getGuestChatSession().then((session) => ({
+    messagesRemaining: guestMessagesRemaining(session),
+    limit: GUEST_MESSAGE_LIMIT,
+  }));
 }
 
 export async function GET(request: NextRequest) {
@@ -51,17 +67,21 @@ export async function GET(request: NextRequest) {
     include: { sender: { select: { id: true, username: true, avatar: true } } },
   });
 
+  const user = await getCurrentUser();
+  const guestStatus =
+    !user && roomId === SOCKET_CONFIG.liveRoomId && !recipientId
+      ? await guestStatusResponse(roomId, recipientId)
+      : null;
+
   return NextResponse.json({
     messages: messages.map(serializeMessage),
+    guestStatus,
     socket: SOCKET_CONFIG,
   });
 }
 
 export async function POST(request: NextRequest) {
   const user = await getCurrentUser();
-  if (!user) {
-    return NextResponse.json({ error: 'Login required' }, { status: 401 });
-  }
 
   let payload: { body?: string; roomId?: string; recipientId?: string };
   try {
@@ -76,6 +96,46 @@ export async function POST(request: NextRequest) {
 
   if (!body) {
     return NextResponse.json({ error: 'Message cannot be empty' }, { status: 400 });
+  }
+
+  if (!user) {
+    if (roomId !== SOCKET_CONFIG.liveRoomId || recipientId) {
+      return NextResponse.json({ error: 'Login required' }, { status: 401 });
+    }
+
+    const session = await getGuestChatSession();
+    if (guestMessagesRemaining(session) <= 0) {
+      return NextResponse.json(
+        { error: 'Guest limit reached', code: 'GUEST_LIMIT' },
+        { status: 403 },
+      );
+    }
+
+    let guestUserId = session?.guestUserId;
+    if (!guestUserId) {
+      const guest = await createGuestUser();
+      guestUserId = guest.id;
+    }
+
+    const message = await prisma.message.create({
+      data: {
+        senderId: guestUserId,
+        body,
+        roomId,
+      },
+      include: { sender: { select: { username: true } } },
+    });
+
+    const messagesSent = (session?.messagesSent ?? 0) + 1;
+    await setGuestChatCookie(guestUserId, messagesSent);
+
+    return NextResponse.json({
+      message: serializeMessage(message),
+      guestStatus: {
+        messagesRemaining: guestMessagesRemaining({ guestUserId, messagesSent }),
+        limit: GUEST_MESSAGE_LIMIT,
+      },
+    });
   }
 
   if (roomId === SOCKET_CONFIG.liveRoomId || recipientId) {

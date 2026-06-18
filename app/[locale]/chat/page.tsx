@@ -27,6 +27,7 @@ export default async function ChatPage({ params }: Props) {
   const locale = raw as Locale;
   const cd = getCommunityDict(locale);
   const user = await getCurrentUser();
+  const premiumLocked = Boolean(user && isPremiumEnabled() && !userHasPremiumAccess(user));
 
   return (
     <main className="container community-page">
@@ -34,9 +35,7 @@ export default async function ChatPage({ params }: Props) {
         <h1>{cd.chat.title}</h1>
         <p className="community-page__lead">{cd.chat.lead}</p>
       </div>
-      {!user ? (
-        <p>{cd.chat.loginRequired} <Link href={localePath(locale, '/login/')}>{cd.auth.login}</Link></p>
-      ) : isPremiumEnabled() && !userHasPremiumAccess(user) ? (
+      {premiumLocked ? (
         <div className="community-premium-lock">
           <p>{cd.chat.premiumRequired}</p>
           <Link href={localePath(locale, '/user/subscription/')} className="btn btn--primary">{cd.chat.premiumBtn}</Link>
@@ -45,10 +44,20 @@ export default async function ChatPage({ params }: Props) {
         <ChatRoom
           title={cd.chat.title}
           roomId={SOCKET_CONFIG.liveRoomId}
+          guestMode={!user}
+          registerHref={localePath(locale, '/register/')}
+          loginHref={localePath(locale, '/login/')}
           labels={{
             send: cd.chat.send,
             placeholder: cd.chat.sendPlaceholder,
             loginRequired: cd.chat.loginRequired,
+          }}
+          guestLabels={{
+            limitTitle: cd.chat.guestLimitTitle,
+            limitBody: cd.chat.guestLimitBody,
+            register: cd.chat.guestRegister,
+            login: cd.chat.guestLogin,
+            close: cd.chat.guestLimitClose,
           }}
         />
       )}

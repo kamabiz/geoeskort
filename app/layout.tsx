@@ -20,7 +20,14 @@ export const metadata: Metadata = {
   verification: {
     google: 'prX0lzBLHWVvt8K3GtagSoMeDCZ9n26sMxo5LZlUi4Y',
   },
-  icons: { icon: '/favicon.png', apple: '/favicon.png' },
+  icons: {
+    icon: [
+      { url: '/favicon.png', type: 'image/png', sizes: '96x96' },
+      { url: '/favicon.ico', sizes: '96x96' },
+    ],
+    apple: [{ url: '/favicon.png', sizes: '96x96' }],
+    shortcut: '/favicon.png',
+  },
 };
 
 export const viewport: Viewport = {
