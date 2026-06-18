@@ -2,22 +2,22 @@ import type { Dictionary } from '../types';
 
 const ka: Dictionary = {
   meta: {
-    homeTitle: 'GEOESKORT • ქართული 18+ პლატფორმა',
+    homeTitle: 'Intimgram • ქართული 18+ პლატფორმა',
     homeDescription:
-      'GEOESKORT — გამოცდილება, ისტორიები, რჩევები და საუბარი ერთ სივრცეში. მხოლოდ სრულწლოვანთათვის.',
+      'Intimgram — გამოცდილება, ისტორიები, რჩევები და საუბარი ერთ სივრცეში. მხოლოდ სრულწლოვანთათვის.',
     blogTitle: 'ბლოგი – Nightlife & Escort საქართველო',
     blogDescription:
-      'GEOESKORT ბლოგი — escort tbilisi, eskortebi, ღამის ცხოვრება თბილისში და ბათუმში.',
+      'Intimgram ბლოგი — escort tbilisi, eskortebi, ღამის ცხოვრება თბილისში და ბათუმში.',
     contactTitle: 'კონტაქტი',
-    contactDescription: 'GEOESKORT კონტაქტი — ინფორმაციული პორტალი.',
+    contactDescription: 'Intimgram კონტაქტი — ინფორმაციული პორტალი.',
     privacyTitle: 'კონფიდენციალურობა',
-    privacyDescription: 'GEOESKORT კონფიდენციალურობის პოლიტიკა.',
+    privacyDescription: 'Intimgram კონფიდენციალურობის პოლიტიკა.',
     postNotFound: 'სტატია ვერ მოიძებნა',
   },
   ageNotice: '18+ • მხოლოდ სრულწლოვანთათვის',
   nav: { home: 'მთავარი', blog: 'ბლოგი', contact: 'კონტაქტი', menu: 'მენიუ', chat: 'ჩათი', messages: 'წერილები', profile: 'პროფილი', submit: 'დამატება' },
   hero: {
-    badge: '+18 • ღია სივრცე სრულწლოვანთათვის',
+    badge: '18+ • სრულწლოვანთათვის',
     titleBefore: '',
     titleEm: 'გამოცდილება',
     titleAfter: ', რჩევა და საუბარი ერთ პლატფორმაზე',
@@ -61,12 +61,12 @@ const ka: Dictionary = {
   },
   promo: {
     title: 'პროფილების სანახავად → KAMA.BIZ',
-    desc: 'GEOESKORT არ არის პროფილების კატალოგი. Google-სთვის და თქვენთვის ცალკე: ჩვენ — ბლოგი, ისინი — escort პლატფორმა.',
+    desc: 'Intimgram არ არის პროფილების კატალოგი. Google-სთვის და თქვენთვის ცალკე: ჩვენ — ბლოგი, ისინი — escort პლატფორმა.',
     btn: 'Escort Tbilisi → KAMA.BIZ',
   },
   footer: {
     tagline: 'ქართული 18+ პლატფორმა — ისტორიები, რჩევები და საუბარი ერთ სივრცეში.',
-    geoeskort: 'GEOESKORT',
+    geoeskort: 'Intimgram',
     blog: 'სტატიები',
     contact: 'კონტაქტი',
     privacy: 'კონფიდენციალურობა',
@@ -74,17 +74,17 @@ const ka: Dictionary = {
     about: 'ჩვენს შესახებ',
     rules: 'წესები',
     points: 'ქულები',
-    premium: 'Premium',
+    premium: 'სრულიად უფასო',
   },
   contact: {
     title: 'კონტაქტი',
-    p1: 'GEOESKORT არის ინფორმაციული ბლოგი nightlife და escort თემებზე საქართველოში.',
+    p1: 'Intimgram არის ინფორმაციული ბლოგი nightlife და escort თემებზე საქართველოში.',
     email: 'ელ-ფოსტა:',
     p2: 'escort პროფილების სანახავად გადადით',
   },
   privacy: {
     title: 'კონფიდენციალურობა',
-    p1: 'GEOESKORT არ აგროვებს პერსონალურ მონაცემებს პროფილებისთვის — ჩვენ არ ვართ escort კატალოგი.',
+    p1: 'Intimgram არ აგროვებს პერსონალურ მონაცემებს პროფილებისთვის — ჩვენ არ ვართ escort კატალოგი.',
     p2: 'ეს საიტი შეიძლება იყენებდეს სტანდარტულ ანალიტიკას. პროფილების მონაცემები KAMA.BIZ-ის პოლიტიკის ქვეშაა.',
     p3: 'კითხვებისთვის:',
   },

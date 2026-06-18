@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { isPremiumEnabled } from '@/lib/community/premium-config';
 import { POINT_VALUES, PREMIUM_POINTS_COST } from '@/lib/community/points';
 import { getCommunityDict } from '@/lib/i18n/community-dict';
 import { isLocale } from '@/lib/i18n/config';
@@ -20,22 +21,36 @@ export default async function PointsPage({ params }: Props) {
   if (!isLocale(raw)) return null;
   const locale = raw as Locale;
   const cd = getCommunityDict(locale);
+  const premiumOn = isPremiumEnabled();
 
   return (
     <main className="container community-page">
       <h1>{cd.points.title}</h1>
-      <p>{cd.points.lead}</p>
+      <p>{premiumOn ? cd.points.lead : cd.free.lead}</p>
+      {!premiumOn && (
+        <p className="community-free-badge" style={{ display: 'inline-block', marginBottom: '1rem' }}>
+          {cd.free.badge}
+        </p>
+      )}
       <ul className="community-rules">
         <li><strong>+{POINT_VALUES.POST_PUBLISHED}</strong> — {cd.points.storyAdd}</li>
         <li><strong>+{POINT_VALUES.POST_REPORTED}</strong> — {cd.points.storyReport}</li>
-        <li>{cd.points.redeemPremium}</li>
+        {premiumOn && <li>{cd.points.redeemPremium}</li>}
         <li>{cd.points.giftPoints}</li>
       </ul>
-      <p><strong>{cd.points.freeTier}</strong></p>
-      <p><strong>{cd.points.premiumTier}</strong> — {PREMIUM_POINTS_COST} ქულა / 30 დღე</p>
+      {premiumOn ? (
+        <>
+          <p><strong>{cd.points.freeTier}</strong></p>
+          <p><strong>{cd.points.premiumTier}</strong> — {PREMIUM_POINTS_COST} ქულა / 30 დღე</p>
+        </>
+      ) : (
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>{cd.free.pointsNote}</p>
+      )}
       <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginTop: '1rem' }}>
         <Link href={localePath(locale, '/leaderboard/')} className="btn btn--primary">{cd.points.leaderboard}</Link>
-        <Link href={localePath(locale, '/user/subscription/')} className="btn btn--ghost">Premium</Link>
+        {!premiumOn && (
+          <Link href={localePath(locale, '/user/subscription/')} className="btn btn--ghost">{cd.free.badge}</Link>
+        )}
       </div>
     </main>
   );

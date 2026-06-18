@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/community/auth';
+import { isPremiumEnabled } from '@/lib/community/premium-config';
 import { touchUserActivity } from '@/lib/community/presence';
 import { prisma } from '@/lib/prisma';
 import { SOCKET_CONFIG } from '@/lib/community/socket-config';
@@ -78,9 +79,11 @@ export async function POST(request: NextRequest) {
   }
 
   if (roomId === SOCKET_CONFIG.liveRoomId || recipientId) {
-    const fresh = await prisma.user.findUnique({ where: { id: user.id }, select: { isPremium: true } });
-    if (!fresh?.isPremium) {
-      return NextResponse.json({ error: 'Premium required' }, { status: 403 });
+    if (isPremiumEnabled()) {
+      const fresh = await prisma.user.findUnique({ where: { id: user.id }, select: { isPremium: true } });
+      if (!fresh?.isPremium) {
+        return NextResponse.json({ error: 'Premium required' }, { status: 403 });
+      }
     }
   }
 

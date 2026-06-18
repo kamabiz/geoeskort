@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { getCurrentUser } from '@/lib/community/auth';
+import { isPremiumEnabled } from '@/lib/community/premium-config';
 import { prisma } from '@/lib/prisma';
 
 function getStripe() {
@@ -10,6 +11,9 @@ function getStripe() {
 }
 
 export async function POST() {
+  if (!isPremiumEnabled()) {
+    return NextResponse.json({ error: 'Premium is disabled' }, { status: 403 });
+  }
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: 'Login required' }, { status: 401 });
 

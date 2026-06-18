@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { JsonLd } from '@/components/JsonLd';
 import { BlogCard } from '@/components/BlogCard';
 import { HomeForumSection } from '@/components/community/HomeForumSection';
+import { PromoBannerPanel } from '@/components/community/PromoBannerPanel';
 import { getAllPosts } from '@/lib/blog';
 import {
   getCategoryCounts,
@@ -74,16 +75,24 @@ export default async function HomePage({ params }: Props) {
         }}
       />
 
-      <section className="hero hero--home">
+      <div className="home-surface">
+        <section className="hero hero--home">
         <div className="container">
-          <div className="hero__inner">
-            <span className="hero__badge">{dict.hero.badge}</span>
-            <h1 className="hero__title">
-              {dict.hero.titleBefore}
-              <em>{dict.hero.titleEm}</em>
-              {dict.hero.titleAfter}
-            </h1>
-            <p className="hero__lead">{dict.hero.lead}</p>
+          <div className="hero__shell">
+            <div className="hero__content">
+              <h1 className="hero__headline">{cd.home.title}</h1>
+              <div className="hero__action-bar">
+                <Link href={localePath(locale, '/submit/')} className="hero__story-cta">
+                  <span className="hero__story-cta-icon" aria-hidden>✍️</span>
+                  <span className="hero__story-cta-text">
+                    <strong>{dict.hero.ctaPrimary}</strong>
+                    <small>{cd.home.ctaStoryHint}</small>
+                  </span>
+                  <span className="hero__story-cta-arrow" aria-hidden>→</span>
+                </Link>
+                <PromoBannerPanel locale={locale} variant="hero" />
+              </div>
+            </div>
 
             <div className="hero__stats" role="list">
               <span className="hero__stat" role="listitem">
@@ -103,15 +112,6 @@ export default async function HomePage({ params }: Props) {
                 <span className="hero__stat-label">{cd.home.statsComments}</span>
               </span>
             </div>
-
-            <Link href={localePath(locale, '/submit/')} className="hero__story-cta">
-              <span className="hero__story-cta-icon" aria-hidden>✍️</span>
-              <span className="hero__story-cta-text">
-                <strong>{dict.hero.ctaPrimary}</strong>
-                <small>{cd.home.ctaStoryHint}</small>
-              </span>
-              <span className="hero__story-cta-arrow" aria-hidden>→</span>
-            </Link>
           </div>
 
           <nav className="dash-nav" aria-label="მოდულები">
@@ -123,9 +123,9 @@ export default async function HomePage({ params }: Props) {
             ))}
           </nav>
         </div>
-      </section>
+        </section>
 
-      <HomeForumSection
+        <HomeForumSection
         locale={locale}
         topStory={topStory}
         latestPosts={latestPosts}
@@ -133,9 +133,9 @@ export default async function HomePage({ params }: Props) {
         categoryCounts={categoryCounts}
         presence={presence}
         latestComments={latestComments}
-      />
+        />
 
-      <section className="section">
+        <section className="section section--home">
         <div className="container">
           <div className="section__head">
             <span className="section__label">{dict.blog.label}</span>
@@ -161,7 +161,8 @@ export default async function HomePage({ params }: Props) {
             </Link>
           </p>
         </div>
-      </section>
+        </section>
+      </div>
     </>
   );
 }

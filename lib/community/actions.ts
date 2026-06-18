@@ -14,6 +14,7 @@ import {
 } from '@/lib/community/auth';
 import { isCommunityCategorySlug, getStoryViewPath } from '@/lib/community/categories';
 import { PREMIUM_POINTS_COST, PREMIUM_DAYS, awardPoints } from '@/lib/community/points';
+import { isPremiumEnabled } from '@/lib/community/premium-config';
 import { computeReadingTimeMinutes } from '@/lib/community/text';
 import { touchUserActivity } from '@/lib/community/presence';
 
@@ -146,6 +147,7 @@ export async function upvotePost(postId: string) {
 }
 
 export async function redeemPremiumWithPoints() {
+  if (!isPremiumEnabled()) throw new Error('Premium is disabled');
   const user = await getCurrentUser();
   if (!user) throw new Error('Login required');
   if (user.isPremium) throw new Error('Already premium');
@@ -189,8 +191,10 @@ export async function sendChatMessage(formData: FormData) {
   if (!body) throw new Error('Message cannot be empty');
 
   if (roomId === 'live' || recipientId) {
-    const fresh = await prisma.user.findUnique({ where: { id: user.id }, select: { isPremium: true } });
-    if (!fresh?.isPremium) throw new Error('Premium required');
+    if (isPremiumEnabled()) {
+      const fresh = await prisma.user.findUnique({ where: { id: user.id }, select: { isPremium: true } });
+      if (!fresh?.isPremium) throw new Error('Premium required');
+    }
   }
 
   await prisma.message.create({

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { SiteLogo } from '@/components/SiteLogo';
 import { TopGeCounter } from '@/components/TopGeCounter';
 import { getCommunityDict } from '@/lib/i18n/community-dict';
 import { localePath } from '@/lib/i18n/paths';
@@ -21,9 +22,7 @@ export function Footer({ locale, dict, username }: Props) {
       <div className="container">
         <div className="footer-grid">
           <div className="footer-brand">
-            <Link href={localePath(locale, '/')} className="site-logo">
-              GEO<span>ESKORT</span>
-            </Link>
+            <SiteLogo href={localePath(locale, '/')} />
             <p>{dict.footer.tagline}</p>
           </div>
 
@@ -74,7 +73,7 @@ export function Footer({ locale, dict, username }: Props) {
         </div>
 
         <div className="footer-bottom">
-          <span>&copy; 2026 GEOESKORT</span>
+          <span>&copy; 2026 Intimgram</span>
           <TopGeCounter />
           <span>{dict.footer.legal}</span>
         </div>

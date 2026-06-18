@@ -434,3 +434,24 @@
 .admin-table tr:last-child td { border-bottom: none; }
 .admin-table code { font-size: 0.8rem; color: var(--admin-gold); }
 .admin-table__emoji { margin-right: 0.35rem; }
+
+.admin-premium-ref h2 {
+  margin: 2rem 0 0.75rem;
+  font-size: 1.1rem;
+  font-family: Georgia, serif;
+}
+.admin-premium-ref h2:first-child { margin-top: 0; }
+.admin-premium-ref ul, .admin-premium-ref ol {
+  color: var(--admin-muted);
+  padding-left: 1.25rem;
+  line-height: 1.6;
+}
+.admin-code-block {
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-radius);
+  padding: 1rem 1.25rem;
+  font-size: 0.85rem;
+  overflow-x: auto;
+  color: var(--admin-gold);
+}

@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { ChatRoom } from '@/components/community/ChatRoom';
 import { getCurrentUser } from '@/lib/community/auth';
+import { userHasPremiumAccess } from '@/lib/community/premium';
+import { isPremiumEnabled } from '@/lib/community/premium-config';
 import { prisma } from '@/lib/prisma';
 import { safeCommunity } from '@/lib/community/safe';
 import { getCommunityDict } from '@/lib/i18n/community-dict';
@@ -58,7 +60,7 @@ export default async function MessagesPage({ params, searchParams }: Props) {
       <div>
         {!user ? (
           <p>{cd.messages.loginRequired} <Link href={localePath(locale, '/login/')}>{cd.auth.login}</Link></p>
-        ) : !user.isPremium ? (
+        ) : isPremiumEnabled() && !userHasPremiumAccess(user) ? (
           <div className="community-premium-lock">
             <p>{cd.messages.premiumRequired}</p>
             <Link href={localePath(locale, '/user/subscription/')} className="btn btn--primary">{cd.chat.premiumBtn}</Link>

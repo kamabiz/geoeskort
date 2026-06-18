@@ -110,3 +110,18 @@ Or use **Admin** (`/admin/`) or **REST API** (`POST /api/posts/publish/`) — se
 ## Deploy
 
 Deploy as a standard Next.js app (Vercel, Node, or `output: 'standalone'`). Old catalog paths redirect to KAMA.BIZ automatically.
+
+---
+
+## Community — Premium (archived)
+
+Premium tier is **disabled by default** (`PREMIUM_ENABLED=false`). The app is fully free; points accumulation and gifting remain active.
+
+| Resource | Location |
+|----------|----------|
+| Full spec & reactivation checklist | [`docs/PREMIUM-ARCHIVED.md`](docs/PREMIUM-ARCHIVED.md) |
+| Admin reference (browser) | `/admin/premium/` (login required) |
+| Feature flag | `PREMIUM_ENABLED=true` in env + Stripe keys |
+
+To reactivate Premium later: set `PREMIUM_ENABLED=true`, configure Stripe env vars, redeploy. No database migration needed — `isPremium` fields remain in schema.
+

@@ -55,6 +55,11 @@ export default async function AdminDashboardPage() {
           <p className="admin-muted">{records.length} posts</p>
         </div>
 
+        <div className="admin-alert admin-alert--info" style={{ marginBottom: '1.5rem' }}>
+          <strong>Premium (archived):</strong> disabled — app is fully free.{' '}
+          <Link href="/admin/premium/">View reference &amp; reactivation guide →</Link>
+        </div>
+
         {records.length === 0 ? (
           <div className="admin-empty">
             <p>No posts yet — create your first SEO-optimized article.</p>

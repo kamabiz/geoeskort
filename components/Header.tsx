@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { SiteLogo } from '@/components/SiteLogo';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { getCommunityDict } from '@/lib/i18n/community-dict';
@@ -31,16 +32,24 @@ export function Header({ locale, dict, username }: HeaderProps) {
     ? localePath(locale, `/u/${username}/`)
     : localePath(locale, '/login/');
 
-  const nav = [
+  const navPrimary = [
     { href: localePath(locale, '/'), label: dict.nav.home },
     { href: localePath(locale, '/history/'), label: cd.nav.history },
     { href: localePath(locale, '/questions/'), label: cd.nav.questions },
+    { href: localePath(locale, '/conversationRoom/'), label: cd.nav.conversation },
+    { href: localePath(locale, '/chat/'), label: cd.nav.chat, live: true },
+  ];
+
+  const navMore = [
     { href: localePath(locale, '/medical/'), label: cd.nav.medical },
     { href: localePath(locale, '/crush/'), label: cd.nav.crush },
-    { href: localePath(locale, '/conversationRoom/'), label: cd.nav.conversation },
-    { href: localePath(locale, '/chat/'), label: cd.nav.chat },
     { href: localePath(locale, '/messages/'), label: cd.nav.messages },
-    { href: profileHref, label: cd.nav.profile },
+  ];
+
+  const navAll = [
+    ...navPrimary,
+    ...navMore,
+    { href: profileHref, label: cd.nav.profile, profile: true },
   ];
 
   const isActive = (href: string) => {
@@ -52,12 +61,21 @@ export function Header({ locale, dict, username }: HeaderProps) {
     return current === normalized || current.startsWith(normalized);
   };
 
+  const isMoreActive = navMore.some((item) => isActive(item.href));
+
+  const linkClass = (item: { href: string; live?: boolean; profile?: boolean }, extra = '') => {
+    const classes = ['site-nav__link'];
+    if (item.live) classes.push('site-nav__link--live');
+    if (item.profile) classes.push('site-nav__link--profile');
+    if (isActive(item.href)) classes.push('is-active');
+    if (extra) classes.push(extra);
+    return classes.join(' ');
+  };
+
   return (
     <header className="site-header">
       <div className="container site-header__inner">
-        <Link href={localePath(locale, '/')} className="site-logo">
-          GEO<span>ESKORT</span>
-        </Link>
+        <SiteLogo href={localePath(locale, '/')} />
         <button
           className="nav-toggle"
           type="button"
@@ -68,16 +86,62 @@ export function Header({ locale, dict, username }: HeaderProps) {
           {open ? '✕' : '☰'}
         </button>
         <nav className={`site-nav${open ? ' is-open' : ''}`} aria-label="Main">
-          {nav.map((item) => (
+          <div className="site-nav__desktop">
+            {navPrimary.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={linkClass(item)}
+                onClick={() => setOpen(false)}
+              >
+                {item.label}
+              </Link>
+            ))}
+            <div className={`site-nav__more${isMoreActive ? ' is-active' : ''}`}>
+              <button
+                type="button"
+                className="site-nav__more-btn"
+                aria-expanded={false}
+                aria-haspopup="true"
+              >
+                მეტი
+                <span className="site-nav__more-caret" aria-hidden>▾</span>
+              </button>
+              <div className="site-nav__dropdown" role="menu">
+                {navMore.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={linkClass(item, 'site-nav__dropdown-link')}
+                    role="menuitem"
+                    onClick={() => setOpen(false)}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
             <Link
-              key={item.href}
-              href={item.href}
-              className={isActive(item.href) ? 'is-active' : ''}
+              href={profileHref}
+              className={linkClass({ href: profileHref, profile: true })}
               onClick={() => setOpen(false)}
             >
-              {item.label}
+              {cd.nav.profile}
             </Link>
-          ))}
+          </div>
+
+          <div className="site-nav__mobile">
+            {navAll.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={linkClass(item)}
+                onClick={() => setOpen(false)}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </div>
         </nav>
       </div>
       {open && <button type="button" className="nav-backdrop" aria-label="დახურვა" onClick={() => setOpen(false)} />}

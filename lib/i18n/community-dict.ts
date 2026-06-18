@@ -173,6 +173,16 @@ export type CommunityDict = {
     freePerks: string[];
     lockedPerks: string[];
   };
+  free: {
+    badge: string;
+    title: string;
+    lead: string;
+    bannerTitle: string;
+    bannerDesc: string;
+    bannerBtn: string;
+    perks: string[];
+    pointsNote: string;
+  };
   about: {
     title: string;
     p1: string;
@@ -254,7 +264,7 @@ export type CommunityDict = {
 const ka: CommunityDict = {
   ageGate: {
     title: 'ასაკის დადასტურება',
-    body: 'GEOESKORT სრულწლოვანთათვის განკუთვნილი პლატფორმაა. გასაგრძელებლად დაადასტურეთ, რომ 18 წელზე მეტის ხართ.',
+    body: 'Intimgram სრულწლოვანთათვის განკუთვნილი პლატფორმაა. გასაგრძელებლად დაადასტურეთ, რომ 18 წელზე მეტის ხართ.',
     confirm: 'დიახ, სრულწლოვანი ვარ',
     deny: 'არა, გამოვდივარ',
   },
@@ -265,7 +275,7 @@ const ka: CommunityDict = {
     crush: 'ქრაში',
     positions: 'პოზები',
     conversation: 'საუბარი',
-    chat: 'LIVE ჩათი',
+    chat: 'ჩათი',
     messages: 'წერილები',
     profile: 'პროფილი',
     submit: 'დამატება',
@@ -321,7 +331,6 @@ const ka: CommunityDict = {
       { href: '/crush/', icon: '💕', label: 'ქრაში' },
       { href: '/conversationRoom/', icon: '🗣️', label: 'საუბარი' },
       { href: '/chat/', icon: '💬', label: 'LIVE ჩათი' },
-      { href: '/messages/', icon: '✉️', label: 'წერილები' },
       { href: '/positionVariants/', icon: '📖', label: 'პოზები' },
       { href: '/zodiac/', icon: '♈', label: 'ზოდიაქო' },
     ],
@@ -417,7 +426,7 @@ const ka: CommunityDict = {
     storyAdd: 'ისტორიის დამატება',
     storyReport: 'ისტორიის დარეპორტება',
     redeemPremium: 'Premium-ის ყიდვა ქულებით (500 ქულა / 30 დღე)',
-    giftPoints: 'ქულების გადაჩუქება (Premium)',
+    giftPoints: 'ქულების გადაჩუქება',
     leaderboard: 'რეიტინგი',
     freeTier: 'უფასო პაკეტი (რეგისტრაციის შემდეგ, 0 ქულა)',
     premiumTier: 'Premium პაკეტი (500 ქულა / 30 დღე)',
@@ -452,9 +461,25 @@ const ka: CommunityDict = {
       'რეკლამა ჩანს',
     ],
   },
+  free: {
+    badge: 'სრულიად უფასო',
+    title: 'Intimgram სრულიად უფასოა',
+    lead: 'ყველა ფუნქცია ხელმისაწვდომია უფასოდ — ისტორიები, LIVE ჩათი, პირადი წერილები და სხვა. ქულები იღებთ აქტიური მონაწილეობით და შეგიძლიათ სხვას უჩუქოთ.',
+    bannerTitle: 'სრულიად უფასო',
+    bannerDesc: 'ყველა ფუნქცია უფასოა — ისტორიები, ჩათი, წერილები. ქულები იღებთ აქტიურობით და შეგიძლიათ ჩუქება.',
+    bannerBtn: 'ქულების წესები',
+    perks: [
+      'ყველა ისტორია და სტატია',
+      'LIVE ჩათი და პირადი მიმოწერა',
+      'ისტორიებისა და პოსტების დამატება',
+      'ქულების დაგროვება და ჩუქება',
+      'რეიტინგი და საჯარო კომენტარები',
+    ],
+    pointsNote: 'Premium გათიშულია — ქულები მხოლოდ დაგროვებისა და ჩუქებისთვისაა.',
+  },
   about: {
     title: 'ჩვენს შესახებ',
-    p1: 'GEOESKORT — ქართულენოვანი 18+ პლატფორმა, სადაც ერთ სივრცეში იკრიბება პირადი ისტორიები, რჩევები, სასარგებლო სტატიები და საუბრის ფუნქციები.',
+    p1: 'Intimgram — ქართულენოვანი 18+ პლატფორმა, სადაც ერთ სივრცეში იკრიბება პირადი ისტორიები, რჩევები, სასარგებლო სტატიები და საუბრის ფუნქციები.',
     p2: 'პლატფორმა მხოლოდ სრულწლოვანთათვისაა განკუთვნილი. გთხოვთ, დაიცვათ პირადი სივრცე და საზოგადოების წესები.',
   },
   rules: {

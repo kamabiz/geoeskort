@@ -1,11 +1,19 @@
 import type { Metadata, Viewport } from 'next';
+import { Grand_Hotel } from 'next/font/google';
 import { SITE_NAME, SITE_URL } from '@/lib/site';
 import './globals.css';
+
+const logoFont = Grand_Hotel({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-logo',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${SITE_NAME} • Nightlife & Escort Guide Georgia +18`,
+    default: `${SITE_NAME} • ქართული 18+ პლატფორმა`,
     template: `%s | ${SITE_NAME}`,
   },
   robots: { index: true, follow: true },
@@ -24,7 +32,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ka" suppressHydrationWarning>
+    <html lang="ka" className={logoFont.variable} suppressHydrationWarning>
       <body>{children}</body>
     </html>
   );

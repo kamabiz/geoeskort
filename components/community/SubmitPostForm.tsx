@@ -5,6 +5,7 @@ import {
   MODULE_CATEGORIES,
 } from '@/lib/community/categories';
 import { submitPost } from '@/lib/community/actions';
+import { isPremiumEnabled } from '@/lib/community/premium-config';
 import { getCommunityDict } from '@/lib/i18n/community-dict';
 import { localePath } from '@/lib/i18n/paths';
 import type { Locale } from '@/lib/i18n/types';
@@ -17,6 +18,7 @@ type Props = {
 
 export function SubmitPostForm({ locale, defaultCategory, moduleOnly }: Props) {
   const cd = getCommunityDict(locale);
+  const premiumOn = isPremiumEnabled();
 
   const categories =
     moduleOnly === 'questions'
@@ -58,10 +60,12 @@ export function SubmitPostForm({ locale, defaultCategory, moduleOnly }: Props) {
         <input type="checkbox" name="anonymous" />
         {cd.submit.anonymous}
       </label>
-      <label className="community-form__check">
-        <input type="checkbox" name="isPremium" />
-        {cd.submit.premiumOnly}
-      </label>
+      {premiumOn && (
+        <label className="community-form__check">
+          <input type="checkbox" name="isPremium" />
+          {cd.submit.premiumOnly}
+        </label>
+      )}
       <div className="community-form__actions">
         <button type="submit" className="btn btn--primary">{cd.submit.publish}</button>
         <Link href={localePath(locale, '/history/')} className="btn btn--ghost">{cd.submit.cancel}</Link>
