@@ -21,7 +21,7 @@ export type PublishPostBody = {
 };
 
 export function verifyPublishApiKey(authHeader: string | null): boolean {
-  const expected = process.env.BLOG_PUBLISH_API_KEY;
+  const expected = process.env.BLOG_PUBLISH_API_KEY?.trim();
   if (!expected || !authHeader?.startsWith('Bearer ')) return false;
   const token = authHeader.slice(7).trim();
   if (!token || token.length !== expected.length) return false;
