@@ -134,6 +134,7 @@ export function resolvePost(record: BlogPostRecord, locale: Locale): BlogPost | 
   if (!content?.title?.trim() || !content.content?.trim()) return null;
 
   const availableLocales = getAvailableLocales(record);
+  const coverImage = record.coverImage || extractCoverFromContent(content.content);
 
   return {
     ...content,
@@ -141,7 +142,7 @@ export function resolvePost(record: BlogPostRecord, locale: Locale): BlogPost | 
     category: record.category,
     publishedAt: record.publishedAt,
     status: record.status,
-    coverImage: record.coverImage,
+    coverImage,
     emoji: getCategoryEmoji(record.category),
     locale,
     seoTitle: content.seoTitle || content.title,
@@ -184,3 +185,10 @@ export function recordFromSingleLocale(
 }
 
 export { emptyLocaleContent, normalizeLocaleContent };
+
+function extractCoverFromContent(content: string): string | undefined {
+  const figureMatch = content.match(/<figure[^>]*class="[^"]*post-cover[^"]*"[^>]*>[\s\S]*?<img[^>]+src="([^"]+)"/i);
+  if (figureMatch?.[1]) return figureMatch[1];
+  const imgMatch = content.match(/<img[^>]+src="(https?:\/\/[^"]+)"/i);
+  return imgMatch?.[1];
+}

@@ -61,6 +61,8 @@ Content-Type: application/json
 }
 ```
 
+`coverImage` (or alias `featuredImage`) must be an **absolute `https://` URL**. It is stored on the post and shown on blog cards; it is also prepended to each locale’s HTML body as a `<figure class="post-cover">`.
+
 **Legacy single-locale body** (treated as `ka`):
 
 ```json

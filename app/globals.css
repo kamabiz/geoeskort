@@ -368,6 +368,14 @@ a:hover { color: #ffc857; }
   align-items: center;
   justify-content: center;
   font-size: 2.5rem;
+  overflow: hidden;
+}
+
+.blog-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .blog-card__body { padding: 1.25rem; flex: 1; display: flex; flex-direction: column; }

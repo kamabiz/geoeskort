@@ -25,7 +25,10 @@ export type PublishPostBody = {
   /** Shared URL slug for all language versions */
   slug?: string;
   category?: string;
+  /** Absolute https URL for the card thumbnail and post header image */
   coverImage?: string;
+  /** Alias for coverImage (same field) */
+  featuredImage?: string;
   status?: string;
   publishedAt?: string;
   /** When true, merge translations into an existing post instead of failing */
@@ -126,7 +129,7 @@ function collectTranslations(body: PublishPostBody): Partial<Record<Locale, Publ
 
 export function buildPostRecord(body: PublishPostBody): BlogPostRecord {
   const rawTranslations = collectTranslations(body);
-  const coverImage = normalizeCoverImage(body.coverImage);
+  const coverImage = normalizeCoverImage(body.coverImage || body.featuredImage);
   const status = normalizeStatus(body.status);
   const publishedAt = toDateString(body.publishedAt);
 

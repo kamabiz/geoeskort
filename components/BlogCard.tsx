@@ -19,8 +19,19 @@ export function BlogCard({ post, locale, dict, headingLevel = 'h2' }: BlogCardPr
   return (
     <article className="blog-card">
       <Link href={href}>
-        <div className="blog-card__thumb" aria-hidden="true">
-          {post.emoji}
+        <div className="blog-card__thumb" aria-hidden={!!post.coverImage}>
+          {post.coverImage ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={post.coverImage}
+              alt=""
+              className="blog-card__img"
+              loading="lazy"
+              decoding="async"
+            />
+          ) : (
+            post.emoji
+          )}
         </div>
       </Link>
       <div className="blog-card__body">
