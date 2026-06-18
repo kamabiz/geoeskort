@@ -1,6 +1,6 @@
 export const SITE_URL = 'https://geoeskort.com';
 export const SITE_NAME = 'Intimgram';
-export const TOP_GE_SITE_ID = '118610';
+export const TOP_GE_SITE_ID = '118802';
 
 export const KAMA_LINKS = [
   {
