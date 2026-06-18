@@ -8,12 +8,14 @@ import { getDictionary } from '@/lib/i18n/get-dictionary';
 import { absoluteUrl, localePath } from '@/lib/i18n/paths';
 import type { Locale } from '@/lib/i18n/types';
 import { pageMetadata } from '@/lib/seo';
-import { SITE_NAME } from '@/lib/site';
+import { SITE_NAME, SITE_URL } from '@/lib/site';
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
+export const revalidate = 60;
+
 export async function generateStaticParams() {
-  const posts = getAllPosts();
+  const posts = await getAllPosts();
   const locales = ['ka', 'en', 'ru', 'tr'] as Locale[];
   return locales.flatMap((locale) => posts.map((post) => ({ locale, slug: post.slug })));
 }
@@ -22,16 +24,23 @@ export async function generateMetadata({ params }: Props) {
   const { locale: raw, slug } = await params;
   if (!isLocale(raw)) return {};
   const locale = raw as Locale;
-  const post = getPostBySlug(slug);
+  const post = await getPostBySlug(slug);
   const dict = getDictionary(locale);
   if (!post) return { title: dict.meta.postNotFound };
   return pageMetadata({
     locale,
     path: `/blog/${post.slug}/`,
-    title: post.title,
+    title: post.seoTitle || post.title,
     description: post.excerpt,
     ogType: 'article',
+    publishedTime: `${post.publishedAt}T00:00:00.000Z`,
+    tags: post.tags,
+    keywords: post.tags.join(', '),
   });
+}
+
+function wordCount(html: string): number {
+  return html.replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
 }
 
 export default async function BlogPostPage({ params }: Props) {
@@ -39,7 +48,7 @@ export default async function BlogPostPage({ params }: Props) {
   if (!isLocale(raw)) notFound();
   const locale = raw as Locale;
   const dict = getDictionary(locale);
-  const post = getPostBySlug(slug);
+  const post = await getPostBySlug(slug);
   if (!post) notFound();
 
   const url = absoluteUrl(locale, `/blog/${post.slug}/`);
@@ -53,9 +62,14 @@ export default async function BlogPostPage({ params }: Props) {
           mainEntityOfPage: { '@type': 'WebPage', '@id': url },
           headline: post.title,
           description: post.excerpt,
-          datePublished: post.publishedAt,
+          datePublished: `${post.publishedAt}T00:00:00.000Z`,
+          dateModified: `${post.publishedAt}T00:00:00.000Z`,
           url,
           inLanguage: locale,
+          keywords: post.tags.join(', '),
+          wordCount: wordCount(post.content),
+          articleSection: post.category,
+          author: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },
           publisher: { '@type': 'Organization', name: SITE_NAME, url: absoluteUrl('ka', '/') },
         }}
       />

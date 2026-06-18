@@ -1,13 +1,13 @@
 import type { MetadataRoute } from 'next';
-import { getAllPosts } from '@/lib/blog';
+import { getAllPostsAsync } from '@/lib/blog-store';
 import { locales } from '@/lib/i18n/config';
 import { absoluteUrl } from '@/lib/i18n/paths';
 import type { Locale } from '@/lib/i18n/types';
 
 const staticPaths = ['/', '/blog/', '/contact/', '/privacy/'];
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const posts = getAllPosts();
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const posts = await getAllPostsAsync();
   const now = new Date();
   const entries: MetadataRoute.Sitemap = [];
 

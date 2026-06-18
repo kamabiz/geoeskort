@@ -666,9 +666,34 @@ a:hover { color: #ffc857; }
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  align-items: center;
   gap: 1rem;
   font-size: 0.8rem;
   color: var(--text-muted);
+}
+
+.footer-topge-counter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 31px;
+  min-width: 88px;
+}
+
+.footer-topge-counter:empty {
+  min-height: 0;
+  min-width: 0;
+}
+
+@media (max-width: 640px) {
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .footer-topge-counter {
+    order: -1;
+  }
 }
 
 .age-notice {

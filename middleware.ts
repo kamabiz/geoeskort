@@ -4,10 +4,11 @@ import { defaultLocale, isLocale, locales } from '@/lib/i18n/config';
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Skip static files, api, sitemap, robots
+  // Skip static files, api, admin, sitemap, robots
   if (
     pathname.startsWith('/_next') ||
     pathname.startsWith('/api') ||
+    pathname.startsWith('/admin') ||
     pathname.includes('.') // favicon, txt verification, etc.
   ) {
     return NextResponse.next();

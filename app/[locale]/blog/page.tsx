@@ -12,6 +12,8 @@ import { notFound } from 'next/navigation';
 
 type Props = { params: Promise<{ locale: string }> };
 
+export const revalidate = 60;
+
 export async function generateMetadata({ params }: Props) {
   const { locale: raw } = await params;
   if (!isLocale(raw)) return {};
@@ -30,7 +32,7 @@ export default async function BlogPage({ params }: Props) {
   if (!isLocale(raw)) notFound();
   const locale = raw as Locale;
   const dict = getDictionary(locale);
-  const posts = getAllPosts();
+  const posts = await getAllPosts();
 
   return (
     <>

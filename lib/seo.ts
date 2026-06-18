@@ -12,6 +12,10 @@ type PageMeta = {
   description: string;
   ogType?: 'website' | 'article';
   absolute?: boolean;
+  publishedTime?: string;
+  modifiedTime?: string;
+  tags?: string[];
+  keywords?: string;
 };
 
 export function pageMetadata({
@@ -21,10 +25,14 @@ export function pageMetadata({
   description,
   ogType = 'website',
   absolute = false,
+  publishedTime,
+  modifiedTime,
+  tags,
+  keywords,
 }: PageMeta): Metadata {
   const canonical = absoluteUrl(locale, path);
 
-  return {
+  const metadata: Metadata = {
     title: absolute ? { absolute: title } : title,
     description,
     robots: { index: true, follow: true },
@@ -42,6 +50,10 @@ export function pageMetadata({
       alternateLocale: (Object.keys(ogLocales) as Locale[])
         .filter((l) => l !== locale)
         .map((l) => ogLocales[l]),
+      ...(ogType === 'article' && publishedTime
+        ? { publishedTime, modifiedTime: modifiedTime || publishedTime }
+        : {}),
+      ...(tags?.length ? { tags } : {}),
     },
     twitter: {
       card: 'summary_large_image',
@@ -49,4 +61,10 @@ export function pageMetadata({
       description,
     },
   };
+
+  if (keywords) {
+    metadata.keywords = keywords.split(',').map((k) => k.trim()).filter(Boolean);
+  }
+
+  return metadata;
 }

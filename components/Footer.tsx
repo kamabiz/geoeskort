@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { TopGeCounter } from '@/components/TopGeCounter';
 import { localePath } from '@/lib/i18n/paths';
 import type { Dictionary, Locale } from '@/lib/i18n/types';
 
@@ -40,6 +41,7 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
         </div>
         <div className="footer-bottom">
           <span>&copy; 2026 GEOESKORT</span>
+          <TopGeCounter />
           <span>{dict.footer.legal}</span>
         </div>
       </div>
