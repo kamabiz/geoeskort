@@ -10,16 +10,24 @@ import type { Dictionary, Locale } from '@/lib/i18n/types';
 type HeaderProps = {
   locale: Locale;
   dict: Dictionary;
+  username?: string | null;
 };
 
-export function Header({ locale, dict }: HeaderProps) {
+export function Header({ locale, dict, username }: HeaderProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
+  const profileHref = username
+    ? localePath(locale, `/u/${username}/`)
+    : localePath(locale, '/login/');
+
   const nav = [
     { href: localePath(locale, '/'), label: dict.nav.home },
+    { href: localePath(locale, '/chat/'), label: dict.nav.chat },
+    { href: localePath(locale, '/messages/'), label: dict.nav.messages },
+    { href: profileHref, label: dict.nav.profile },
     { href: localePath(locale, '/blog/'), label: dict.nav.blog },
-    { href: localePath(locale, '/contact/'), label: dict.nav.contact },
+    { href: localePath(locale, '/submit/'), label: dict.nav.submit },
   ];
 
   const isActive = (href: string) => {

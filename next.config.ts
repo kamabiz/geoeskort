@@ -13,8 +13,8 @@ const catalogRedirects = catalogPaths.map((p) => ({
 }));
 
 const appRedirects = [
-  'profiles', 'agencies', 'favorites', 'chat', 'login', 'registration',
-  'add-profile', 'manage-profiles', 'superadmin', 'admin-blog', 'xgeorgia', 'kamage', 'premium',
+  'profiles', 'agencies', 'favorites', 'registration',
+  'add-profile', 'manage-profiles', 'superadmin', 'admin-blog', 'xgeorgia', 'kamage',
 ].map((p) => ({
   source: `/${p}/:path*`,
   destination: 'https://kama.biz/',

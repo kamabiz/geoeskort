@@ -15,7 +15,7 @@ const ka: Dictionary = {
     postNotFound: 'სტატია ვერ მოიძებნა',
   },
   ageNotice: '18+ • Adults only • მხოლოდ სრულწლოვანთათვის',
-  nav: { home: 'მთავარი', blog: 'ბლოგი', contact: 'კონტაქტი', menu: 'Menu' },
+  nav: { home: 'მთავარი', blog: 'ბლოგი', contact: 'კონტაქტი', menu: 'Menu', chat: 'ჩათი', messages: 'შეტყობინებები', profile: 'პროფილი', submit: 'გამოქვეყნება' },
   hero: {
     badge: '+18 • Georgia Nightlife Guide',
     titleBefore: 'Nightlife & ',
@@ -71,6 +71,10 @@ const ka: Dictionary = {
     contact: 'კონტაქტი',
     privacy: 'კონფიდენციალურობა',
     legal: '18+ • ინფორმაციული პორტალი • არა პროფილების კატალოგი',
+    about: 'ჩვენს შესახებ',
+    rules: 'წესები',
+    points: 'ქულები',
+    premium: 'Premium',
   },
   contact: {
     title: 'კონტაქტი',

@@ -15,7 +15,7 @@ const en: Dictionary = {
     postNotFound: 'Post not found',
   },
   ageNotice: '18+ • Adults only',
-  nav: { home: 'Home', blog: 'Blog', contact: 'Contact', menu: 'Menu' },
+  nav: { home: 'Home', blog: 'Blog', contact: 'Contact', menu: 'Menu', chat: 'Chat', messages: 'Messages', profile: 'Profile', submit: 'Submit' },
   hero: {
     badge: '+18 • Georgia Nightlife Guide',
     titleBefore: 'Nightlife & ',
@@ -71,6 +71,10 @@ const en: Dictionary = {
     contact: 'Contact',
     privacy: 'Privacy',
     legal: '18+ • Informational portal • Not a profile catalog',
+    about: 'About',
+    rules: 'Rules',
+    points: 'Points',
+    premium: 'Premium',
   },
   contact: {
     title: 'Contact',

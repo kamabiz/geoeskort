@@ -1,0 +1,140 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum PointAction {
+  POST_PUBLISHED
+  COMMENT_RECEIVED
+  POST_UPVOTED
+  COMMENT_UPVOTED
+}
+
+model User {
+  id                   String    @id @default(cuid())
+  username             String    @unique
+  email                String?   @unique
+  passwordHash         String?
+  avatar               String?
+  bio                  String    @default("")
+  points               Int       @default(0)
+  isPremium            Boolean   @default(false)
+  stripeCustomerId     String?   @unique
+  stripeSubscriptionId String?   @unique
+  createdAt            DateTime  @default(now())
+  lastActiveAt         DateTime  @default(now())
+
+  posts         Post[]
+  comments      Comment[]
+  sentMessages  Message[]    @relation("SentMessages")
+  receivedMessages Message[] @relation("ReceivedMessages")
+  pointEvents   PointEvent[]
+  postUpvotes   PostUpvote[]
+  commentUpvotes CommentUpvote[]
+
+  @@index([lastActiveAt])
+  @@index([points(sort: Desc)])
+}
+
+model Post {
+  id                 String     @id @default(cuid())
+  title              String
+  body               String     @db.Text
+  authorId           String?
+  isAnonymous        Boolean    @default(false)
+  category           String
+  tags               String[]
+  readingTimeMinutes Int        @default(1)
+  viewCount          Int        @default(0)
+  isPremium          Boolean    @default(false)
+  status             PostStatus @default(PUBLISHED)
+  createdAt          DateTime   @default(now())
+
+  author   User?         @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  comments Comment[]
+  upvotes  PostUpvote[]
+
+  @@index([status, createdAt(sort: Desc)])
+  @@index([category, status, createdAt(sort: Desc)])
+  @@index([status, viewCount(sort: Desc), createdAt(sort: Desc)])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  postId    String
+  authorId  String?
+  parentId  String?
+  isAnonymous Boolean @default(false)
+  body      String   @db.Text
+  createdAt DateTime @default(now())
+
+  post    Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author  User?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  parent  Comment? @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies Comment[] @relation("CommentReplies")
+  upvotes CommentUpvote[]
+
+  @@index([postId, createdAt(sort: Desc)])
+  @@index([createdAt(sort: Desc)])
+}
+
+model Message {
+  id          String   @id @default(cuid())
+  senderId    String
+  recipientId String?
+  roomId      String?
+  body        String   @db.Text
+  createdAt   DateTime @default(now())
+
+  sender    User  @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  recipient User? @relation("ReceivedMessages", fields: [recipientId], references: [id], onDelete: Cascade)
+
+  @@index([roomId, createdAt(sort: Desc)])
+  @@index([senderId, recipientId, createdAt(sort: Desc)])
+}
+
+model PointEvent {
+  id          String      @id @default(cuid())
+  userId      String
+  action      PointAction
+  points      Int
+  referenceId String?
+  createdAt   DateTime    @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt(sort: Desc)])
+}
+
+model PostUpvote {
+  id        String   @id @default(cuid())
+  userId    String
+  postId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+}
+
+model CommentUpvote {
+  id        String   @id @default(cuid())
+  userId    String
+  commentId String
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, commentId])
+}

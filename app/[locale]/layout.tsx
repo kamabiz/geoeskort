@@ -1,7 +1,10 @@
 import { notFound } from 'next/navigation';
 import { Footer } from '@/components/Footer';
 import { Header } from '@/components/Header';
+import { BottomNav } from '@/components/community/BottomNav';
+import { PresenceHeartbeat } from '@/components/community/PresenceHeartbeat';
 import { SetHtmlLang } from '@/components/SetHtmlLang';
+import { getCurrentUser } from '@/lib/community/auth';
 import { locales, isLocale } from '@/lib/i18n/config';
 import { getDictionary } from '@/lib/i18n/get-dictionary';
 import type { Locale } from '@/lib/i18n/types';
@@ -21,14 +24,17 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   const locale = raw as Locale;
   const dict = getDictionary(locale);
+  const user = await getCurrentUser();
 
   return (
     <>
       <SetHtmlLang locale={locale} />
       <div className="age-notice">{dict.ageNotice}</div>
-      <Header locale={locale} dict={dict} />
+      <Header locale={locale} dict={dict} username={user?.username} />
+      <PresenceHeartbeat />
       {children}
       <Footer locale={locale} dict={dict} />
+      <BottomNav locale={locale} username={user?.username} />
     </>
   );
 }

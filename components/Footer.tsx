@@ -33,8 +33,12 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
               <h4>{dict.footer.geoeskort}</h4>
               <ul>
                 <li><Link href={localePath(locale, '/blog/')}>{dict.footer.blog}</Link></li>
-                <li><Link href={localePath(locale, '/contact/')}>{dict.footer.contact}</Link></li>
+                <li><Link href={localePath(locale, '/about/')}>{dict.footer.about}</Link></li>
+                <li><Link href={localePath(locale, '/rules/')}>{dict.footer.rules}</Link></li>
                 <li><Link href={localePath(locale, '/privacy/')}>{dict.footer.privacy}</Link></li>
+                <li><Link href={localePath(locale, '/contact/')}>{dict.footer.contact}</Link></li>
+                <li><Link href={localePath(locale, '/points/')}>{dict.footer.points}</Link></li>
+                <li><Link href={localePath(locale, '/premium/')}>{dict.footer.premium}</Link></li>
               </ul>
             </div>
           </div>

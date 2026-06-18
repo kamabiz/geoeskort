@@ -15,7 +15,7 @@ const ru: Dictionary = {
     postNotFound: 'Статья не найдена',
   },
   ageNotice: '18+ • Только для взрослых',
-  nav: { home: 'Главная', blog: 'Блог', contact: 'Контакты', menu: 'Меню' },
+  nav: { home: 'Главная', blog: 'Блог', contact: 'Контакты', menu: 'Меню', chat: 'Чат', messages: 'Сообщения', profile: 'Профиль', submit: 'Публикация' },
   hero: {
     badge: '+18 • Nightlife Guide Georgia',
     titleBefore: 'Nightlife и ',
@@ -71,6 +71,10 @@ const ru: Dictionary = {
     contact: 'Контакты',
     privacy: 'Конфиденциальность',
     legal: '18+ • Информационный портал • Не каталог профилей',
+    about: 'О нас',
+    rules: 'Правила',
+    points: 'Очки',
+    premium: 'Premium',
   },
   contact: {
     title: 'Контакты',

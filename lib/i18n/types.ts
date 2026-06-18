@@ -13,7 +13,7 @@ export type Dictionary = {
     postNotFound: string;
   };
   ageNotice: string;
-  nav: { home: string; blog: string; contact: string; menu: string };
+  nav: { home: string; blog: string; contact: string; menu: string; chat: string; messages: string; profile: string; submit: string };
   hero: {
     badge: string;
     titleBefore: string;
@@ -62,6 +62,10 @@ export type Dictionary = {
     contact: string;
     privacy: string;
     legal: string;
+    about: string;
+    rules: string;
+    points: string;
+    premium: string;
   };
   contact: {
     title: string;

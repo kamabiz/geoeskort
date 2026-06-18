@@ -15,7 +15,7 @@ const tr: Dictionary = {
     postNotFound: 'Yazı bulunamadı',
   },
   ageNotice: '18+ • Yalnızca yetişkinler',
-  nav: { home: 'Ana Sayfa', blog: 'Blog', contact: 'İletişim', menu: 'Menü' },
+  nav: { home: 'Ana Sayfa', blog: 'Blog', contact: 'İletişim', menu: 'Menü', chat: 'Sohbet', messages: 'Mesajlar', profile: 'Profil', submit: 'Gönder' },
   hero: {
     badge: '+18 • Georgia Nightlife Guide',
     titleBefore: 'Gürcistan\'da ',
@@ -71,6 +71,10 @@ const tr: Dictionary = {
     contact: 'İletişim',
     privacy: 'Gizlilik',
     legal: '18+ • Bilgi portalı • Profil kataloğu değil',
+    about: 'Hakkında',
+    rules: 'Kurallar',
+    points: 'Puanlar',
+    premium: 'Premium',
   },
   contact: {
     title: 'İletişim',
