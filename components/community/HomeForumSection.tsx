@@ -54,7 +54,7 @@ export function HomeForumSection({
         <div className="forum-hub__layout">
           <div className="forum-hub__main">
             {topStory && (
-              <div className="forum-featured">
+              <div className="forum-featured forum-featured--hide-mobile">
                 <div className="forum-featured__badge">🔥 {cd.home.topStory}</div>
                 <CommunityPostCard post={topStory} locale={locale} headingLevel="h2" variant="featured" viewPath="history" />
               </div>

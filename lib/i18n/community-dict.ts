@@ -50,6 +50,12 @@ export type CommunityDict = {
     statsMembers: string;
     statsComments: string;
     statsLastReg: string;
+    newPost: string;
+    greetingHello: string;
+    greetingGuest: string;
+    greetingAuthHint: string;
+    greetingAuthLogin: string;
+    greetingAuthRegister: string;
     premiumBannerTitle: string;
     premiumBannerDesc: string;
     premiumBannerBtn: string;
@@ -300,6 +306,7 @@ const ka: CommunityDict = {
     sectionTitle: 'მთავარი დაფა',
     sectionLead: 'აქ ჩანს უახლესი ისტორიები, აქტიური მომხმარებლები და საუბრის ბოლო ნაკადი.',
     topStory: 'დღის ტოპ ისტორია',
+    newPost: 'ახალი პოსტი',
     latestStories: 'ბოლო ისტორიები',
     writeYours: 'შენიც დაწერე →',
     noStories: 'ჯერ არავინ გამოუქვეყნებია ისტორია.',
@@ -311,6 +318,11 @@ const ka: CommunityDict = {
     statsMembers: 'წევრი',
     statsComments: 'კომენტარი',
     statsLastReg: 'ბოლო რეგისტრაცია',
+    greetingHello: 'გამარჯობა',
+    greetingGuest: 'სტუმარო',
+    greetingAuthHint: 'გაიარე',
+    greetingAuthLogin: 'ავტორიზაცია',
+    greetingAuthRegister: 'რეგისტრაცია',
     premiumBannerTitle: 'გახსენი Premium-ით',
     premiumBannerDesc: '500 ქულით 30 დღით — შეზღუდული ისტორიები, LIVE ჩათი, პირადი წერილები და რეკლამის გარეშე.',
     premiumBannerBtn: 'გამოწერის ნახვა',

@@ -2,7 +2,9 @@ import Link from 'next/link';
 import { JsonLd } from '@/components/JsonLd';
 import { BlogCard } from '@/components/BlogCard';
 import { HomeForumSection } from '@/components/community/HomeForumSection';
+import { HomeMobileHub } from '@/components/community/HomeMobileHub';
 import { PromoBannerPanel } from '@/components/community/PromoBannerPanel';
+import { getCurrentUser } from '@/lib/community/auth';
 import { getAllPosts } from '@/lib/blog';
 import {
   getCategoryCounts,
@@ -49,10 +51,11 @@ export default async function HomePage({ params }: Props) {
   const locale = raw as Locale;
   const dict = getDictionary(locale);
   const cd = getCommunityDict(locale);
-  const posts = (await getAllPosts()).slice(0, 3);
+  const posts = (await getAllPosts()).slice(0, 6);
 
-  const [topStory, latestPosts, randomPosts, categoryCounts, presence, latestComments, stats] =
+  const [user, topStory, latestPosts, randomPosts, categoryCounts, presence, latestComments, stats] =
     await Promise.all([
+      getCurrentUser(),
       safeCommunity(() => getTopStoryOfDay(STORY_CATEGORY_SLUGS), null),
       safeCommunity(() => getPublishedPosts({ categories: STORY_CATEGORY_SLUGS, limit: 5 }), [] as PostWithAuthor[]),
       safeCommunity(() => getPublishedPosts({ categories: STORY_CATEGORY_SLUGS, limit: 4, orderBy: 'random' }), [] as PostWithAuthor[]),
@@ -78,9 +81,42 @@ export default async function HomePage({ params }: Props) {
       <div className="home-surface">
         <section className="hero hero--home">
         <div className="container">
-          <div className="hero__shell">
+          <HomeMobileHub
+            locale={locale}
+            user={user}
+            topStory={topStory}
+            latestPost={latestPosts[0] ?? null}
+            categoryCounts={categoryCounts}
+            onlineCount={presence.onlineCount}
+          />
+
+          <div className="hero__shell hero__shell--desktop">
             <div className="hero__content">
-              <h1 className="hero__headline">{cd.home.title}</h1>
+              <div className="hero__greeting">
+                <h1 className="hero__headline">
+                  {cd.home.greetingHello},{' '}
+                  {user ? (
+                    <Link
+                      href={localePath(locale, `/u/${user.username}/`)}
+                      className="hero__headline-user"
+                    >
+                      @{user.username}
+                    </Link>
+                  ) : (
+                    <span className="hero__headline-user hero__headline-user--guest">
+                      @{cd.home.greetingGuest}
+                    </span>
+                  )}
+                </h1>
+                {!user && (
+                  <p className="hero__headline-hint">
+                    {cd.home.greetingAuthHint}{' '}
+                    <Link href={localePath(locale, '/login/')}>{cd.home.greetingAuthLogin}</Link>
+                    {' / '}
+                    <Link href={localePath(locale, '/register/')}>{cd.home.greetingAuthRegister}</Link>
+                  </p>
+                )}
+              </div>
               <div className="hero__action-bar">
                 <Link href={localePath(locale, '/submit/')} className="hero__story-cta">
                   <span className="hero__story-cta-icon" aria-hidden>✍️</span>
@@ -114,7 +150,7 @@ export default async function HomePage({ params }: Props) {
             </div>
           </div>
 
-          <nav className="dash-nav" aria-label="მოდულები">
+          <nav className="dash-nav dash-nav--desktop" aria-label="მოდულები">
             {cd.home.modules.map((mod) => (
               <Link key={mod.href} href={localePath(locale, mod.href)} className="dash-nav__item">
                 <span className="dash-nav__icon" aria-hidden>{mod.icon}</span>
@@ -141,14 +177,9 @@ export default async function HomePage({ params }: Props) {
             <span className="section__label">{dict.blog.label}</span>
             <h2 className="section__title">{dict.blog.latestTitle}</h2>
           </div>
-          <div className="blog-grid">
+          <div className="blog-grid blog-grid--home">
             {posts.length === 0 ? (
-              <p
-                className="blog-card__excerpt"
-                style={{ gridColumn: '1/-1', textAlign: 'center', padding: '1.5rem', color: 'var(--text-muted)' }}
-              >
-                {dict.blog.empty}
-              </p>
+              <p className="blog-grid__empty">{dict.blog.empty}</p>
             ) : (
               posts.map((post) => (
                 <BlogCard key={post.slug} post={post} locale={locale} dict={dict} headingLevel="h3" />

@@ -43,12 +43,15 @@ export function Header({ locale, dict, username }: HeaderProps) {
   const navMore = [
     { href: localePath(locale, '/medical/'), label: cd.nav.medical },
     { href: localePath(locale, '/crush/'), label: cd.nav.crush },
-    { href: localePath(locale, '/messages/'), label: cd.nav.messages },
+  ];
+
+  const navDesktop = [
+    ...navPrimary,
+    ...navMore,
   ];
 
   const navAll = [
-    ...navPrimary,
-    ...navMore,
+    ...navDesktop,
     { href: profileHref, label: cd.nav.profile, profile: true },
   ];
 
@@ -60,8 +63,6 @@ export function Header({ locale, dict, username }: HeaderProps) {
     }
     return current === normalized || current.startsWith(normalized);
   };
-
-  const isMoreActive = navMore.some((item) => isActive(item.href));
 
   const linkClass = (item: { href: string; live?: boolean; profile?: boolean }, extra = '') => {
     const classes = ['site-nav__link'];
@@ -87,7 +88,7 @@ export function Header({ locale, dict, username }: HeaderProps) {
         </button>
         <nav className={`site-nav${open ? ' is-open' : ''}`} aria-label="Main">
           <div className="site-nav__desktop">
-            {navPrimary.map((item) => (
+            {navDesktop.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -97,30 +98,6 @@ export function Header({ locale, dict, username }: HeaderProps) {
                 {item.label}
               </Link>
             ))}
-            <div className={`site-nav__more${isMoreActive ? ' is-active' : ''}`}>
-              <button
-                type="button"
-                className="site-nav__more-btn"
-                aria-expanded={false}
-                aria-haspopup="true"
-              >
-                მეტი
-                <span className="site-nav__more-caret" aria-hidden>▾</span>
-              </button>
-              <div className="site-nav__dropdown" role="menu">
-                {navMore.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={linkClass(item, 'site-nav__dropdown-link')}
-                    role="menuitem"
-                    onClick={() => setOpen(false)}
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-              </div>
-            </div>
             <Link
               href={profileHref}
               className={linkClass({ href: profileHref, profile: true })}
