@@ -8,10 +8,18 @@ import type { BlogPost, BlogPostInput } from '@/lib/types/blog';
 
 const CONTENT_DIR = path.join(process.cwd(), 'blog-content');
 const BLOB_PREFIX = 'blog-content/';
-const USE_BLOB = !!process.env.BLOB_READ_WRITE_TOKEN?.trim();
+
+function hasBlobStorage(): boolean {
+  if (process.env.BLOB_READ_WRITE_TOKEN?.trim()) return true;
+  // Vercel OIDC (default for newly connected Blob stores — no static token needed)
+  if (process.env.VERCEL && process.env.BLOB_STORE_ID?.trim()) return true;
+  return false;
+}
+
+const USE_BLOB = hasBlobStorage();
 
 const STORAGE_ERROR =
-  'Blog storage not configured on Vercel: go to Storage → Blob → Create → Connect to project (sets BLOB_READ_WRITE_TOKEN), then redeploy.';
+  'Blog storage not configured on Vercel: go to Storage → Blob → Create → Connect to project (sets BLOB_STORE_ID / BLOB_READ_WRITE_TOKEN), then redeploy.';
 
 function assertCanWrite(): void {
   if (USE_BLOB) return;
@@ -146,4 +154,15 @@ export function getStorageMode(): 'blob' | 'filesystem' | 'unconfigured' {
   if (USE_BLOB) return 'blob';
   if (process.env.VERCEL) return 'unconfigured';
   return 'filesystem';
+}
+
+/** Safe diagnostics for publish-test (no secrets exposed). */
+export function getStorageDiagnostics() {
+  return {
+    storage: getStorageMode(),
+    vercel: !!process.env.VERCEL,
+    hasBlobToken: !!process.env.BLOB_READ_WRITE_TOKEN?.trim(),
+    hasBlobStoreId: !!process.env.BLOB_STORE_ID?.trim(),
+    hasOidcToken: !!process.env.VERCEL_OIDC_TOKEN?.trim(),
+  };
 }
