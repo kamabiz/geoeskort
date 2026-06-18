@@ -14,18 +14,18 @@ export async function requireApiAuth(): Promise<NextResponse | null> {
 export async function revalidateBlog(): Promise<void> {
   const { revalidatePath } = await import('next/cache');
   revalidatePath('/sitemap.xml');
+
+  // App routes live under /[locale]/ — always revalidate internal locale paths
   for (const locale of ['ka', 'en', 'ru', 'tr']) {
-    const prefix = locale === 'ka' ? '' : `/${locale}`;
-    revalidatePath(`${prefix}/blog/`, 'page');
-    revalidatePath(`${prefix}/`, 'page');
+    revalidatePath(`/${locale}`, 'page');
+    revalidatePath(`/${locale}/blog`, 'page');
   }
-  // Revalidate all post pages
+
   const { getAllPostsAsync } = await import('@/lib/blog-store');
   const posts = await getAllPostsAsync();
   for (const post of posts) {
     for (const locale of ['ka', 'en', 'ru', 'tr']) {
-      const prefix = locale === 'ka' ? '' : `/${locale}`;
-      revalidatePath(`${prefix}/blog/${post.slug}/`, 'page');
+      revalidatePath(`/${locale}/blog/${post.slug}`, 'page');
     }
   }
 }
