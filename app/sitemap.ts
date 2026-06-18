@@ -1,41 +1,35 @@
 import type { MetadataRoute } from 'next';
 import { getAllPosts } from '@/lib/blog';
-import { SITE_URL } from '@/lib/site';
+import { locales } from '@/lib/i18n/config';
+import { absoluteUrl } from '@/lib/i18n/paths';
+import type { Locale } from '@/lib/i18n/types';
+
+const staticPaths = ['/', '/blog/', '/contact/', '/privacy/'];
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const posts = getAllPosts();
   const now = new Date();
+  const entries: MetadataRoute.Sitemap = [];
 
-  return [
-    {
-      url: `${SITE_URL}/`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 1,
-    },
-    {
-      url: `${SITE_URL}/blog/`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    ...posts.map((post) => ({
-      url: `${SITE_URL}/blog/${post.slug}/`,
-      lastModified: new Date(post.publishedAt),
-      changeFrequency: 'monthly' as const,
-      priority: 0.8,
-    })),
-    {
-      url: `${SITE_URL}/contact`,
-      lastModified: now,
-      changeFrequency: 'yearly',
-      priority: 0.4,
-    },
-    {
-      url: `${SITE_URL}/privacy`,
-      lastModified: now,
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
-  ];
+  for (const locale of locales as Locale[]) {
+    for (const path of staticPaths) {
+      entries.push({
+        url: absoluteUrl(locale, path),
+        lastModified: now,
+        changeFrequency: path === '/' || path === '/blog/' ? 'weekly' : 'yearly',
+        priority: path === '/' ? 1 : path === '/blog/' ? 0.9 : 0.4,
+      });
+    }
+
+    for (const post of posts) {
+      entries.push({
+        url: absoluteUrl(locale, `/blog/${post.slug}/`),
+        lastModified: new Date(post.publishedAt),
+        changeFrequency: 'monthly',
+        priority: 0.8,
+      });
+    }
+  }
+
+  return entries;
 }

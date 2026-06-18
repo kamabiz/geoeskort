@@ -1,16 +1,18 @@
 import Link from 'next/link';
+import { localePath } from '@/lib/i18n/paths';
+import type { Dictionary, Locale } from '@/lib/i18n/types';
 
-export function Footer() {
+export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
   return (
     <footer className="site-footer">
       <div className="container">
         <div className="footer-grid">
           <div className="footer-brand">
-            <Link href="/" className="site-logo">
+            <Link href={localePath(locale, '/')} className="site-logo">
               GEO<span>ESKORT</span>
             </Link>
             <p>
-              Nightlife &amp; escort გზამკვლევი საქართველოში. პროფილების კატალოგი —{' '}
+              {dict.footer.tagline.split('KAMA.BIZ')[0]}
               <a href="https://kama.biz" rel="noopener noreferrer">
                 KAMA.BIZ
               </a>
@@ -27,18 +29,18 @@ export function Footer() {
               </ul>
             </div>
             <div className="footer-col">
-              <h4>GEOESKORT</h4>
+              <h4>{dict.footer.geoeskort}</h4>
               <ul>
-                <li><Link href="/blog/">ბლოგი</Link></li>
-                <li><Link href="/contact">კონტაქტი</Link></li>
-                <li><Link href="/privacy">კონფიდენციალურობა</Link></li>
+                <li><Link href={localePath(locale, '/blog/')}>{dict.footer.blog}</Link></li>
+                <li><Link href={localePath(locale, '/contact/')}>{dict.footer.contact}</Link></li>
+                <li><Link href={localePath(locale, '/privacy/')}>{dict.footer.privacy}</Link></li>
               </ul>
             </div>
           </div>
         </div>
         <div className="footer-bottom">
           <span>&copy; 2026 GEOESKORT</span>
-          <span>18+ • ინფორმაციული პორტალი • არა პროფილების კატალოგი</span>
+          <span>{dict.footer.legal}</span>
         </div>
       </div>
     </footer>

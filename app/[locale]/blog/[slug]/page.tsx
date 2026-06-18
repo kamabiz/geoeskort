@@ -3,34 +3,46 @@ import { notFound } from 'next/navigation';
 import { JsonLd } from '@/components/JsonLd';
 import { formatDateKa } from '@/lib/format-date';
 import { getAllPosts, getPostBySlug } from '@/lib/blog';
+import { isLocale } from '@/lib/i18n/config';
+import { getDictionary } from '@/lib/i18n/get-dictionary';
+import { absoluteUrl, localePath } from '@/lib/i18n/paths';
+import type { Locale } from '@/lib/i18n/types';
 import { pageMetadata } from '@/lib/seo';
-import { SITE_NAME, SITE_URL } from '@/lib/site';
+import { SITE_NAME } from '@/lib/site';
 
-type Props = { params: Promise<{ slug: string }> };
+type Props = { params: Promise<{ locale: string; slug: string }> };
 
 export async function generateStaticParams() {
-  return getAllPosts().map((post) => ({ slug: post.slug }));
+  const posts = getAllPosts();
+  const locales = ['ka', 'en', 'ru', 'tr'] as Locale[];
+  return locales.flatMap((locale) => posts.map((post) => ({ locale, slug: post.slug })));
 }
 
 export async function generateMetadata({ params }: Props) {
-  const { slug } = await params;
+  const { locale: raw, slug } = await params;
+  if (!isLocale(raw)) return {};
+  const locale = raw as Locale;
   const post = getPostBySlug(slug);
-  if (!post) return { title: 'სტატია ვერ მოიძებნა' };
-
+  const dict = getDictionary(locale);
+  if (!post) return { title: dict.meta.postNotFound };
   return pageMetadata({
+    locale,
+    path: `/blog/${post.slug}/`,
     title: post.title,
     description: post.excerpt,
-    path: `/blog/${post.slug}/`,
     ogType: 'article',
   });
 }
 
 export default async function BlogPostPage({ params }: Props) {
-  const { slug } = await params;
+  const { locale: raw, slug } = await params;
+  if (!isLocale(raw)) notFound();
+  const locale = raw as Locale;
+  const dict = getDictionary(locale);
   const post = getPostBySlug(slug);
   if (!post) notFound();
 
-  const url = `${SITE_URL}/blog/${post.slug}/`;
+  const url = absoluteUrl(locale, `/blog/${post.slug}/`);
 
   return (
     <>
@@ -43,19 +55,15 @@ export default async function BlogPostPage({ params }: Props) {
           description: post.excerpt,
           datePublished: post.publishedAt,
           url,
-          inLanguage: 'ka',
-          publisher: {
-            '@type': 'Organization',
-            name: SITE_NAME,
-            url: SITE_URL,
-          },
+          inLanguage: locale,
+          publisher: { '@type': 'Organization', name: SITE_NAME, url: absoluteUrl('ka', '/') },
         }}
       />
 
       <main className="container">
         <article className="post-wrap">
-          <Link href="/blog/" className="post-back">
-            ← ბლოგში დაბრუნება
+          <Link href={localePath(locale, '/blog/')} className="post-back">
+            {dict.blog.back}
           </Link>
           <header className="post-header">
             <div className="post-meta">
@@ -67,9 +75,9 @@ export default async function BlogPostPage({ params }: Props) {
           </header>
           <div className="post-content" dangerouslySetInnerHTML={{ __html: post.content }} />
           <div className="post-cta">
-            <p>გადამოწმებული escort პროფილების სანახავად ეწვიეთ KAMA.BIZ-ს</p>
+            <p>{dict.blog.cta}</p>
             <a href="https://kama.biz" className="btn btn--primary" rel="noopener noreferrer">
-              KAMA.BIZ →
+              {dict.blog.ctaBtn}
             </a>
           </div>
         </article>

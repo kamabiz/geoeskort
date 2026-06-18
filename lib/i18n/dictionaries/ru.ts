@@ -1,0 +1,82 @@
+import type { Dictionary } from '../types';
+
+const ru: Dictionary = {
+  meta: {
+    homeTitle: 'GEOESKORT • Nightlife и эскорт Грузия +18',
+    homeDescription:
+      'GEOESKORT – ночная жизнь, эскорт тбилиси, эскорт грузия. Информационный блог и ссылки на KAMA.BIZ.',
+    blogTitle: 'Блог – Nightlife и эскорт Грузия',
+    blogDescription:
+      'GEOESKORT блог — эскорт тбилиси, эскорт батуми, ночная жизнь в Грузии.',
+    contactTitle: 'Контакты',
+    contactDescription: 'GEOESKORT контакты — информационный портал.',
+    privacyTitle: 'Конфиденциальность',
+    privacyDescription: 'GEOESKORT политика конфиденциальности.',
+    postNotFound: 'Статья не найдена',
+  },
+  ageNotice: '18+ • Только для взрослых',
+  nav: { home: 'Главная', blog: 'Блог', contact: 'Контакты', menu: 'Меню' },
+  hero: {
+    badge: '+18 • Nightlife Guide Georgia',
+    titleBefore: 'Nightlife и ',
+    titleEm: 'эскорт',
+    titleAfter: ' в Грузии',
+    lead: 'GEOESKORT — информационный портал о ночной жизни, эскорт тбилиси и эскорт грузия. Каталог профилей отдельно: KAMA.BIZ.',
+    ctaPrimary: 'Эскорт в Грузии →',
+    ctaBlog: 'Читать блог',
+  },
+  links: {
+    label: 'KAMA.BIZ',
+    title: 'Полезные ссылки',
+    desc: 'Топ страницы: эскорт тбилиси, батуми и другие города Грузии.',
+    featured: { title: 'KAMA.BIZ – Главная', desc: '500+ проверенных профилей. VERIFIED badge, 24/7.' },
+    tbilisi: { title: 'Escort Tbilisi', desc: 'Эскорт Тбилиси — Ваке, Сабуртало, Вера, Исани.' },
+    batumi: { title: 'Escort Batumi', desc: 'Эскорт Батуми — курорт, сезон nightlife.' },
+    girls: { title: 'Эскорт девушки', desc: 'Эскорт девушки в Тбилиси, Батуми и Грузии.' },
+    escorts: { title: 'Escorts', desc: 'Все категории эскорта в одном месте.' },
+    independent: { title: 'Independent', desc: 'Независимые эскорт профили — прямой контакт.' },
+  },
+  blog: {
+    label: 'Блог',
+    latestTitle: 'Последние статьи',
+    latestDesc: 'эскорт тбилиси, эскорт грузия, nightlife — гиды и советы.',
+    empty: 'Статьи скоро появятся.',
+    emptyList: 'Пока нет опубликованных статей.',
+    allPosts: 'Все статьи →',
+    readMore: 'Читать →',
+    pageTitle: 'Блог',
+    pageDesc: 'Nightlife, эскорт тбилиси, эскорт грузия — гиды по Грузии',
+    back: '← Назад в блог',
+    cta: 'Проверенные профили на KAMA.BIZ',
+    ctaBtn: 'KAMA.BIZ →',
+  },
+  promo: {
+    title: 'Профили → KAMA.BIZ',
+    desc: 'GEOESKORT — не каталог профилей. Мы блог, KAMA.BIZ — платформа эскорта.',
+    btn: 'Escort Tbilisi → KAMA.BIZ',
+  },
+  footer: {
+    tagline: 'Nightlife и эскорт гид по Грузии. Каталог — KAMA.BIZ',
+    geoeskort: 'GEOESKORT',
+    blog: 'Блог',
+    contact: 'Контакты',
+    privacy: 'Конфиденциальность',
+    legal: '18+ • Информационный портал • Не каталог профилей',
+  },
+  contact: {
+    title: 'Контакты',
+    p1: 'GEOESKORT — информационный блог о nightlife и эскорте в Грузии.',
+    email: 'Email:',
+    p2: 'Для профилей эскорта посетите',
+  },
+  privacy: {
+    title: 'Конфиденциальность',
+    p1: 'GEOESKORT не собирает персональные данные для профилей.',
+    p2: 'Сайт может использовать аналитику. Данные профилей — политика KAMA.BIZ.',
+    p3: 'Вопросы:',
+  },
+  notFound: { title: '404', desc: 'Страница не найдена.', home: 'Главная', blog: 'Блог' },
+  lang: { ka: 'GE', en: 'EN', ru: 'RU', tr: 'TR' },
+};
+
+export default ru;
