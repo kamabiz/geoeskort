@@ -1,14 +1,28 @@
-# Blog posts
+# Blog posts (Georgian only)
 
 Add posts via **Admin** (`/admin/`), **Publish API** (`POST /api/posts/publish/`), or legacy `.md` files.
 
-## Multilingual storage
+## Storage format
 
-Each post is one JSON file (`blog-content/{slug}.json`) with **separate content per locale** (`ka`, `en`, `ru`, `tr`). The same URL slug is shared; switching language loads that locale’s title, tags, excerpt, and HTML body.
+Each post is one JSON file (`blog-content/{slug}.json`) with **flat Georgian fields**:
 
-Stored JSON uses a `locales` object internally. The loader also accepts API-style `translations` and legacy flat `{ title, content, ... }` at the root (treated as `ka`).
+```json
+{
+  "slug": "georgian-food-guide",
+  "category": "food",
+  "status": "published",
+  "publishedAt": "2026-06-18",
+  "coverImage": "https://example.com/cover.jpg",
+  "title": "ქართული სამზარეულო",
+  "seoTitle": "ქართული სამზარეულო — სრული გზამკვლევი",
+  "excerpt": "გზამკვლევი...",
+  "content": "<h2>...</h2><p>...</p>",
+  "tags": ["khinkali", "wine", "tbilisi"],
+  "focusKeyword": "ქართული სამზარეულო"
+}
+```
 
-Legacy `.md` files are treated as **Georgian (`ka`) only**.
+**Legacy imports:** old files with `locales.ka` or `translations.ka` are migrated to Georgian on read. Other languages (`en`, `ru`, `tr`) are ignored. Legacy `.md` files are treated as Georgian.
 
 ## Categories
 
@@ -20,7 +34,7 @@ Legacy `.md` files are treated as **Georgian (`ka`) only**.
 | `culture` | Electronic music scene, folk music, festivals, art, history |
 | `dating` | Dating culture, meeting people, apps, romance & etiquette |
 
-## Publish API (multilingual)
+## Publish API
 
 ```http
 POST /api/posts/publish/
@@ -35,59 +49,25 @@ Content-Type: application/json
   "status": "published",
   "publishedAt": "2026-06-18",
   "coverImage": "https://example.com/cover.jpg",
-  "translations": {
-    "ka": {
-      "title": "ქართული სამზარეულო",
-      "excerpt": "გზამკვლევი...",
-      "content": "<h2>...</h2><p>...</p>",
-      "tags": ["khinkali", "wine", "tbilisi"]
-    },
-    "en": {
-      "title": "Georgian Food Guide",
-      "excerpt": "Insider guide...",
-      "content": "<h2>...</h2><p>...</p>",
-      "tags": ["food", "georgia", "tbilisi"]
-    },
-    "ru": {
-      "title": "Гид по грузинской кухне",
-      "excerpt": "...",
-      "content": "<h2>...</h2><p>...</p>",
-      "tags": ["еда", "тбилиси"]
-    },
-    "tr": {
-      "title": "Gürcü Mutfağı Rehberi",
-      "excerpt": "...",
-      "content": "<h2>...</h2><p>...</p>",
-      "tags": ["yemek", "tbilisi"]
-    }
-  }
+  "title": "ქართული სამზარეულო",
+  "excerpt": "გზამკვლევი...",
+  "content": "<h2>...</h2><p>...</p>",
+  "tags": ["khinkali", "wine", "tbilisi"]
 }
 ```
 
-`coverImage` (or alias `featuredImage`) must be an **absolute `https://` URL**. It is stored on the post and shown on blog cards; it is also prepended to each locale’s HTML body as a `<figure class="post-cover">`.
+`coverImage` (or alias `featuredImage`) must be an **absolute `https://` URL**.
 
-**Legacy single-locale body** (treated as `ka`):
-
-```json
-{
-  "title": "Post title",
-  "content": "<p>HTML content</p>",
-  "tags": ["tbilisi"],
-  "category": "travel"
-}
-```
-
-**Update existing post** — merge new/updated translations:
+**Update existing post:**
 
 ```json
 {
   "slug": "georgian-food-guide",
   "update": true,
-  "translations": { "en": { "title": "...", "content": "..." } }
+  "title": "განახლებული სათაური",
+  "content": "<p>...</p>"
 }
 ```
-
-Response includes `availableLocales` (which language versions exist).
 
 ## Legacy markdown template
 

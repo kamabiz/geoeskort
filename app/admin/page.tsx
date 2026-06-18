@@ -71,7 +71,6 @@ export default async function AdminDashboardPage() {
                   <th>Category</th>
                   <th>Slug</th>
                   <th>Date</th>
-                  <th>Languages</th>
                   <th />
                 </tr>
               </thead>
@@ -85,13 +84,6 @@ export default async function AdminDashboardPage() {
                     <td>{getCategoryLabel(record.category)}</td>
                     <td><code>{record.slug}</code></td>
                     <td>{record.publishedAt}</td>
-                    <td>
-                      <div className="admin-tags admin-tags--inline">
-                        {Object.keys(record.locales).map((l) => (
-                          <span key={l} className="admin-tag admin-tag--static">{l}</span>
-                        ))}
-                      </div>
-                    </td>
                     <td>
                       <Link href={`/admin/posts/${record.slug}/edit/`} className="admin-btn admin-btn--sm">
                         Edit

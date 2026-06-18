@@ -16,10 +16,7 @@ type Props = { params: Promise<{ locale: string; category: string }> };
 export const revalidate = 60;
 
 export async function generateStaticParams() {
-  const locales = ['ka', 'en', 'ru', 'tr'] as Locale[];
-  return locales.flatMap((locale) =>
-    BLOG_CATEGORY_SLUGS.map((category) => ({ locale, category })),
-  );
+  return BLOG_CATEGORY_SLUGS.map((category) => ({ locale: 'ka', category }));
 }
 
 export async function generateMetadata({ params }: Props) {
@@ -42,7 +39,7 @@ export default async function BlogCategoryPage({ params }: Props) {
   const locale = raw as Locale;
   const dict = getDictionary(locale);
   const cat = dict.blog.categories[rawCategory];
-  const posts = (await getAllPosts(locale)).filter((post) => post.category === rawCategory);
+  const posts = (await getAllPosts()).filter((post) => post.category === rawCategory);
 
   return (
     <>

@@ -13,16 +13,14 @@ export {
   getStorageMode,
 } from '@/lib/blog-store';
 
-import type { Locale } from '@/lib/i18n/types';
-
-/** Locale-aware blog listing (defaults to ka). */
-export async function getAllPosts(locale: Locale = 'ka') {
+/** Georgian blog listing. */
+export async function getAllPosts() {
   const { getAllPostsAsync } = await import('@/lib/blog-store');
-  return getAllPostsAsync(locale);
+  return getAllPostsAsync();
 }
 
-/** Locale-aware single post lookup (defaults to ka). */
-export async function getPostBySlug(slug: string, locale: Locale = 'ka') {
+/** Georgian single post lookup. */
+export async function getPostBySlug(slug: string) {
   const { getPostBySlugAsync } = await import('@/lib/blog-store');
-  return getPostBySlugAsync(slug, locale);
+  return getPostBySlugAsync(slug);
 }

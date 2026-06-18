@@ -53,6 +53,7 @@ export type CommunityDict = {
     premiumBannerTitle: string;
     premiumBannerDesc: string;
     premiumBannerBtn: string;
+    sidebarQuickTitle: string;
     actionSubmit: string;
     actionChat: string;
     actionConversation: string;
@@ -303,6 +304,7 @@ const ka: CommunityDict = {
     premiumBannerTitle: 'გახსენი Premium-ით',
     premiumBannerDesc: '500 ქულით 30 დღით — შეზღუდული ისტორიები, LIVE ჩათი, პირადი წერილები და რეკლამის გარეშე.',
     premiumBannerBtn: 'გამოწერის ნახვა',
+    sidebarQuickTitle: 'სწრაფი ბმულები',
     actionSubmit: '✍️ ისტორიის დამატება',
     actionChat: '💬 LIVE ჩათი',
     actionConversation: '🗣️ სასაუბრო ოთახი',
@@ -534,8 +536,6 @@ const ka: CommunityDict = {
   },
 };
 
-const en: CommunityDict = ka;
-
-export function getCommunityDict(locale: Locale): CommunityDict {
-  return locale === 'ka' ? ka : en;
+export function getCommunityDict(_locale: Locale): CommunityDict {
+  return ka;
 }

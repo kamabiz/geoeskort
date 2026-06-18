@@ -40,7 +40,6 @@ function emptyPost(): AdminPostForm {
     publishedAt: new Date().toISOString().slice(0, 10),
     status: 'published',
     content: '<h2>შესავალი</h2>\n<p>დაიწყეთ თქვენი სტატია აქ…</p>',
-    editLocale: 'ka',
   };
 }
 
@@ -177,7 +176,7 @@ export function PostEditor({ mode, initial, originalSlug }: Props) {
       <header className="admin-editor__top">
         <div>
           <h1>{mode === 'create' ? 'New blog post' : 'Edit post'}</h1>
-          <p className="admin-muted">Write SEO-optimized content with live scoring (Georgian / ka locale — use API for other languages)</p>
+          <p className="admin-muted">Write SEO-optimized Georgian blog content with live scoring</p>
         </div>
         <div className="admin-editor__actions">
           {mode === 'edit' && (

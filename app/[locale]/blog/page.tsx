@@ -32,7 +32,7 @@ export default async function BlogPage({ params }: Props) {
   if (!isLocale(raw)) notFound();
   const locale = raw as Locale;
   const dict = getDictionary(locale);
-  const posts = await getAllPosts(locale);
+  const posts = await getAllPosts();
 
   return (
     <>

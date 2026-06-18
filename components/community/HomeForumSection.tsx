@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { CategoryCountList } from '@/components/community/CategoryCountList';
 import { CommunityPostCard } from '@/components/community/CommunityPostCard';
+import { ForumSidebarExtras } from '@/components/community/ForumSidebarExtras';
 import { LatestCommentsSidebar } from '@/components/community/LatestCommentsSidebar';
 import { OnlineMembersSidebar } from '@/components/community/OnlineMembersSidebar';
 import type { PostWithAuthor } from '@/lib/community/posts';
@@ -107,6 +108,7 @@ export function HomeForumSection({
               variant="modern"
             />
             <LatestCommentsSidebar locale={locale} comments={latestComments} variant="modern" />
+            <ForumSidebarExtras locale={locale} />
           </aside>
         </div>
       </div>

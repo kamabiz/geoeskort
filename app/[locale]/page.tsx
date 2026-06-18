@@ -48,7 +48,7 @@ export default async function HomePage({ params }: Props) {
   const locale = raw as Locale;
   const dict = getDictionary(locale);
   const cd = getCommunityDict(locale);
-  const posts = (await getAllPosts(locale)).slice(0, 3);
+  const posts = (await getAllPosts()).slice(0, 3);
 
   const [topStory, latestPosts, randomPosts, categoryCounts, presence, latestComments, stats] =
     await Promise.all([
@@ -75,42 +75,44 @@ export default async function HomePage({ params }: Props) {
       />
 
       <section className="hero hero--home">
-        <div className="container hero__inner">
-          <span className="hero__badge">{dict.hero.badge}</span>
-          <h1 className="hero__title">
-            {dict.hero.titleBefore}
-            <em>{dict.hero.titleEm}</em>
-            {dict.hero.titleAfter}
-          </h1>
-          <p className="hero__lead">{dict.hero.lead}</p>
+        <div className="container">
+          <div className="hero__inner">
+            <span className="hero__badge">{dict.hero.badge}</span>
+            <h1 className="hero__title">
+              {dict.hero.titleBefore}
+              <em>{dict.hero.titleEm}</em>
+              {dict.hero.titleAfter}
+            </h1>
+            <p className="hero__lead">{dict.hero.lead}</p>
 
-          <div className="hero__stats" role="list">
-            <span className="hero__stat" role="listitem">
-              <strong className="hero__stat-value">{stats.storyCount}</strong>
-              <span className="hero__stat-label">{cd.home.statsStories}</span>
-            </span>
-            <span className="hero__stat hero__stat--live" role="listitem">
-              <strong className="hero__stat-value">{presence.onlineCount}</strong>
-              <span className="hero__stat-label">{cd.home.statsOnline}</span>
-            </span>
-            <span className="hero__stat" role="listitem">
-              <strong className="hero__stat-value">{stats.memberCount}</strong>
-              <span className="hero__stat-label">{cd.home.statsMembers}</span>
-            </span>
-            <span className="hero__stat" role="listitem">
-              <strong className="hero__stat-value">{stats.commentCount}</strong>
-              <span className="hero__stat-label">{cd.home.statsComments}</span>
-            </span>
+            <div className="hero__stats" role="list">
+              <span className="hero__stat" role="listitem">
+                <strong className="hero__stat-value">{stats.storyCount}</strong>
+                <span className="hero__stat-label">{cd.home.statsStories}</span>
+              </span>
+              <span className="hero__stat hero__stat--live" role="listitem">
+                <strong className="hero__stat-value">{presence.onlineCount}</strong>
+                <span className="hero__stat-label">{cd.home.statsOnline}</span>
+              </span>
+              <span className="hero__stat" role="listitem">
+                <strong className="hero__stat-value">{stats.memberCount}</strong>
+                <span className="hero__stat-label">{cd.home.statsMembers}</span>
+              </span>
+              <span className="hero__stat" role="listitem">
+                <strong className="hero__stat-value">{stats.commentCount}</strong>
+                <span className="hero__stat-label">{cd.home.statsComments}</span>
+              </span>
+            </div>
+
+            <Link href={localePath(locale, '/submit/')} className="hero__story-cta">
+              <span className="hero__story-cta-icon" aria-hidden>✍️</span>
+              <span className="hero__story-cta-text">
+                <strong>{dict.hero.ctaPrimary}</strong>
+                <small>{cd.home.ctaStoryHint}</small>
+              </span>
+              <span className="hero__story-cta-arrow" aria-hidden>→</span>
+            </Link>
           </div>
-
-          <Link href={localePath(locale, '/submit/')} className="hero__story-cta">
-            <span className="hero__story-cta-icon" aria-hidden>✍️</span>
-            <span className="hero__story-cta-text">
-              <strong>{dict.hero.ctaPrimary}</strong>
-              <small>{cd.home.ctaStoryHint}</small>
-            </span>
-            <span className="hero__story-cta-arrow" aria-hidden>→</span>
-          </Link>
 
           <nav className="dash-nav" aria-label="მოდულები">
             {cd.home.modules.map((mod) => (

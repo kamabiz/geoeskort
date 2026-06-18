@@ -1,8 +1,11 @@
-import type { Locale } from '@/lib/i18n/types';
 import type { BlogCategorySlug } from '@/lib/blog-categories';
-import { locales } from '@/lib/i18n/config';
 
-export type BlogPostLocaleContent = {
+export type BlogPostRecord = {
+  slug: string;
+  category: BlogCategorySlug;
+  publishedAt: string;
+  status: 'published' | 'draft';
+  coverImage?: string;
   title: string;
   seoTitle?: string;
   excerpt: string;
@@ -11,38 +14,15 @@ export type BlogPostLocaleContent = {
   focusKeyword?: string;
 };
 
-export type BlogPostRecord = {
-  slug: string;
-  category: BlogCategorySlug;
-  publishedAt: string;
-  status: 'published' | 'draft';
-  coverImage?: string;
-  locales: Partial<Record<Locale, BlogPostLocaleContent>>;
-};
-
-/** Resolved post for a specific locale (used by pages). */
-export type BlogPost = BlogPostLocaleContent & {
-  slug: string;
-  category: BlogCategorySlug;
-  publishedAt: string;
-  status: 'published' | 'draft';
-  coverImage?: string;
+/** Resolved post for pages (adds display helpers). */
+export type BlogPost = BlogPostRecord & {
   emoji: string;
-  locale: Locale;
   seoTitle: string;
   focusKeyword: string;
-  availableLocales: Locale[];
 };
 
 export type BlogPostInput = BlogPostRecord;
 
-export function getAvailableLocales(record: BlogPostRecord): Locale[] {
-  return locales.filter((locale) => {
-    const c = record.locales[locale];
-    return !!(c?.title?.trim() && c?.content?.trim());
-  });
-}
-
-export function hasLocaleContent(record: BlogPostRecord, locale: Locale): boolean {
-  return getAvailableLocales(record).includes(locale);
+export function isValidPost(record: BlogPostRecord): boolean {
+  return !!(record.title?.trim() && record.content?.trim());
 }

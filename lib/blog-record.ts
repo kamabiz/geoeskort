@@ -1,18 +1,17 @@
-import type { Locale } from '@/lib/i18n/types';
-import { locales } from '@/lib/i18n/config';
 import {
   getCategoryEmoji,
   normalizeCategory,
 } from '@/lib/blog-categories';
 import { parseMarkdown, fixLinks } from '@/lib/blog-parse';
-import type {
-  BlogPost,
-  BlogPostLocaleContent,
-  BlogPostRecord,
-} from '@/lib/types/blog';
-import { getAvailableLocales } from '@/lib/types/blog';
+import type { BlogPost, BlogPostRecord } from '@/lib/types/blog';
+import { isValidPost } from '@/lib/types/blog';
 
-function emptyLocaleContent(): BlogPostLocaleContent {
+type ContentFields = Pick<
+  BlogPostRecord,
+  'title' | 'seoTitle' | 'excerpt' | 'content' | 'tags' | 'focusKeyword'
+>;
+
+export function emptyPostContent(): ContentFields {
   return {
     title: '',
     excerpt: '',
@@ -22,7 +21,7 @@ function emptyLocaleContent(): BlogPostLocaleContent {
   };
 }
 
-function normalizeLocaleContent(raw: unknown): BlogPostLocaleContent | null {
+export function normalizePostContent(raw: unknown): ContentFields | null {
   if (!raw || typeof raw !== 'object') return null;
   const o = raw as Record<string, unknown>;
   const title = String(o.title || '').trim();
@@ -33,10 +32,18 @@ function normalizeLocaleContent(raw: unknown): BlogPostLocaleContent | null {
     ? [...new Set(o.tags.map((t) => String(t).trim().toLowerCase()).filter(Boolean))]
     : [];
 
+  const excerpt =
+    String(o.excerpt || '').trim() ||
+    content
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, 155);
+
   return {
     title,
     seoTitle: String(o.seoTitle || o.title || '').trim() || title,
-    excerpt: String(o.excerpt || '').trim(),
+    excerpt,
     content: fixLinks(content),
     tags,
     focusKeyword: String(o.focusKeyword || '').trim(),
@@ -49,51 +56,56 @@ function normalizeCoverImageField(raw: unknown): string | undefined {
   return url;
 }
 
-function extractLocalesMap(data: Record<string, unknown>): Partial<Record<Locale, BlogPostLocaleContent>> {
-  const localesMap: Partial<Record<Locale, BlogPostLocaleContent>> = {};
+/** Read Georgian content from flat JSON or legacy `locales.ka` / `translations.ka`. */
+function extractGeorgianContent(data: Record<string, unknown>): ContentFields | null {
+  const flat = normalizePostContent({
+    title: data.title,
+    content: data.content,
+    excerpt: data.excerpt,
+    tags: data.tags,
+    seoTitle: data.seoTitle,
+    focusKeyword: data.focusKeyword,
+  });
+  if (flat) return flat;
 
-  const sources = [data.locales, data.translations];
-  for (const rawLocales of sources) {
-    if (!rawLocales || typeof rawLocales !== 'object') continue;
-    const map = rawLocales as Record<string, unknown>;
-    for (const locale of locales) {
-      if (localesMap[locale]) continue;
-      const content = normalizeLocaleContent(map[locale]);
-      if (content) {
-        if (!content.excerpt) {
-          content.excerpt = content.content
-            .replace(/<[^>]+>/g, ' ')
-            .replace(/\s+/g, ' ')
-            .trim()
-            .slice(0, 155);
-        }
-        localesMap[locale] = content;
-      }
-    }
+  for (const key of ['locales', 'translations'] as const) {
+    const map = data[key];
+    if (!map || typeof map !== 'object') continue;
+    const ka = (map as Record<string, unknown>).ka;
+    const migrated = normalizePostContent(ka);
+    if (migrated) return migrated;
   }
 
-  if (Object.keys(localesMap).length === 0) {
-    const legacy = normalizeLocaleContent({
-      title: data.title,
-      content: data.content,
-      excerpt: data.excerpt,
-      tags: data.tags,
-      seoTitle: data.seoTitle,
-      focusKeyword: data.focusKeyword,
-    });
-    if (legacy) {
-      if (!legacy.excerpt) {
-        legacy.excerpt = legacy.content
-          .replace(/<[^>]+>/g, ' ')
-          .replace(/\s+/g, ' ')
-          .trim()
-          .slice(0, 155);
-      }
-      localesMap.ka = legacy;
-    }
-  }
+  return null;
+}
 
-  return localesMap;
+function buildRecord(
+  slug: string,
+  data: Record<string, unknown>,
+  content: ContentFields,
+): BlogPostRecord {
+  const category = normalizeCategory(
+    String(data.category || ''),
+    content.title,
+    content.content,
+    content.tags,
+  );
+
+  const statusRaw = String(data.status || 'published').toLowerCase();
+  const status = statusRaw === 'draft' ? 'draft' : 'published';
+
+  const coverImage =
+    normalizeCoverImageField(data.coverImage) ||
+    normalizeCoverImageField(data.featuredImage);
+
+  return {
+    slug,
+    category,
+    publishedAt: String(data.publishedAt || new Date().toISOString().slice(0, 10)),
+    status,
+    coverImage,
+    ...content,
+  };
 }
 
 export function parseJsonRecord(raw: string, filename?: string): BlogPostRecord | null {
@@ -102,41 +114,10 @@ export function parseJsonRecord(raw: string, filename?: string): BlogPostRecord 
     const slug = String(data.slug || filename?.replace(/\.json$/i, '') || '').trim();
     if (!slug) return null;
 
-    const localesMap = extractLocalesMap(data);
+    const content = extractGeorgianContent(data);
+    if (!content) return null;
 
-    if (Object.keys(localesMap).length === 0) return null;
-
-    const firstLocale = (getAvailableLocales({
-      slug,
-      category: 'travel',
-      publishedAt: '',
-      status: 'published',
-      locales: localesMap,
-    })[0] || 'ka') as Locale;
-    const first = localesMap[firstLocale]!;
-
-    const category = normalizeCategory(
-      String(data.category || ''),
-      first.title,
-      first.content,
-      first.tags,
-    );
-
-    const statusRaw = String(data.status || 'published').toLowerCase();
-    const status = statusRaw === 'draft' ? 'draft' : 'published';
-
-    const coverImage =
-      normalizeCoverImageField(data.coverImage) ||
-      normalizeCoverImageField(data.featuredImage);
-
-    return {
-      slug,
-      category,
-      publishedAt: String(data.publishedAt || new Date().toISOString().slice(0, 10)),
-      status,
-      coverImage,
-      locales: localesMap,
-    };
+    return buildRecord(slug, data, content);
   } catch {
     return null;
   }
@@ -152,16 +133,12 @@ export function legacyMarkdownToRecord(raw: string, filename?: string): BlogPost
     publishedAt: post.publishedAt,
     status: post.status,
     coverImage: post.coverImage,
-    locales: {
-      ka: {
-        title: post.title,
-        seoTitle: post.seoTitle,
-        excerpt: post.excerpt,
-        content: post.content,
-        tags: post.tags,
-        focusKeyword: post.focusKeyword,
-      },
-    },
+    title: post.title,
+    seoTitle: post.seoTitle,
+    excerpt: post.excerpt,
+    content: post.content,
+    tags: post.tags,
+    focusKeyword: post.focusKeyword,
   };
 }
 
@@ -172,68 +149,43 @@ export function parseStoredContent(raw: string, filename: string): BlogPostRecor
 }
 
 export function serializeRecord(record: BlogPostRecord): string {
-  return `${JSON.stringify(record, null, 2)}\n`;
+  const { slug, category, publishedAt, status, coverImage, title, seoTitle, excerpt, content, tags, focusKeyword } =
+    record;
+
+  return `${JSON.stringify(
+    {
+      slug,
+      category,
+      publishedAt,
+      status,
+      ...(coverImage ? { coverImage } : {}),
+      title,
+      seoTitle: seoTitle || title,
+      excerpt,
+      content,
+      tags,
+      ...(focusKeyword ? { focusKeyword } : {}),
+    },
+    null,
+    2,
+  )}\n`;
 }
 
-export function resolvePost(record: BlogPostRecord, locale: Locale): BlogPost | null {
-  const content = record.locales[locale];
-  if (!content?.title?.trim() || !content.content?.trim()) return null;
+export function resolvePost(record: BlogPostRecord): BlogPost | null {
+  if (!isValidPost(record)) return null;
 
-  const availableLocales = getAvailableLocales(record);
   const coverImage =
     record.coverImage ||
-    extractCoverFromContent(content.content) ||
-    extractCoverFromRecord(record);
+    extractCoverFromContent(record.content);
 
-  return {
-    ...content,
-    slug: record.slug,
-    category: record.category,
-    publishedAt: record.publishedAt,
-    status: record.status,
-    coverImage,
-    emoji: getCategoryEmoji(record.category),
-    locale,
-    seoTitle: content.seoTitle || content.title,
-    focusKeyword: content.focusKeyword || '',
-    availableLocales,
-  };
-}
-
-export function mergeLocaleIntoRecord(
-  record: BlogPostRecord,
-  locale: Locale,
-  content: BlogPostLocaleContent,
-): BlogPostRecord {
   return {
     ...record,
-    locales: {
-      ...record.locales,
-      [locale]: content,
-    },
-  };
-}
-
-export function recordFromSingleLocale(
-  slug: string,
-  category: BlogPostRecord['category'],
-  publishedAt: string,
-  status: BlogPostRecord['status'],
-  coverImage: string | undefined,
-  locale: Locale,
-  content: BlogPostLocaleContent,
-): BlogPostRecord {
-  return {
-    slug,
-    category,
-    publishedAt,
-    status,
     coverImage,
-    locales: { [locale]: content },
+    emoji: getCategoryEmoji(record.category),
+    seoTitle: record.seoTitle || record.title,
+    focusKeyword: record.focusKeyword || '',
   };
 }
-
-export { emptyLocaleContent, normalizeLocaleContent };
 
 function extractCoverFromContent(content: string): string | undefined {
   const figureMatch = content.match(/<figure[^>]*class="[^"]*post-cover[^"]*"[^>]*>[\s\S]*?<img[^>]+src="([^"]+)"/i);
@@ -242,12 +194,4 @@ function extractCoverFromContent(content: string): string | undefined {
   return imgMatch?.[1];
 }
 
-function extractCoverFromRecord(record: BlogPostRecord): string | undefined {
-  for (const locale of locales) {
-    const content = record.locales[locale]?.content;
-    if (!content) continue;
-    const cover = extractCoverFromContent(content);
-    if (cover) return cover;
-  }
-  return undefined;
-}
+export { normalizePostContent as normalizeLocaleContent };

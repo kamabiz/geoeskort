@@ -14,19 +14,13 @@ export async function requireApiAuth(): Promise<NextResponse | null> {
 export async function revalidateBlog(): Promise<void> {
   const { revalidatePath } = await import('next/cache');
   revalidatePath('/sitemap.xml');
-
-  for (const locale of ['ka', 'en', 'ru', 'tr']) {
-    revalidatePath(`/${locale}`, 'page');
-    revalidatePath(`/${locale}/blog`, 'page');
-  }
+  revalidatePath('/', 'page');
+  revalidatePath('/blog/', 'page');
 
   const { getAllRecordsAsync } = await import('@/lib/blog-store');
-  const { getAvailableLocales } = await import('@/lib/types/blog');
   const records = await getAllRecordsAsync();
 
   for (const record of records) {
-    for (const locale of getAvailableLocales(record)) {
-      revalidatePath(`/${locale}/blog/${record.slug}`, 'page');
-    }
+    revalidatePath(`/blog/${record.slug}/`, 'page');
   }
 }

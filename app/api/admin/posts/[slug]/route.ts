@@ -24,7 +24,7 @@ export async function PUT(request: NextRequest, { params }: Params) {
     if (!existing) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
     const body = (await request.json()) as AdminPostForm;
-    const record = adminFormToRecord(body, existing);
+    const record = adminFormToRecord(body);
     const saved = await updatePost(slug, record);
     await revalidateBlog();
     return NextResponse.json({ record: saved });

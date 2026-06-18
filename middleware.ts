@@ -1,15 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { defaultLocale, isLocale, locales } from '@/lib/i18n/config';
+import { defaultLocale, isLegacyLocalePrefix } from '@/lib/i18n/config';
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Skip static files, api, admin, sitemap, robots
   if (
     pathname.startsWith('/_next') ||
     pathname.startsWith('/api') ||
     pathname.startsWith('/admin') ||
-    pathname.includes('.') // favicon, txt verification, etc.
+    pathname.includes('.')
   ) {
     return NextResponse.next();
   }
@@ -25,12 +24,15 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(url, 308);
   }
 
-  // /en, /ru, /tr — explicit locale prefix
-  if (first && isLocale(first) && first !== defaultLocale) {
-    return NextResponse.next();
+  // Redirect legacy locale URLs → Georgian paths without prefix
+  if (first && isLegacyLocalePrefix(first)) {
+    const rest = segments.slice(1).join('/');
+    const url = request.nextUrl.clone();
+    url.pathname = rest ? `/${rest}/` : '/';
+    return NextResponse.redirect(url, 308);
   }
 
-  // Default locale (ka): rewrite /blog/ → /ka/blog/ internally
+  // Rewrite to internal /ka/... route segment
   const rewriteUrl = request.nextUrl.clone();
   rewriteUrl.pathname = pathname === '/' ? `/${defaultLocale}` : `/${defaultLocale}${pathname}`;
   return NextResponse.rewrite(rewriteUrl);
@@ -40,5 +42,4 @@ export const config = {
   matcher: ['/((?!_next/static|_next/image|favicon.png|.*\\..*).*)'],
 };
 
-// Export for static params
-export { locales, defaultLocale };
+export { defaultLocale };

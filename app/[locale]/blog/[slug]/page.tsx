@@ -3,9 +3,9 @@ import { notFound } from 'next/navigation';
 import { JsonLd } from '@/components/JsonLd';
 import { getCategoryLabel } from '@/lib/blog-categories';
 import { formatDateKa } from '@/lib/format-date';
-import { getAllPosts, getPostBySlug } from '@/lib/blog';
+import { getPostBySlug } from '@/lib/blog';
 import { getAllRecordsAsync } from '@/lib/blog-store';
-import { isLocale, locales } from '@/lib/i18n/config';
+import { isLocale } from '@/lib/i18n/config';
 import { getDictionary } from '@/lib/i18n/get-dictionary';
 import { absoluteUrl, localePath } from '@/lib/i18n/paths';
 import type { Locale } from '@/lib/i18n/types';
@@ -18,18 +18,14 @@ export const revalidate = 60;
 
 export async function generateStaticParams() {
   const records = await getAllRecordsAsync();
-  return records.flatMap((record) =>
-    locales
-      .filter((locale) => record.locales[locale]?.title && record.locales[locale]?.content)
-      .map((locale) => ({ locale, slug: record.slug })),
-  );
+  return records.map((record) => ({ locale: 'ka', slug: record.slug }));
 }
 
 export async function generateMetadata({ params }: Props) {
   const { locale: raw, slug } = await params;
   if (!isLocale(raw)) return {};
   const locale = raw as Locale;
-  const post = await getPostBySlug(slug, locale);
+  const post = await getPostBySlug(slug);
   const dict = getDictionary(locale);
   if (!post) return { title: dict.meta.postNotFound };
   return pageMetadata({
@@ -41,7 +37,6 @@ export async function generateMetadata({ params }: Props) {
     publishedTime: `${post.publishedAt}T00:00:00.000Z`,
     tags: post.tags,
     keywords: post.tags.join(', '),
-    hreflangLocales: post.availableLocales,
   });
 }
 
@@ -54,7 +49,7 @@ export default async function BlogPostPage({ params }: Props) {
   if (!isLocale(raw)) notFound();
   const locale = raw as Locale;
   const dict = getDictionary(locale);
-  const post = await getPostBySlug(slug, locale);
+  const post = await getPostBySlug(slug);
   if (!post) notFound();
 
   const url = absoluteUrl(locale, `/blog/${post.slug}/`);
@@ -71,7 +66,7 @@ export default async function BlogPostPage({ params }: Props) {
           datePublished: `${post.publishedAt}T00:00:00.000Z`,
           dateModified: `${post.publishedAt}T00:00:00.000Z`,
           url,
-          inLanguage: locale,
+          inLanguage: 'ka',
           keywords: post.tags.join(', '),
           wordCount: wordCount(post.content),
           articleSection: getCategoryLabel(post.category),

@@ -1,4 +1,4 @@
-export type Locale = 'ka' | 'en' | 'ru' | 'tr';
+export type Locale = 'ka';
 
 export type Dictionary = {
   meta: {
@@ -80,5 +80,4 @@ export type Dictionary = {
     p3: string;
   };
   notFound: { title: string; desc: string; home: string; blog: string };
-  lang: { ka: string; en: string; ru: string; tr: string };
 };

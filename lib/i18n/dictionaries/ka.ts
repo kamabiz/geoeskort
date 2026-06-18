@@ -89,7 +89,6 @@ const ka: Dictionary = {
     p3: 'კითხვებისთვის:',
   },
   notFound: { title: '404', desc: 'გვერდი ვერ მოიძებნა.', home: 'მთავარი', blog: 'ბლოგი' },
-  lang: { ka: 'GE', en: 'EN', ru: 'RU', tr: 'TR' },
 };
 
 export default ka;

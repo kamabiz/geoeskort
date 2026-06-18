@@ -4,9 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import { list, put, del, get } from '@vercel/blob';
 import { parseStoredContent, resolvePost, serializeRecord } from '@/lib/blog-record';
-import type { Locale } from '@/lib/i18n/types';
 import type { BlogPost, BlogPostInput, BlogPostRecord } from '@/lib/types/blog';
-import { getAvailableLocales } from '@/lib/types/blog';
 
 const CONTENT_DIR = path.join(process.cwd(), 'blog-content');
 const BLOB_PREFIX = 'blog-content/';
@@ -116,22 +114,16 @@ export async function getRecordBySlugAsync(slug: string): Promise<BlogPostRecord
   return records.find((r) => r.slug === slug);
 }
 
-export async function getAllPostsAsync(
-  locale: Locale,
-  includeDrafts = false,
-): Promise<BlogPost[]> {
+export async function getAllPostsAsync(includeDrafts = false): Promise<BlogPost[]> {
   return parseRecords(await listRawPosts(), includeDrafts)
-    .map((record) => resolvePost(record, locale))
+    .map((record) => resolvePost(record))
     .filter((p): p is BlogPost => p !== null);
 }
 
-export async function getPostBySlugAsync(
-  slug: string,
-  locale: Locale,
-): Promise<BlogPost | undefined> {
+export async function getPostBySlugAsync(slug: string): Promise<BlogPost | undefined> {
   const record = await getRecordBySlugAsync(slug);
   if (!record) return undefined;
-  return resolvePost(record, locale) ?? undefined;
+  return resolvePost(record) ?? undefined;
 }
 
 async function writeRecord(slug: string, json: string): Promise<void> {
@@ -195,26 +187,6 @@ export async function updatePost(slug: string, input: BlogPostInput): Promise<Bl
   return record;
 }
 
-export async function mergePostLocales(
-  slug: string,
-  patch: Partial<BlogPostRecord>,
-): Promise<BlogPostRecord> {
-  const existing = await getRecordBySlugAsync(slug);
-  if (!existing) throw new Error('Post not found');
-
-  const merged: BlogPostRecord = {
-    ...existing,
-    ...patch,
-    slug: patch.slug || existing.slug,
-    locales: {
-      ...existing.locales,
-      ...patch.locales,
-    },
-  };
-
-  return updatePost(slug, merged);
-}
-
 export async function deletePost(slug: string): Promise<void> {
   const existing = await getRecordBySlugAsync(slug);
   if (!existing) throw new Error('Post not found');
@@ -236,5 +208,3 @@ export function getStorageDiagnostics() {
     hasOidcToken: !!process.env.VERCEL_OIDC_TOKEN?.trim(),
   };
 }
-
-export { getAvailableLocales };

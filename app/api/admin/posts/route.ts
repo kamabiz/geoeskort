@@ -15,7 +15,6 @@ export async function GET() {
     emoji: getCategoryEmoji(record.category),
     publishedAt: record.publishedAt,
     status: record.status,
-    availableLocales: Object.keys(record.locales),
   }));
   return NextResponse.json({ posts });
 }

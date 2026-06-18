@@ -3,9 +3,8 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { locales, localeLabels } from '@/lib/i18n/config';
 import { getCommunityDict } from '@/lib/i18n/community-dict';
-import { localePath, switchLocalePath } from '@/lib/i18n/paths';
+import { localePath } from '@/lib/i18n/paths';
 import type { Dictionary, Locale } from '@/lib/i18n/types';
 
 type HeaderProps = {
@@ -47,8 +46,8 @@ export function Header({ locale, dict, username }: HeaderProps) {
   const isActive = (href: string) => {
     const normalized = href.replace(/\/$/, '') || '/';
     const current = pathname.replace(/\/$/, '') || '/';
-    if (normalized === localePath(locale, '/').replace(/\/$/, '') || '/') {
-      return current === normalized || (locale !== 'ka' && current === `/${locale}`);
+    if (normalized === '/') {
+      return current === '/' || current === '';
     }
     return current === normalized || current.startsWith(normalized);
   };
@@ -79,19 +78,6 @@ export function Header({ locale, dict, username }: HeaderProps) {
               {item.label}
             </Link>
           ))}
-          <div className="lang-switcher" role="group" aria-label="Language">
-            {locales.map((l) => (
-              <Link
-                key={l}
-                href={switchLocalePath(pathname, l)}
-                className={l === locale ? 'is-active' : ''}
-                aria-current={l === locale ? 'true' : undefined}
-                onClick={() => setOpen(false)}
-              >
-                {localeLabels[l]}
-              </Link>
-            ))}
-          </div>
         </nav>
       </div>
       {open && <button type="button" className="nav-backdrop" aria-label="დახურვა" onClick={() => setOpen(false)} />}
