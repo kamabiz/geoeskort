@@ -49,6 +49,14 @@ const en: Dictionary = {
     back: '← Back to blog',
     cta: 'Visit KAMA.BIZ for verified escort profiles',
     ctaBtn: 'KAMA.BIZ →',
+    categoriesTitle: 'Categories',
+    categoryAll: 'All articles',
+    categories: {
+      nightlife: { label: 'Nightlife', desc: 'Clubs, bars, rooftops, late-night spots' },
+      food: { label: 'Food & Drink', desc: 'Khinkali, wine, restaurants, Georgian cuisine' },
+      travel: { label: 'Travel', desc: 'Neighborhoods, transport, visas, safety tips' },
+      culture: { label: 'Culture', desc: 'Music, festivals, art, history & traditions' },
+    },
   },
   promo: {
     title: 'Browse profiles → KAMA.BIZ',

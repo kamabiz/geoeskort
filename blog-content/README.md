@@ -6,6 +6,8 @@ Add posts via **Admin** (`/admin/`), **Publish API** (`POST /api/posts/publish/`
 
 Each post is one JSON file (`blog-content/{slug}.json`) with **separate content per locale** (`ka`, `en`, `ru`, `tr`). The same URL slug is shared; switching language loads that locale’s title, tags, excerpt, and HTML body.
 
+Stored JSON uses a `locales` object internally. The loader also accepts API-style `translations` and legacy flat `{ title, content, ... }` at the root (treated as `ka`).
+
 Legacy `.md` files are treated as **Georgian (`ka`) only**.
 
 ## Categories

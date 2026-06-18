@@ -47,6 +47,12 @@ export type Dictionary = {
     back: string;
     cta: string;
     ctaBtn: string;
+    categoriesTitle: string;
+    categoryAll: string;
+    categories: Record<
+      'nightlife' | 'food' | 'travel' | 'culture',
+      { label: string; desc: string }
+    >;
   };
   promo: { title: string; desc: string; btn: string };
   footer: {

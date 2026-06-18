@@ -49,6 +49,14 @@ const ka: Dictionary = {
     back: '← ბლოგში დაბრუნება',
     cta: 'გადამოწმებული escort პროფილების სანახავად ეწვიეთ KAMA.BIZ-ს',
     ctaBtn: 'KAMA.BIZ →',
+    categoriesTitle: 'კატეგორიები',
+    categoryAll: 'ყველა სტატია',
+    categories: {
+      nightlife: { label: 'ღამის ცხოვრება', desc: 'კლუბები, ბარები, rooftop-ები, გვიანი საათები' },
+      food: { label: 'სამზარეულო', desc: 'ხინკალი, ღვინო, რესტორნები, ქართული კულინარია' },
+      travel: { label: 'მოგზაურობა', desc: 'უბნები, ტრანსპორტი, ვიზები, უსაფრთხოება' },
+      culture: { label: 'კულტურა', desc: 'მუსიკა, ფესტივალები, ხელოვნება, ისტორია' },
+    },
   },
   promo: {
     title: 'პროფილების სანახავად → KAMA.BIZ',

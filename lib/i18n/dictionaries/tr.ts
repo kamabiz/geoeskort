@@ -49,6 +49,14 @@ const tr: Dictionary = {
     back: '← Bloga dön',
     cta: 'Doğrulanmış profiller için KAMA.BIZ',
     ctaBtn: 'KAMA.BIZ →',
+    categoriesTitle: 'Kategoriler',
+    categoryAll: 'Tüm yazılar',
+    categories: {
+      nightlife: { label: 'Gece Hayatı', desc: 'Kulüpler, barlar, rooftop, gece mekanları' },
+      food: { label: 'Yemek & İçecek', desc: 'Hinkali, şarap, restoranlar, Gürcü mutfağı' },
+      travel: { label: 'Seyahat', desc: 'Semtler, ulaşım, vizeler, güvenlik' },
+      culture: { label: 'Kültür', desc: 'Müzik, festivaller, sanat, tarih' },
+    },
   },
   promo: {
     title: 'Profiller → KAMA.BIZ',

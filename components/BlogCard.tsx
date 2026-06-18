@@ -15,23 +15,28 @@ type BlogCardProps = {
 export function BlogCard({ post, locale, dict, headingLevel = 'h2' }: BlogCardProps) {
   const href = localePath(locale, `/blog/${post.slug}/`);
   const title = <Link href={href}>{post.title}</Link>;
+  const thumb = post.coverImage ? (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={post.coverImage}
+      alt=""
+      className="blog-card__img"
+      loading="lazy"
+      decoding="async"
+    />
+  ) : (
+    <span className="blog-card__emoji">{post.emoji}</span>
+  );
 
   return (
     <article className="blog-card">
-      <Link href={href}>
-        <div className="blog-card__thumb" aria-hidden={!!post.coverImage}>
-          {post.coverImage ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={post.coverImage}
-              alt=""
-              className="blog-card__img"
-              loading="lazy"
-              decoding="async"
-            />
-          ) : (
-            post.emoji
-          )}
+      <Link href={href} className="blog-card__thumb-link">
+        <div
+          className={`blog-card__thumb${post.coverImage ? ' blog-card__thumb--image' : ''}`}
+          aria-hidden={!!post.coverImage}
+          style={post.coverImage ? { backgroundImage: `url("${post.coverImage}")` } : undefined}
+        >
+          {thumb}
         </div>
       </Link>
       <div className="blog-card__body">

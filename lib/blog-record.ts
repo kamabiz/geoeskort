@@ -43,24 +43,66 @@ function normalizeLocaleContent(raw: unknown): BlogPostLocaleContent | null {
   };
 }
 
+function normalizeCoverImageField(raw: unknown): string | undefined {
+  const url = String(raw || '').trim();
+  if (!url || !/^https?:\/\//i.test(url)) return undefined;
+  return url;
+}
+
+function extractLocalesMap(data: Record<string, unknown>): Partial<Record<Locale, BlogPostLocaleContent>> {
+  const localesMap: Partial<Record<Locale, BlogPostLocaleContent>> = {};
+
+  const sources = [data.locales, data.translations];
+  for (const rawLocales of sources) {
+    if (!rawLocales || typeof rawLocales !== 'object') continue;
+    const map = rawLocales as Record<string, unknown>;
+    for (const locale of locales) {
+      if (localesMap[locale]) continue;
+      const content = normalizeLocaleContent(map[locale]);
+      if (content) {
+        if (!content.excerpt) {
+          content.excerpt = content.content
+            .replace(/<[^>]+>/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim()
+            .slice(0, 155);
+        }
+        localesMap[locale] = content;
+      }
+    }
+  }
+
+  if (Object.keys(localesMap).length === 0) {
+    const legacy = normalizeLocaleContent({
+      title: data.title,
+      content: data.content,
+      excerpt: data.excerpt,
+      tags: data.tags,
+      seoTitle: data.seoTitle,
+      focusKeyword: data.focusKeyword,
+    });
+    if (legacy) {
+      if (!legacy.excerpt) {
+        legacy.excerpt = legacy.content
+          .replace(/<[^>]+>/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim()
+          .slice(0, 155);
+      }
+      localesMap.ka = legacy;
+    }
+  }
+
+  return localesMap;
+}
+
 export function parseJsonRecord(raw: string, filename?: string): BlogPostRecord | null {
   try {
     const data = JSON.parse(raw) as Record<string, unknown>;
     const slug = String(data.slug || filename?.replace(/\.json$/i, '') || '').trim();
     if (!slug) return null;
 
-    const localesMap: Partial<Record<Locale, BlogPostLocaleContent>> = {};
-    const rawLocales = (data.locales || {}) as Record<string, unknown>;
-
-    for (const locale of locales) {
-      const content = normalizeLocaleContent(rawLocales[locale]);
-      if (content) {
-        if (!content.excerpt) {
-          content.excerpt = content.content.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 155);
-        }
-        localesMap[locale] = content;
-      }
-    }
+    const localesMap = extractLocalesMap(data);
 
     if (Object.keys(localesMap).length === 0) return null;
 
@@ -83,12 +125,16 @@ export function parseJsonRecord(raw: string, filename?: string): BlogPostRecord 
     const statusRaw = String(data.status || 'published').toLowerCase();
     const status = statusRaw === 'draft' ? 'draft' : 'published';
 
+    const coverImage =
+      normalizeCoverImageField(data.coverImage) ||
+      normalizeCoverImageField(data.featuredImage);
+
     return {
       slug,
       category,
       publishedAt: String(data.publishedAt || new Date().toISOString().slice(0, 10)),
       status,
-      coverImage: data.coverImage ? String(data.coverImage) : undefined,
+      coverImage,
       locales: localesMap,
     };
   } catch {
@@ -134,7 +180,10 @@ export function resolvePost(record: BlogPostRecord, locale: Locale): BlogPost | 
   if (!content?.title?.trim() || !content.content?.trim()) return null;
 
   const availableLocales = getAvailableLocales(record);
-  const coverImage = record.coverImage || extractCoverFromContent(content.content);
+  const coverImage =
+    record.coverImage ||
+    extractCoverFromContent(content.content) ||
+    extractCoverFromRecord(record);
 
   return {
     ...content,
@@ -191,4 +240,14 @@ function extractCoverFromContent(content: string): string | undefined {
   if (figureMatch?.[1]) return figureMatch[1];
   const imgMatch = content.match(/<img[^>]+src="(https?:\/\/[^"]+)"/i);
   return imgMatch?.[1];
+}
+
+function extractCoverFromRecord(record: BlogPostRecord): string | undefined {
+  for (const locale of locales) {
+    const content = record.locales[locale]?.content;
+    if (!content) continue;
+    const cover = extractCoverFromContent(content);
+    if (cover) return cover;
+  }
+  return undefined;
 }

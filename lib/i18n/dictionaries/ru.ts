@@ -49,6 +49,14 @@ const ru: Dictionary = {
     back: '← Назад в блог',
     cta: 'Проверенные профили на KAMA.BIZ',
     ctaBtn: 'KAMA.BIZ →',
+    categoriesTitle: 'Категории',
+    categoryAll: 'Все статьи',
+    categories: {
+      nightlife: { label: 'Ночная жизнь', desc: 'Клубы, бары, rooftop, поздние вечера' },
+      food: { label: 'Еда и напитки', desc: 'Хинкали, вино, рестораны, грузинская кухня' },
+      travel: { label: 'Путешествия', desc: 'Районы, транспорт, визы, безопасность' },
+      culture: { label: 'Культура', desc: 'Музыка, фестивали, искусство, история' },
+    },
   },
   promo: {
     title: 'Профили → KAMA.BIZ',
