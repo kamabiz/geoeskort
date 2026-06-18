@@ -13,8 +13,8 @@
   --accent-dim: rgba(232, 168, 56, 0.15);
   --red: #c41e3a;
   --red-dim: rgba(196, 30, 58, 0.2);
-  --gradient-hero: linear-gradient(135deg, #1a0a12 0%, #0d0d18 40%, #121008 100%);
-  --home-surface: linear-gradient(180deg, #1a0a12 0%, #0e0e16 32%, #0a0a10 68%, #08080c 100%);
+  --gradient-hero: linear-gradient(135deg, #0a0a0c 0%, #0c0c10 45%, #08080c 100%);
+  --home-surface: linear-gradient(180deg, #0a0a0c 0%, #0b0b0f 35%, #08080c 70%, #060608 100%);
   --gradient-accent: linear-gradient(135deg, var(--accent), #f0624d);
   --radius: 16px;
   --radius-sm: 10px;
@@ -353,8 +353,8 @@ button, .btn, .nav-toggle {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 60% 50% at 80% 20%, rgba(196, 30, 58, 0.18), transparent),
-    radial-gradient(ellipse 50% 40% at 10% 80%, rgba(232, 168, 56, 0.12), transparent);
+    radial-gradient(ellipse 60% 50% at 80% 20%, rgba(255, 255, 255, 0.03), transparent),
+    radial-gradient(ellipse 50% 40% at 10% 80%, rgba(232, 168, 56, 0.05), transparent);
   pointer-events: none;
 }
 
@@ -945,11 +945,11 @@ button, .btn, .nav-toggle {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 70% 42% at 88% 6%, rgba(196, 30, 58, 0.16), transparent),
-    radial-gradient(ellipse 58% 38% at 6% 28%, rgba(232, 168, 56, 0.11), transparent),
-    radial-gradient(ellipse 52% 36% at 72% 58%, rgba(196, 30, 58, 0.07), transparent),
-    radial-gradient(ellipse 48% 32% at 18% 82%, rgba(232, 168, 56, 0.08), transparent),
-    radial-gradient(ellipse 55% 40% at 50% 100%, rgba(120, 80, 200, 0.05), transparent);
+    radial-gradient(ellipse 65% 40% at 90% 4%, rgba(255, 255, 255, 0.025), transparent),
+    radial-gradient(ellipse 55% 35% at 8% 30%, rgba(255, 255, 255, 0.018), transparent),
+    radial-gradient(ellipse 50% 34% at 70% 60%, rgba(255, 255, 255, 0.012), transparent),
+    radial-gradient(ellipse 45% 30% at 20% 85%, rgba(232, 168, 56, 0.03), transparent),
+    radial-gradient(ellipse 50% 38% at 50% 100%, rgba(100, 80, 140, 0.04), transparent);
   pointer-events: none;
 }
 
@@ -1091,17 +1091,6 @@ button, .btn, .nav-toggle {
 
 .home-hub-card__user--guest {
   color: var(--text-muted);
-}
-
-.home-hub-card__brand {
-  margin: 0 0 0.5rem;
-  font-family: var(--font-logo), cursive;
-  font-size: 1.65rem;
-  line-height: 1;
-  background: linear-gradient(90deg, #ff6b9d 0%, #ee2a7b 45%, #6228d7 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
 }
 
 .home-hub-card__lead {
@@ -1468,15 +1457,51 @@ button, .btn, .nav-toggle {
 @media (min-width: 900px) {
   .blog-grid--home {
     display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     overflow-x: visible;
-    gap: 0.75rem;
+    gap: 1.25rem;
     padding-bottom: 0;
   }
 
   .blog-grid--home .blog-card {
     flex: unset;
     min-width: 0;
+  }
+
+  .blog-grid--home .blog-card__thumb {
+    aspect-ratio: 16 / 9;
+  }
+
+  .blog-grid--home .blog-card__emoji {
+    font-size: 2.25rem;
+  }
+
+  .blog-grid--home .blog-card__body {
+    padding: 1rem 1.1rem 1.15rem;
+  }
+
+  .blog-grid--home .blog-card__cat {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.55rem;
+  }
+
+  .blog-grid--home .blog-card__date {
+    font-size: 0.78rem;
+  }
+
+  .blog-grid--home .blog-card__title {
+    font-size: 1.05rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .blog-grid--home .blog-card__excerpt {
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem;
+    -webkit-line-clamp: 3;
+  }
+
+  .blog-grid--home .blog-card__read {
+    font-size: 0.82rem;
   }
 }
 

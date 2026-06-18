@@ -4,7 +4,6 @@ import type { PostWithAuthor } from '@/lib/community/posts';
 import { getCommunityDict } from '@/lib/i18n/community-dict';
 import { localePath } from '@/lib/i18n/paths';
 import type { Locale } from '@/lib/i18n/types';
-import { SITE_NAME } from '@/lib/site';
 import type { User } from '@prisma/client';
 
 type Props = {
@@ -101,7 +100,6 @@ export function HomeMobileHub({
             <span className="home-hub-card__user home-hub-card__user--guest">@{cd.home.greetingGuest}</span>
           )}
         </h1>
-        <p className="home-hub-card__brand">{SITE_NAME}</p>
         <p className="home-hub-card__lead">{cd.home.lead}</p>
         {!user && (
           <p className="home-hub-card__auth">
