@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { AuthForm } from '@/components/community/AuthForm';
 import { loginUser } from '@/lib/community/actions';
 import { getCommunityDict } from '@/lib/i18n/community-dict';
 import { isLocale } from '@/lib/i18n/config';
@@ -7,6 +8,8 @@ import type { Locale } from '@/lib/i18n/types';
 import { pageMetadata } from '@/lib/seo';
 
 type Props = { params: Promise<{ locale: string }> };
+
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({ params }: Props) {
   const { locale: raw } = await params;
@@ -24,7 +27,17 @@ export default async function LoginPage({ params }: Props) {
   return (
     <main className="container community-page">
       <h1>{cd.auth.login}</h1>
-      <form action={loginUser} className="community-form">
+      <AuthForm
+        action={loginUser}
+        submitLabel={cd.auth.submitLogin}
+        errors={{
+          invalidCredentials: cd.auth.errorInvalidCredentials,
+          usernameTaken: cd.auth.errorUsernameTaken,
+          usernameTooShort: cd.auth.errorUsernameTooShort,
+          passwordTooShort: cd.auth.errorPasswordTooShort,
+          serviceUnavailable: cd.auth.errorServiceUnavailable,
+        }}
+      >
         <label>
           {cd.auth.username}
           <input name="username" required autoComplete="username" />
@@ -33,8 +46,7 @@ export default async function LoginPage({ params }: Props) {
           {cd.auth.password}
           <input name="password" type="password" required autoComplete="current-password" />
         </label>
-        <button type="submit" className="btn btn--primary">{cd.auth.submitLogin}</button>
-      </form>
+      </AuthForm>
       <p>
         {cd.auth.noAccount} <Link href={localePath(locale, '/register/')}>{cd.auth.register}</Link>
       </p>

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { AuthForm } from '@/components/community/AuthForm';
 import { registerUser } from '@/lib/community/actions';
 import { getCommunityDict } from '@/lib/i18n/community-dict';
 import { isLocale } from '@/lib/i18n/config';
@@ -7,6 +8,8 @@ import type { Locale } from '@/lib/i18n/types';
 import { pageMetadata } from '@/lib/seo';
 
 type Props = { params: Promise<{ locale: string }> };
+
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({ params }: Props) {
   const { locale: raw } = await params;
@@ -24,10 +27,20 @@ export default async function RegisterPage({ params }: Props) {
   return (
     <main className="container community-page">
       <h1>{cd.auth.register}</h1>
-      <form action={registerUser} className="community-form">
+      <AuthForm
+        action={registerUser}
+        submitLabel={cd.auth.submitRegister}
+        errors={{
+          invalidCredentials: cd.auth.errorInvalidCredentials,
+          usernameTaken: cd.auth.errorUsernameTaken,
+          usernameTooShort: cd.auth.errorUsernameTooShort,
+          passwordTooShort: cd.auth.errorPasswordTooShort,
+          serviceUnavailable: cd.auth.errorServiceUnavailable,
+        }}
+      >
         <label>
           {cd.auth.username}
-          <input name="username" required minLength={3} autoComplete="username" />
+          <input name="username" required minLength={3} autoComplete="username" pattern="[a-zA-Z0-9_]{3,24}" title="a-z, 0-9, _" />
         </label>
         <label>
           {cd.auth.email}
@@ -37,8 +50,7 @@ export default async function RegisterPage({ params }: Props) {
           {cd.auth.password}
           <input name="password" type="password" required minLength={6} autoComplete="new-password" />
         </label>
-        <button type="submit" className="btn btn--primary">{cd.auth.submitRegister}</button>
-      </form>
+      </AuthForm>
       <p>
         {cd.auth.hasAccount} <Link href={localePath(locale, '/login/')}>{cd.auth.login}</Link>
       </p>

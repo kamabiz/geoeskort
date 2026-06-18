@@ -218,6 +218,11 @@ export type CommunityDict = {
     hasAccount: string;
     submitLogin: string;
     submitRegister: string;
+    errorInvalidCredentials: string;
+    errorUsernameTaken: string;
+    errorUsernameTooShort: string;
+    errorPasswordTooShort: string;
+    errorServiceUnavailable: string;
   };
   submit: {
     title: string;
@@ -550,6 +555,11 @@ const ka: CommunityDict = {
     hasAccount: 'უკვე გაქვთ ანგარიში?',
     submitLogin: 'შესვლა',
     submitRegister: 'რეგისტრაცია',
+    errorInvalidCredentials: 'მომხმარებლის სახელი ან პაროლი არასწორია.',
+    errorUsernameTaken: 'ეს სახელი უკვე დაკავებულია.',
+    errorUsernameTooShort: 'სახელი უნდა იყოს მინიმუმ 3 ლათინური ასო ან ციფრი.',
+    errorPasswordTooShort: 'პაროლი უნდა იყოს მინიმუმ 6 სიმბოლო.',
+    errorServiceUnavailable: 'ავტორიზაცია დროებით მიუწვდომელია. სცადეთ მოგვიანებით.',
   },
   submit: {
     title: 'ახალი ისტორია',

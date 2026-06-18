@@ -22,40 +22,63 @@ function parseTags(raw: string): string[] {
   return [...new Set(raw.split(',').map((t) => t.trim().toLowerCase()).filter(Boolean))].slice(0, 8);
 }
 
-export async function registerUser(formData: FormData) {
+export type AuthActionState = { error: string } | null;
+
+export async function registerUser(
+  _prev: AuthActionState,
+  formData: FormData,
+): Promise<AuthActionState> {
   const username = normalizeUsername(String(formData.get('username') || ''));
   const password = String(formData.get('password') || '');
   const email = String(formData.get('email') || '').trim() || null;
 
-  if (!username || username.length < 3) throw new Error('Username must be at least 3 characters');
-  if (password.length < 6) throw new Error('Password must be at least 6 characters');
+  if (!username || username.length < 3) return { error: 'usernameTooShort' };
+  if (password.length < 6) return { error: 'passwordTooShort' };
+  if (!process.env.DATABASE_URL) return { error: 'serviceUnavailable' };
 
-  const existing = await prisma.user.findUnique({ where: { username } });
-  if (existing) throw new Error('Username already taken');
+  try {
+    const existing = await prisma.user.findUnique({ where: { username } });
+    if (existing) return { error: 'usernameTaken' };
 
-  const user = await prisma.user.create({
-    data: {
-      username,
-      email,
-      passwordHash: hashPassword(password),
-    },
-  });
+    const user = await prisma.user.create({
+      data: {
+        username,
+        email,
+        passwordHash: hashPassword(password),
+      },
+    });
 
-  await setUserSessionCookie(createUserSessionToken(user.id));
+    await setUserSessionCookie(createUserSessionToken(user.id));
+  } catch {
+    return { error: 'serviceUnavailable' };
+  }
+
   redirect('/u/' + username + '/');
 }
 
-export async function loginUser(formData: FormData) {
+export async function loginUser(
+  _prev: AuthActionState,
+  formData: FormData,
+): Promise<AuthActionState> {
   const username = normalizeUsername(String(formData.get('username') || ''));
   const password = String(formData.get('password') || '');
 
-  const user = await prisma.user.findUnique({ where: { username } });
-  if (!user?.passwordHash || !verifyPassword(password, user.passwordHash)) {
-    throw new Error('Invalid username or password');
+  if (!username) return { error: 'invalidCredentials' };
+  if (!process.env.DATABASE_URL) return { error: 'serviceUnavailable' };
+
+  let user;
+  try {
+    user = await prisma.user.findUnique({ where: { username } });
+    if (!user?.passwordHash || !verifyPassword(password, user.passwordHash)) {
+      return { error: 'invalidCredentials' };
+    }
+
+    await setUserSessionCookie(createUserSessionToken(user.id));
+    await touchUserActivity(user.id);
+  } catch {
+    return { error: 'serviceUnavailable' };
   }
 
-  await setUserSessionCookie(createUserSessionToken(user.id));
-  await touchUserActivity(user.id);
   redirect('/u/' + user.username + '/');
 }
 

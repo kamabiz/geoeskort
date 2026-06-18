@@ -56,8 +56,12 @@ export function verifyUserSessionToken(token: string | undefined): string | null
 export async function getCurrentUser() {
   const jar = await cookies();
   const userId = verifyUserSessionToken(jar.get(USER_SESSION_COOKIE)?.value);
-  if (!userId) return null;
-  return prisma.user.findUnique({ where: { id: userId } });
+  if (!userId || !process.env.DATABASE_URL) return null;
+  try {
+    return await prisma.user.findUnique({ where: { id: userId } });
+  } catch {
+    return null;
+  }
 }
 
 export async function setUserSessionCookie(token: string): Promise<void> {
