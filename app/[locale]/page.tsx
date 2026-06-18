@@ -34,7 +34,7 @@ export default async function HomePage({ params }: Props) {
   if (!isLocale(raw)) notFound();
   const locale = raw as Locale;
   const dict = getDictionary(locale);
-  const posts = (await getAllPosts()).slice(0, 3);
+  const posts = (await getAllPosts(locale)).slice(0, 3);
 
   return (
     <>

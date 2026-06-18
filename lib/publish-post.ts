@@ -2,22 +2,41 @@ import 'server-only';
 
 import crypto from 'crypto';
 import { fixLinks } from '@/lib/blog-parse';
-import { createPost } from '@/lib/blog-store';
+import { normalizeLocaleContent } from '@/lib/blog-record';
+import { createPost, getRecordBySlugAsync, mergePostLocales } from '@/lib/blog-store';
+import { normalizeCategory } from '@/lib/blog-categories';
+import { defaultLocale, locales } from '@/lib/i18n/config';
 import { extractExcerptFromContent, slugify } from '@/lib/seo-analyze';
-import type { BlogPost, BlogPostInput } from '@/lib/types/blog';
+import type { BlogPost, BlogPostRecord } from '@/lib/types/blog';
+import type { Locale } from '@/lib/i18n/types';
 
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
-export type PublishPostBody = {
-  title?: string;
-  slug?: string;
-  content?: string;
+export type PublishLocaleContent = {
+  title: string;
   excerpt?: string;
-  category?: string;
+  content: string;
   tags?: string[];
+  seoTitle?: string;
+  focusKeyword?: string;
+};
+
+export type PublishPostBody = {
+  /** Shared URL slug for all language versions */
+  slug?: string;
+  category?: string;
   coverImage?: string;
   status?: string;
   publishedAt?: string;
+  /** When true, merge translations into an existing post instead of failing */
+  update?: boolean;
+  /** Per-locale content — provide ka, en, ru, tr for full multilingual publish */
+  translations?: Partial<Record<Locale, PublishLocaleContent>>;
+  /** Legacy single-locale fields (treated as Georgian / ka) */
+  title?: string;
+  content?: string;
+  excerpt?: string;
+  tags?: string[];
 };
 
 export function verifyPublishApiKey(authHeader: string | null): boolean {
@@ -33,17 +52,6 @@ function toDateString(iso?: string): string {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) throw new Error('Invalid publishedAt — use an ISO 8601 date string');
   return d.toISOString().slice(0, 10);
-}
-
-function normalizeTags(tags: unknown, category?: string): string[] {
-  const list = Array.isArray(tags)
-    ? tags.map((t) => String(t).trim().toLowerCase()).filter(Boolean)
-    : [];
-  if (category) {
-    const cat = category.trim().toLowerCase();
-    if (cat && !list.includes(cat)) list.unshift(cat);
-  }
-  return [...new Set(list)];
 }
 
 function normalizeStatus(status?: string): 'published' | 'draft' {
@@ -69,45 +77,114 @@ function withCoverImage(content: string, coverImage: string | undefined, title: 
   return `${figure}\n${content}`;
 }
 
-export function buildPostInput(body: PublishPostBody): BlogPostInput {
-  const title = body.title?.trim();
-  if (!title) throw new Error('title is required');
+function normalizeTranslation(
+  raw: PublishLocaleContent,
+  coverImage: string | undefined,
+): ReturnType<typeof normalizeLocaleContent> {
+  let content = fixLinks(raw.content.trim());
+  content = withCoverImage(content, coverImage, raw.title.trim());
 
-  const rawContent = body.content?.trim();
-  if (!rawContent) throw new Error('content is required');
+  const excerpt = raw.excerpt?.trim() || extractExcerptFromContent(content);
+  const tags = Array.isArray(raw.tags)
+    ? [...new Set(raw.tags.map((t) => String(t).trim().toLowerCase()).filter(Boolean))]
+    : [];
 
+  return normalizeLocaleContent({
+    title: raw.title,
+    seoTitle: raw.seoTitle,
+    excerpt,
+    content,
+    tags,
+    focusKeyword: raw.focusKeyword,
+  });
+}
+
+function resolveSlug(body: PublishPostBody, primaryTitle: string): string {
   let slug = body.slug?.trim().toLowerCase();
-  if (!slug) slug = slugify(title);
+  if (!slug) slug = slugify(primaryTitle);
   if (!slug) throw new Error('slug could not be generated — provide a URL-safe slug');
   if (!SLUG_RE.test(slug)) {
     throw new Error('slug must be lowercase letters, numbers, and hyphens only');
   }
+  return slug;
+}
 
-  const tags = normalizeTags(body.tags, body.category);
-  const status = normalizeStatus(body.status);
+function collectTranslations(body: PublishPostBody): Partial<Record<Locale, PublishLocaleContent>> {
+  const map: Partial<Record<Locale, PublishLocaleContent>> = { ...(body.translations || {}) };
+
+  if (body.title?.trim() && body.content?.trim()) {
+    map[defaultLocale] = {
+      title: body.title.trim(),
+      content: body.content.trim(),
+      excerpt: body.excerpt,
+      tags: body.tags,
+    };
+  }
+
+  return map;
+}
+
+export function buildPostRecord(body: PublishPostBody): BlogPostRecord {
+  const rawTranslations = collectTranslations(body);
   const coverImage = normalizeCoverImage(body.coverImage);
+  const status = normalizeStatus(body.status);
   const publishedAt = toDateString(body.publishedAt);
 
-  let content = fixLinks(rawContent);
-  content = withCoverImage(content, coverImage, title);
+  const localesMap: BlogPostRecord['locales'] = {};
+  for (const locale of locales) {
+    const raw = rawTranslations[locale];
+    if (!raw?.title?.trim() || !raw.content?.trim()) continue;
+    const normalized = normalizeTranslation(raw, coverImage);
+    if (normalized) localesMap[locale] = normalized;
+  }
 
-  const excerpt = body.excerpt?.trim() || extractExcerptFromContent(content);
+  if (Object.keys(localesMap).length === 0) {
+    throw new Error(
+      'At least one translation is required — use translations.{ka,en,ru,tr} or legacy title+content fields',
+    );
+  }
+
+  const primaryLocale =
+    (locales.find((l) => localesMap[l]) as Locale | undefined) || defaultLocale;
+  const primary = localesMap[primaryLocale]!;
+  const slug = resolveSlug(body, primary.title);
+
+  const category = normalizeCategory(body.category, primary.title, primary.content, primary.tags);
 
   return {
     slug,
-    title,
-    seoTitle: title,
-    excerpt,
-    tags,
-    focusKeyword: '',
+    category,
     publishedAt,
-    content,
     status,
     coverImage,
+    locales: localesMap,
   };
 }
 
 export async function publishPost(body: PublishPostBody): Promise<BlogPost> {
-  const input = buildPostInput(body);
-  return createPost(input);
+  const record = buildPostRecord(body);
+  const existing = await getRecordBySlugAsync(record.slug);
+
+  let saved: BlogPostRecord;
+  if (existing) {
+    if (!body.update) {
+      throw new Error('A post with this slug already exists — pass "update": true to merge translations');
+    }
+    saved = await mergePostLocales(record.slug, {
+      category: record.category,
+      publishedAt: record.publishedAt,
+      status: record.status,
+      coverImage: record.coverImage,
+      locales: record.locales,
+    });
+  } else {
+    saved = await createPost(record);
+  }
+
+  const primaryLocale =
+    (locales.find((l) => saved.locales[l]) as Locale | undefined) || defaultLocale;
+  const { resolvePost } = await import('@/lib/blog-record');
+  const post = resolvePost(saved, primaryLocale);
+  if (!post) throw new Error('Failed to resolve published post');
+  return post;
 }

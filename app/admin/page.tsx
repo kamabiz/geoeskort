@@ -1,6 +1,8 @@
 import Link from 'next/link';
+import { getCategoryLabel, getCategoryEmoji } from '@/lib/blog-categories';
 import { requireAuth, clearSessionCookie } from '@/lib/auth';
-import { getAllPostsAsync, getStorageMode } from '@/lib/blog-store';
+import { recordPrimaryTitle } from '@/lib/admin-blog';
+import { getAllRecordsAsync, getStorageMode } from '@/lib/blog-store';
 import { redirect } from 'next/navigation';
 
 async function logoutAction() {
@@ -11,7 +13,7 @@ async function logoutAction() {
 
 export default async function AdminDashboardPage() {
   await requireAuth();
-  const posts = await getAllPostsAsync(true);
+  const records = await getAllRecordsAsync(true);
   const storage = getStorageMode();
 
   return (
@@ -50,10 +52,10 @@ export default async function AdminDashboardPage() {
 
         <div className="admin-dashboard__head">
           <h1>Blog posts</h1>
-          <p className="admin-muted">{posts.length} published</p>
+          <p className="admin-muted">{records.length} posts</p>
         </div>
 
-        {posts.length === 0 ? (
+        {records.length === 0 ? (
           <div className="admin-empty">
             <p>No posts yet — create your first SEO-optimized article.</p>
             <Link href="/admin/posts/new/" className="admin-btn admin-btn--primary">
@@ -66,30 +68,32 @@ export default async function AdminDashboardPage() {
               <thead>
                 <tr>
                   <th>Title</th>
+                  <th>Category</th>
                   <th>Slug</th>
                   <th>Date</th>
-                  <th>Tags</th>
+                  <th>Languages</th>
                   <th />
                 </tr>
               </thead>
               <tbody>
-                {posts.map((post) => (
-                  <tr key={post.slug}>
+                {records.map((record) => (
+                  <tr key={record.slug}>
                     <td>
-                      <span className="admin-table__emoji">{post.emoji}</span>
-                      {post.title}
+                      <span className="admin-table__emoji">{getCategoryEmoji(record.category)}</span>
+                      {recordPrimaryTitle(record)}
                     </td>
-                    <td><code>{post.slug}</code></td>
-                    <td>{post.publishedAt}</td>
+                    <td>{getCategoryLabel(record.category)}</td>
+                    <td><code>{record.slug}</code></td>
+                    <td>{record.publishedAt}</td>
                     <td>
                       <div className="admin-tags admin-tags--inline">
-                        {post.tags.slice(0, 3).map((t) => (
-                          <span key={t} className="admin-tag admin-tag--static">{t}</span>
+                        {Object.keys(record.locales).map((l) => (
+                          <span key={l} className="admin-tag admin-tag--static">{l}</span>
                         ))}
                       </div>
                     </td>
                     <td>
-                      <Link href={`/admin/posts/${post.slug}/edit/`} className="admin-btn admin-btn--sm">
+                      <Link href={`/admin/posts/${record.slug}/edit/`} className="admin-btn admin-btn--sm">
                         Edit
                       </Link>
                     </td>

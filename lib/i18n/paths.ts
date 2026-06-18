@@ -24,12 +24,27 @@ export function absoluteUrl(locale: Locale, path: string = '/'): string {
 
 /** hreflang map for all locales + x-default */
 export function hreflangAlternates(path: string = '/'): Record<string, string> {
-  const langs: Record<string, string> = {
-    'x-default': absoluteUrl(defaultLocale, path),
-  };
-  for (const locale of ['ka', 'en', 'ru', 'tr'] as Locale[]) {
+  return hreflangAlternatesForLocales(path, ['ka', 'en', 'ru', 'tr'] as Locale[]);
+}
+
+/** hreflang for pages that exist only in specific locales (e.g. blog posts). */
+export function hreflangAlternatesForLocales(
+  path: string,
+  availableLocales: Locale[],
+): Record<string, string> {
+  const langs: Record<string, string> = {};
+  const hasDefault = availableLocales.includes(defaultLocale);
+
+  if (hasDefault) {
+    langs['x-default'] = absoluteUrl(defaultLocale, path);
+  } else if (availableLocales[0]) {
+    langs['x-default'] = absoluteUrl(availableLocales[0], path);
+  }
+
+  for (const locale of availableLocales) {
     langs[locale] = absoluteUrl(locale, path);
   }
+
   return langs;
 }
 

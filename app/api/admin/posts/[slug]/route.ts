@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireApiAuth, revalidateBlog } from '@/lib/admin-api';
-import { deletePost, getPostBySlugAsync, updatePost } from '@/lib/blog-store';
-import type { BlogPostInput } from '@/lib/types/blog';
+import { adminFormToRecord, recordToAdminForm, type AdminPostForm } from '@/lib/admin-blog';
+import { deletePost, getRecordBySlugAsync, updatePost } from '@/lib/blog-store';
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -9,9 +9,9 @@ export async function GET(_request: NextRequest, { params }: Params) {
   const auth = await requireApiAuth();
   if (auth) return auth;
   const { slug } = await params;
-  const post = await getPostBySlugAsync(slug);
-  if (!post) return NextResponse.json({ error: 'Not found' }, { status: 404 });
-  return NextResponse.json({ post });
+  const record = await getRecordBySlugAsync(slug);
+  if (!record) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  return NextResponse.json({ record, form: recordToAdminForm(record) });
 }
 
 export async function PUT(request: NextRequest, { params }: Params) {
@@ -20,19 +20,14 @@ export async function PUT(request: NextRequest, { params }: Params) {
 
   try {
     const { slug } = await params;
-    const body = (await request.json()) as BlogPostInput;
-    const post = await updatePost(slug, {
-      slug: body.slug.trim(),
-      title: body.title.trim(),
-      seoTitle: body.seoTitle?.trim() || body.title.trim(),
-      excerpt: body.excerpt.trim(),
-      tags: body.tags || [],
-      focusKeyword: body.focusKeyword?.trim() || '',
-      publishedAt: body.publishedAt,
-      content: body.content || '',
-    });
+    const existing = await getRecordBySlugAsync(slug);
+    if (!existing) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+
+    const body = (await request.json()) as AdminPostForm;
+    const record = adminFormToRecord(body, existing);
+    const saved = await updatePost(slug, record);
     await revalidateBlog();
-    return NextResponse.json({ post });
+    return NextResponse.json({ record: saved });
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Failed to update post';
     return NextResponse.json({ error: message }, { status: 400 });

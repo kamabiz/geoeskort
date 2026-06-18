@@ -24,6 +24,8 @@ export async function POST(request: NextRequest) {
       success: true,
       postId: post.slug,
       slug: post.slug,
+      locale: post.locale,
+      availableLocales: post.availableLocales,
     });
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Failed to publish post';

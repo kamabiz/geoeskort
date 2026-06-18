@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { ogLocales } from '@/lib/i18n/config';
-import { absoluteUrl, hreflangAlternates } from '@/lib/i18n/paths';
+import { absoluteUrl, hreflangAlternates, hreflangAlternatesForLocales } from '@/lib/i18n/paths';
 import type { Locale } from '@/lib/i18n/types';
 import { SITE_NAME } from './site';
 
@@ -16,6 +16,8 @@ type PageMeta = {
   modifiedTime?: string;
   tags?: string[];
   keywords?: string;
+  /** Override hreflang when not all locales have this page (blog posts). */
+  hreflangLocales?: Locale[];
 };
 
 export function pageMetadata({
@@ -29,8 +31,12 @@ export function pageMetadata({
   modifiedTime,
   tags,
   keywords,
+  hreflangLocales,
 }: PageMeta): Metadata {
   const canonical = absoluteUrl(locale, path);
+  const languages = hreflangLocales?.length
+    ? hreflangAlternatesForLocales(path, hreflangLocales)
+    : hreflangAlternates(path);
 
   const metadata: Metadata = {
     title: absolute ? { absolute: title } : title,
@@ -38,7 +44,7 @@ export function pageMetadata({
     robots: { index: true, follow: true },
     alternates: {
       canonical,
-      languages: hreflangAlternates(path),
+      languages,
     },
     openGraph: {
       type: ogType,

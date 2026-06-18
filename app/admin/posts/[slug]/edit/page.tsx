@@ -1,7 +1,7 @@
 import { PostEditor } from '@/components/admin/PostEditor';
 import { requireAuth } from '@/lib/auth';
-import { getPostBySlugAsync } from '@/lib/blog-store';
-import { inputFromPost } from '@/lib/blog-parse';
+import { recordToAdminForm } from '@/lib/admin-blog';
+import { getRecordBySlugAsync } from '@/lib/blog-store';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
@@ -10,8 +10,8 @@ type Props = { params: Promise<{ slug: string }> };
 export default async function EditPostPage({ params }: Props) {
   await requireAuth();
   const { slug } = await params;
-  const post = await getPostBySlugAsync(slug);
-  if (!post) notFound();
+  const record = await getRecordBySlugAsync(slug);
+  if (!record) notFound();
 
   return (
     <div className="admin-shell">
@@ -21,7 +21,7 @@ export default async function EditPostPage({ params }: Props) {
         </Link>
       </header>
       <main className="admin-main admin-main--wide">
-        <PostEditor mode="edit" initial={inputFromPost(post)} originalSlug={slug} />
+        <PostEditor mode="edit" initial={recordToAdminForm(record)} originalSlug={slug} />
       </main>
     </div>
   );

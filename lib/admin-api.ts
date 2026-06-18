@@ -15,17 +15,18 @@ export async function revalidateBlog(): Promise<void> {
   const { revalidatePath } = await import('next/cache');
   revalidatePath('/sitemap.xml');
 
-  // App routes live under /[locale]/ — always revalidate internal locale paths
   for (const locale of ['ka', 'en', 'ru', 'tr']) {
     revalidatePath(`/${locale}`, 'page');
     revalidatePath(`/${locale}/blog`, 'page');
   }
 
-  const { getAllPostsAsync } = await import('@/lib/blog-store');
-  const posts = await getAllPostsAsync();
-  for (const post of posts) {
-    for (const locale of ['ka', 'en', 'ru', 'tr']) {
-      revalidatePath(`/${locale}/blog/${post.slug}`, 'page');
+  const { getAllRecordsAsync } = await import('@/lib/blog-store');
+  const { getAvailableLocales } = await import('@/lib/types/blog');
+  const records = await getAllRecordsAsync();
+
+  for (const record of records) {
+    for (const locale of getAvailableLocales(record)) {
+      revalidatePath(`/${locale}/blog/${record.slug}`, 'page');
     }
   }
 }

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { localePath } from '@/lib/i18n/paths';
+import { getCategoryLabel } from '@/lib/blog-categories';
 import type { Dictionary, Locale } from '@/lib/i18n/types';
 import type { BlogPost } from '@/lib/types/blog';
 import { formatDateKa } from '@/lib/format-date';
@@ -24,7 +25,7 @@ export function BlogCard({ post, locale, dict, headingLevel = 'h2' }: BlogCardPr
       </Link>
       <div className="blog-card__body">
         <div className="blog-card__meta">
-          <span className="blog-card__cat">{post.category}</span>
+          <span className="blog-card__cat">{getCategoryLabel(post.category)}</span>
           <time className="blog-card__date" dateTime={post.publishedAt}>
             {formatDateKa(post.publishedAt)}
           </time>

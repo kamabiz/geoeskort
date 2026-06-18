@@ -1,13 +1,14 @@
 import type { MetadataRoute } from 'next';
-import { getAllPostsAsync } from '@/lib/blog-store';
+import { getAllRecordsAsync } from '@/lib/blog-store';
 import { locales } from '@/lib/i18n/config';
 import { absoluteUrl } from '@/lib/i18n/paths';
 import type { Locale } from '@/lib/i18n/types';
+import { getAvailableLocales } from '@/lib/types/blog';
 
 const staticPaths = ['/', '/blog/', '/contact/', '/privacy/'];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const posts = await getAllPostsAsync();
+  const records = await getAllRecordsAsync();
   const now = new Date();
   const entries: MetadataRoute.Sitemap = [];
 
@@ -21,10 +22,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       });
     }
 
-    for (const post of posts) {
+    for (const record of records) {
+      if (!getAvailableLocales(record).includes(locale)) continue;
       entries.push({
-        url: absoluteUrl(locale, `/blog/${post.slug}/`),
-        lastModified: new Date(post.publishedAt),
+        url: absoluteUrl(locale, `/blog/${record.slug}/`),
+        lastModified: new Date(record.publishedAt),
         changeFrequency: 'monthly',
         priority: 0.8,
       });

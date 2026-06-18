@@ -2,7 +2,9 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { BlogPostInput } from '@/lib/types/blog';
+import type { AdminPostForm } from '@/lib/admin-blog';
+import type { BlogCategorySlug } from '@/lib/blog-categories';
+import { BLOG_CATEGORIES, BLOG_CATEGORY_SLUGS } from '@/lib/blog-categories';
 import type { SeoAnalysis } from '@/lib/seo-analyze';
 import {
   analyzeSeo,
@@ -13,7 +15,7 @@ import {
 
 type Props = {
   mode: 'create' | 'edit';
-  initial?: BlogPostInput;
+  initial?: AdminPostForm;
   originalSlug?: string;
 };
 
@@ -24,18 +26,21 @@ const KAMA_SNIPPETS = [
   { label: 'Girls', html: '<a href="https://kama.biz/girls" rel="noopener">ესკორტ გოგონები</a>' },
 ];
 
-const QUICK_TAGS = ['tbilisi', 'batumi', 'eskortebi', 'nightlife', 'guide', 'georgia', 'independent'];
+const QUICK_TAGS = ['tbilisi', 'batumi', 'georgia', 'guide', 'wine', 'khinkali', 'festival'];
 
-function emptyPost(): BlogPostInput {
+function emptyPost(): AdminPostForm {
   return {
     slug: '',
     title: '',
     seoTitle: '',
     excerpt: '',
+    category: 'travel',
     tags: [],
     focusKeyword: '',
     publishedAt: new Date().toISOString().slice(0, 10),
+    status: 'published',
     content: '<h2>შესავალი</h2>\n<p>დაიწყეთ თქვენი სტატია აქ…</p>',
+    editLocale: 'ka',
   };
 }
 
@@ -50,7 +55,7 @@ export function PostEditor({ mode, initial, originalSlug }: Props) {
   const contentRef = useRef<HTMLTextAreaElement>(null);
   const slugTouched = useRef(false);
 
-  const [form, setForm] = useState<BlogPostInput>(initial || emptyPost());
+  const [form, setForm] = useState<AdminPostForm>(initial || emptyPost());
   const [analysis, setAnalysis] = useState<SeoAnalysis>(() => analyzeSeo(initial || emptyPost()));
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -63,7 +68,7 @@ export function PostEditor({ mode, initial, originalSlug }: Props) {
     [form.title, form.content, form.tags],
   );
 
-  const update = useCallback((patch: Partial<BlogPostInput>) => {
+  const update = useCallback((patch: Partial<AdminPostForm>) => {
     setForm((prev) => {
       const next = { ...prev, ...patch };
       if (patch.title && !slugTouched.current && mode === 'create') {
@@ -172,7 +177,7 @@ export function PostEditor({ mode, initial, originalSlug }: Props) {
       <header className="admin-editor__top">
         <div>
           <h1>{mode === 'create' ? 'New blog post' : 'Edit post'}</h1>
-          <p className="admin-muted">Write SEO-optimized content with live scoring</p>
+          <p className="admin-muted">Write SEO-optimized content with live scoring (Georgian / ka locale — use API for other languages)</p>
         </div>
         <div className="admin-editor__actions">
           {mode === 'edit' && (
@@ -217,6 +222,20 @@ export function PostEditor({ mode, initial, originalSlug }: Props) {
                 onChange={(e) => update({ seoTitle: e.target.value })}
                 placeholder={form.title || 'Same as title if empty'}
               />
+            </label>
+
+            <label className="admin-field">
+              <span>Category</span>
+              <select
+                value={form.category}
+                onChange={(e) => update({ category: e.target.value as BlogCategorySlug })}
+              >
+                {BLOG_CATEGORY_SLUGS.map((slug) => (
+                  <option key={slug} value={slug}>
+                    {BLOG_CATEGORIES[slug].emoji} {BLOG_CATEGORIES[slug].label} — {BLOG_CATEGORIES[slug].description}
+                  </option>
+                ))}
+              </select>
             </label>
 
             <div className="admin-field-row">

@@ -153,6 +153,7 @@
 
 .admin-field input,
 .admin-field textarea,
+.admin-field select,
 .admin-tag-input input {
   background: var(--admin-bg);
   border: 1px solid var(--admin-border);
@@ -165,6 +166,7 @@
 }
 .admin-field input:focus,
 .admin-field textarea:focus,
+.admin-field select:focus,
 .admin-tag-input input:focus {
   outline: none;
   border-color: var(--admin-gold);

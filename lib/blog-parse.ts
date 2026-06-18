@@ -1,11 +1,32 @@
-import type { BlogPost, BlogPostInput } from '@/lib/types/blog';
+import type { BlogCategorySlug } from '@/lib/blog-categories';
+import {
+  getCategoryEmoji,
+  inferCategoryFromContent,
+  isBlogCategorySlug,
+  normalizeCategory,
+} from '@/lib/blog-categories';
 
-const EMOJI: Record<string, string> = {
+/** Parsed legacy single-locale markdown file (ka-only posts). */
+export type LegacyMarkdownPost = {
+  slug: string;
+  title: string;
+  seoTitle: string;
+  excerpt: string;
+  tags: string[];
+  focusKeyword: string;
+  category: BlogCategorySlug;
+  emoji: string;
+  publishedAt: string;
+  content: string;
+  status: 'published' | 'draft';
+  coverImage?: string;
+};
+
+const SLUG_EMOJI: Record<string, string> = {
   eskortebi: '🇬🇪',
   'escort-tbilisi': '🏙️',
   tbilisi: '🏙️',
   gogoebi: '✨',
-  nightlife: '🌃',
   batumi: '🌊',
   kama: '🔗',
 };
@@ -15,20 +36,13 @@ function parseMeta(text: string, key: string): string {
   return m ? m[1].trim() : '';
 }
 
-function pickEmoji(slug: string, tags: string[]): string {
+function pickEmoji(category: string, slug: string, tags: string[]): string {
+  if (isBlogCategorySlug(category)) return getCategoryEmoji(category);
   const s = `${slug} ${tags.join(' ')}`;
-  for (const [key, em] of Object.entries(EMOJI)) {
+  for (const [key, em] of Object.entries(SLUG_EMOJI)) {
     if (s.includes(key)) return em;
   }
   return '📝';
-}
-
-function inferCategory(tags: string[]): string {
-  if (tags.some((t) => t.includes('tbilisi'))) return 'თბილისი';
-  if (tags.some((t) => /nightlife|night/i.test(t))) return 'Nightlife';
-  if (tags.some((t) => t.includes('batumi'))) return 'ბათუმი';
-  if (tags.some((t) => /food|travel|guide/i.test(t))) return tags.find((t) => /food|travel|guide/i.test(t)) || 'გზამკვლევი';
-  return 'გზამკვლევი';
 }
 
 export function fixLinks(html: string): string {
@@ -43,7 +57,7 @@ export function fixLinks(html: string): string {
     .replace(/href="\/independent"/g, `href="https://kama.biz/independent"${ext}`);
 }
 
-export function parseMarkdown(raw: string, filename?: string): BlogPost | null {
+export function parseMarkdown(raw: string, filename?: string): LegacyMarkdownPost | null {
   const title = parseMeta(raw, 'Title');
   const slug = parseMeta(raw, 'Slug');
   const excerpt = parseMeta(raw, 'Excerpt');
@@ -56,10 +70,13 @@ export function parseMarkdown(raw: string, filename?: string): BlogPost | null {
   const statusRaw = parseMeta(raw, 'Status').toLowerCase();
   const status: 'published' | 'draft' = statusRaw === 'draft' ? 'draft' : 'published';
   const coverImage = parseMeta(raw, 'Cover Image') || undefined;
+  const categoryRaw = parseMeta(raw, 'Category');
 
   const htmlMatch = raw.match(/```html\n([\s\S]*?)```/);
   let content = htmlMatch ? htmlMatch[1].trim() : '';
   content = fixLinks(content);
+
+  const category = normalizeCategory(categoryRaw, title, content, tags);
 
   const dateMatch = parseMeta(raw, 'Date');
   const idx = parseInt(filename?.match(/blog-(\d+)/)?.[1] || '1', 10) - 1;
@@ -72,8 +89,8 @@ export function parseMarkdown(raw: string, filename?: string): BlogPost | null {
     excerpt,
     tags,
     focusKeyword: focusKeyword || '',
-    category: inferCategory(tags),
-    emoji: pickEmoji(slug, tags),
+    category,
+    emoji: pickEmoji(category, slug, tags),
     publishedAt: dateMatch || fallbackDates[idx] || new Date().toISOString().slice(0, 10),
     content,
     status,
@@ -81,45 +98,4 @@ export function parseMarkdown(raw: string, filename?: string): BlogPost | null {
   };
 }
 
-export function serializeMarkdown(post: BlogPostInput): string {
-  const tags = post.tags.join(', ');
-  const focusLine = post.focusKeyword ? `- **Focus Keyword:** ${post.focusKeyword}\n` : '';
-  const seoLine = post.seoTitle && post.seoTitle !== post.title
-    ? `- **SEO Title:** ${post.seoTitle}\n`
-    : '';
-  const statusLine = post.status === 'draft' ? '- **Status:** draft\n' : '';
-  const coverLine = post.coverImage ? `- **Cover Image:** ${post.coverImage}\n` : '';
-
-  return `# Blog Post: ${post.title}
-
-## Meta Information
-- **Title:** ${post.title}
-- **Slug:** ${post.slug}
-- **Excerpt:** ${post.excerpt}
-- **Date:** ${post.publishedAt}
-- **Tags:** ${tags}
-${focusLine}${seoLine}${statusLine}${coverLine}
----
-
-## Content (HTML)
-
-\`\`\`html
-${post.content.trim()}
-\`\`\`
-`;
-}
-
-export function inputFromPost(post: BlogPost): BlogPostInput {
-  return {
-    slug: post.slug,
-    title: post.title,
-    seoTitle: post.seoTitle,
-    excerpt: post.excerpt,
-    tags: post.tags,
-    focusKeyword: post.focusKeyword,
-    publishedAt: post.publishedAt,
-    content: post.content,
-    status: post.status,
-    coverImage: post.coverImage,
-  };
-}
+export { inferCategoryFromContent };

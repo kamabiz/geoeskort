@@ -52,8 +52,8 @@ export function extractExcerptFromContent(html: string, max = 155): string {
 }
 
 const TAG_SUGGESTIONS = [
-  'tbilisi', 'batumi', 'kutaisi', 'eskortebi', 'escort', 'nightlife',
-  'gogoebi', 'independent', 'guide', 'safety', 'georgia',
+  'tbilisi', 'batumi', 'kutaisi', 'georgia', 'guide', 'nightlife', 'food', 'travel', 'culture',
+  'khinkali', 'wine', 'festival', 'restaurant', 'neighborhood',
 ];
 
 export function suggestTags(title: string, content: string, existing: string[]): string[] {
