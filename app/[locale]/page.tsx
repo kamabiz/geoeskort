@@ -51,7 +51,7 @@ export default async function HomePage({ params }: Props) {
   const locale = raw as Locale;
   const dict = getDictionary(locale);
   const cd = getCommunityDict(locale);
-  const posts = (await getAllPosts()).slice(0, 6);
+  const posts = (await getAllPosts()).slice(0, 4);
 
   const [user, topStory, latestPosts, randomPosts, categoryCounts, presence, latestComments, stats] =
     await Promise.all([
