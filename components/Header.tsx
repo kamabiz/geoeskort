@@ -33,16 +33,16 @@ export function Header({ locale, dict, username }: HeaderProps) {
     : localePath(locale, '/login/');
 
   const navPrimary = [
-    { href: localePath(locale, '/'), label: dict.nav.home },
-    { href: localePath(locale, '/history/'), label: cd.nav.history },
-    { href: localePath(locale, '/questions/'), label: cd.nav.questions },
-    { href: localePath(locale, '/conversationRoom/'), label: cd.nav.conversation },
-    { href: localePath(locale, '/chat/'), label: cd.nav.chat, live: true },
+    { href: localePath(locale, '/'), label: dict.nav.home, caps: cd.navCaps.home },
+    { href: localePath(locale, '/history/'), label: cd.nav.history, caps: cd.navCaps.history },
+    { href: localePath(locale, '/questions/'), label: cd.nav.questions, caps: cd.navCaps.questions },
+    { href: localePath(locale, '/conversationRoom/'), label: cd.nav.conversation, caps: cd.navCaps.conversation },
+    { href: localePath(locale, '/chat/'), label: cd.nav.chat, caps: cd.navCaps.chat, live: true },
   ];
 
   const navMore = [
-    { href: localePath(locale, '/medical/'), label: cd.nav.medical },
-    { href: localePath(locale, '/crush/'), label: cd.nav.crush },
+    { href: localePath(locale, '/medical/'), label: cd.nav.medical, caps: cd.navCaps.medical },
+    { href: localePath(locale, '/crush/'), label: cd.nav.crush, caps: cd.navCaps.crush },
   ];
 
   const navDesktop = [
@@ -52,7 +52,7 @@ export function Header({ locale, dict, username }: HeaderProps) {
 
   const navAll = [
     ...navDesktop,
-    { href: profileHref, label: cd.nav.profile, profile: true },
+    { href: profileHref, label: cd.nav.profile, caps: cd.navCaps.profile, profile: true },
   ];
 
   const isActive = (href: string) => {
@@ -95,7 +95,7 @@ export function Header({ locale, dict, username }: HeaderProps) {
                 className={linkClass(item)}
                 onClick={() => setOpen(false)}
               >
-                {item.label}
+                <span className="site-nav__label-caps">{item.caps}</span>
               </Link>
             ))}
             <Link
@@ -103,7 +103,7 @@ export function Header({ locale, dict, username }: HeaderProps) {
               className={linkClass({ href: profileHref, profile: true })}
               onClick={() => setOpen(false)}
             >
-              {cd.nav.profile}
+              <span className="site-nav__label-caps">{cd.navCaps.profile}</span>
             </Link>
           </div>
 

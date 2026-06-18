@@ -201,11 +201,16 @@ button, .btn, .nav-toggle {
   .site-nav__link {
     flex-shrink: 0;
     font-size: 0.8rem;
-    font-weight: 600;
+    font-weight: 700;
     padding: 0.42rem 0.72rem;
     border-radius: 999px;
-    letter-spacing: 0.01em;
+    letter-spacing: 0.04em;
     white-space: nowrap;
+  }
+
+  .site-nav__label-caps {
+    display: inline-block;
+    letter-spacing: 0.05em;
   }
 
   .site-nav__link:hover {
@@ -700,6 +705,7 @@ button, .btn, .nav-toggle {
 .hero__story-cta-text strong {
   font-size: 0.95rem;
   font-weight: 700;
+  letter-spacing: 0.05em;
 }
 
 .hero__story-cta-text small {
@@ -1281,6 +1287,8 @@ button, .btn, .nav-toggle {
 .section__title {
   font-family: var(--font-display);
   font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
   margin: 0;
 }
 
@@ -1850,9 +1858,9 @@ button, .btn, .nav-toggle {
 }
 
 .footer-col h4 {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
   color: var(--text-muted);
   margin: 0 0 0.75rem;
 }
@@ -2369,6 +2377,8 @@ button, .btn, .nav-toggle {
   margin: 0;
   font-family: var(--font-display);
   font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
 }
 
 .forum-block__head a {
@@ -2655,6 +2665,7 @@ button, .btn, .nav-toggle {
   margin: 0 0 0.5rem;
   font-size: 0.9rem;
   font-weight: 700;
+  letter-spacing: 0.08em;
 }
 
 .forum-panel__live-dot {

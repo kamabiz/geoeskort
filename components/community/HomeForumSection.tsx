@@ -62,7 +62,7 @@ export function HomeForumSection({
 
             <div className="forum-block">
               <div className="forum-block__head">
-                <h3>{cd.home.latestStories}</h3>
+                <h3>{cd.home.latestStoriesCaps}</h3>
                 <Link href={localePath(locale, '/submit/')}>{cd.home.writeYours}</Link>
               </div>
               {latestPosts.length === 0 ? (
@@ -94,7 +94,7 @@ export function HomeForumSection({
 
             <div className="forum-block">
               <div className="forum-block__head">
-                <h3>{cd.home.categories}</h3>
+                <h3>{cd.home.categoriesCaps}</h3>
                 <Link href={localePath(locale, '/history/')}>ყველა →</Link>
               </div>
               <CategoryCountList locale={locale} counts={categoryCounts} variant="chips" />

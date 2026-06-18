@@ -26,7 +26,7 @@ export function LatestCommentsSidebar({ locale, comments, variant = 'default' }:
 
   return (
     <aside className={className}>
-      <h3 className="forum-panel__title">{cd.comments.latest}</h3>
+      <h3 className="forum-panel__title">{cd.comments.latestCaps}</h3>
       {comments.length === 0 ? (
         <p className="forum-panel__empty">{cd.comments.empty}</p>
       ) : (

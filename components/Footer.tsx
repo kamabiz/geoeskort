@@ -28,7 +28,7 @@ export function Footer({ locale, dict, username }: Props) {
 
           <div className="footer-links">
             <div className="footer-col">
-              <h4>{cd.footer.modules}</h4>
+              <h4>{cd.footer.modulesCaps}</h4>
               <ul>
                 <li><Link href={localePath(locale, '/history/')}>{cd.nav.history}</Link></li>
                 <li><Link href={localePath(locale, '/questions/')}>{cd.nav.questions}</Link></li>
@@ -40,7 +40,7 @@ export function Footer({ locale, dict, username }: Props) {
             </div>
 
             <div className="footer-col">
-              <h4>{cd.footer.chat}</h4>
+              <h4>{cd.footer.chatCaps}</h4>
               <ul>
                 <li><Link href={localePath(locale, '/conversationRoom/')}>{cd.nav.conversation}</Link></li>
                 <li><Link href={localePath(locale, '/chat/')}>{cd.nav.chat}</Link></li>
@@ -49,7 +49,7 @@ export function Footer({ locale, dict, username }: Props) {
             </div>
 
             <div className="footer-col">
-              <h4>{cd.footer.account}</h4>
+              <h4>{cd.footer.accountCaps}</h4>
               <ul>
                 <li><Link href={localePath(locale, '/login/')}>{cd.auth.login}</Link></li>
                 <li><Link href={localePath(locale, '/register/')}>{cd.auth.register}</Link></li>
@@ -60,7 +60,7 @@ export function Footer({ locale, dict, username }: Props) {
             </div>
 
             <div className="footer-col">
-              <h4>{cd.footer.info}</h4>
+              <h4>{cd.footer.infoCaps}</h4>
               <ul>
                 <li><Link href={localePath(locale, '/blog/')}>{dict.footer.blog}</Link></li>
                 <li><Link href={localePath(locale, '/aboutUs/')}>{dict.footer.about}</Link></li>

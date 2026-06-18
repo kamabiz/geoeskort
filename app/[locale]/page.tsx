@@ -121,7 +121,7 @@ export default async function HomePage({ params }: Props) {
                 <Link href={localePath(locale, '/submit/')} className="hero__story-cta">
                   <span className="hero__story-cta-icon" aria-hidden>✍️</span>
                   <span className="hero__story-cta-text">
-                    <strong>{dict.hero.ctaPrimary}</strong>
+                    <strong>{dict.hero.ctaPrimaryCaps}</strong>
                     <small>{cd.home.ctaStoryHint}</small>
                   </span>
                   <span className="hero__story-cta-arrow" aria-hidden>→</span>
@@ -175,7 +175,7 @@ export default async function HomePage({ params }: Props) {
         <div className="container">
           <div className="section__head">
             <span className="section__label">{dict.blog.label}</span>
-            <h2 className="section__title">{dict.blog.latestTitle}</h2>
+            <h2 className="section__title">{dict.blog.latestTitleCaps}</h2>
           </div>
           <div className="blog-grid blog-grid--home">
             {posts.length === 0 ? (

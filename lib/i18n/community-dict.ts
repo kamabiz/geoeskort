@@ -40,11 +40,13 @@ export type CommunityDict = {
     sectionLead: string;
     topStory: string;
     latestStories: string;
+    latestStoriesCaps: string;
     writeYours: string;
     noStories: string;
     beFirst: string;
     randomPicks: string;
     categories: string;
+    categoriesCaps: string;
     statsStories: string;
     statsOnline: string;
     statsMembers: string;
@@ -60,6 +62,7 @@ export type CommunityDict = {
     premiumBannerDesc: string;
     premiumBannerBtn: string;
     sidebarQuickTitle: string;
+    sidebarQuickTitleCaps: string;
     actionSubmit: string;
     actionChat: string;
     actionConversation: string;
@@ -244,6 +247,7 @@ export type CommunityDict = {
     reply: string;
     empty: string;
     latest: string;
+    latestCaps: string;
   };
   online: {
     title: string;
@@ -264,6 +268,20 @@ export type CommunityDict = {
     chat: string;
     account: string;
     info: string;
+    modulesCaps: string;
+    chatCaps: string;
+    accountCaps: string;
+    infoCaps: string;
+  };
+  navCaps: {
+    home: string;
+    history: string;
+    questions: string;
+    conversation: string;
+    chat: string;
+    medical: string;
+    crush: string;
+    profile: string;
   };
 };
 
@@ -308,11 +326,13 @@ const ka: CommunityDict = {
     topStory: 'დღის ტოპ ისტორია',
     newPost: 'ახალი პოსტი',
     latestStories: 'ბოლო ისტორიები',
+    latestStoriesCaps: 'ᲑᲝᲚᲝ ᲘᲡᲢᲝᲠᲘᲔᲑᲘ',
     writeYours: 'შენიც დაწერე →',
     noStories: 'ჯერ არავინ გამოუქვეყნებია ისტორია.',
     beFirst: 'იყავი პირველი →',
     randomPicks: 'შემთხვევითი არჩევანი',
     categories: 'კატეგორიები',
+    categoriesCaps: 'ᲙᲐᲢᲔᲒᲝᲠᲘᲔᲑᲘ',
     statsStories: 'ისტორია',
     statsOnline: 'ონლაინ',
     statsMembers: 'წევრი',
@@ -327,6 +347,7 @@ const ka: CommunityDict = {
     premiumBannerDesc: '500 ქულით 30 დღით — შეზღუდული ისტორიები, LIVE ჩათი, პირადი წერილები და რეკლამის გარეშე.',
     premiumBannerBtn: 'გამოწერის ნახვა',
     sidebarQuickTitle: 'სწრაფი ბმულები',
+    sidebarQuickTitleCaps: 'ᲡᲬᲠᲐᲤᲘ ᲑᲛᲣᲚᲔᲑᲘ',
     actionSubmit: '✍️ ისტორიის დამატება',
     actionChat: '💬 LIVE ჩათი',
     actionConversation: '🗣️ სასაუბრო ოთახი',
@@ -550,6 +571,7 @@ const ka: CommunityDict = {
     reply: 'პასუხი',
     empty: 'ჯერ კომენტარი არ არის.',
     latest: 'ბოლო კომენტარები',
+    latestCaps: 'ᲑᲝᲚᲝ ᲙᲝᲛᲔᲜᲢᲐᲠᲔᲑᲘ',
   },
   online: {
     title: 'ონლაინ ახლა',
@@ -570,6 +592,20 @@ const ka: CommunityDict = {
     chat: 'საუბარი',
     account: 'ანგარიში',
     info: 'ინფორმაცია',
+    modulesCaps: 'ᲙᲐᲢᲔᲒᲝᲠᲘᲔᲑᲘ',
+    chatCaps: 'ᲡᲐᲣᲑᲐᲠᲘ',
+    accountCaps: 'ᲐᲜᲒᲐᲠᲘᲨᲘ',
+    infoCaps: 'ᲘᲜᲤᲝᲠᲛᲐᲪᲘᲐ',
+  },
+  navCaps: {
+    home: 'ᲛᲗᲐᲕᲐᲠᲘ',
+    history: 'ᲘᲡᲢᲝᲠᲘᲔᲑᲘ',
+    questions: 'ᲙᲘᲗᲮᲕᲔᲑᲘ',
+    conversation: 'ᲡᲐᲣᲑᲐᲠᲘ',
+    chat: 'ᲩᲐᲗᲘ',
+    medical: 'ᲡᲔᲥᲡᲝᲚᲝᲒᲘᲐ',
+    crush: 'ᲥᲠᲐᲨᲘ',
+    profile: 'ᲞᲠᲝᲤᲘᲚᲘ',
   },
 };
 

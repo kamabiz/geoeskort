@@ -21,6 +21,7 @@ export type Dictionary = {
     titleAfter: string;
     lead: string;
     ctaPrimary: string;
+    ctaPrimaryCaps: string;
     ctaBlog: string;
   };
   links: {
@@ -37,6 +38,7 @@ export type Dictionary = {
   blog: {
     label: string;
     latestTitle: string;
+    latestTitleCaps: string;
     latestDesc: string;
     empty: string;
     emptyList: string;

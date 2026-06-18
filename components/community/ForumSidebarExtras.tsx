@@ -19,7 +19,7 @@ export function ForumSidebarExtras({ locale }: Props) {
 
   return (
     <aside className="forum-panel">
-      <h3 className="forum-panel__title">{cd.home.sidebarQuickTitle}</h3>
+      <h3 className="forum-panel__title">{cd.home.sidebarQuickTitleCaps}</h3>
       <ul className="forum-panel__links">
         {quickLinks.map((link) => (
           <li key={link.href}>

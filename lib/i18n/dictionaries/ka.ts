@@ -23,6 +23,7 @@ const ka: Dictionary = {
     titleAfter: ', რჩევა და საუბარი ერთ პლატფორმაზე',
     lead: 'აქ შეგიძლიათ გაუზიაროთ თქვენი ისტორია, იპოვოთ პასუხები, წაიკითხოთ სასარგებლო სტატიები და გაეცნოთ ახალ ადამიანებს.',
     ctaPrimary: 'ისტორიის დამატება',
+    ctaPrimaryCaps: 'ᲘᲡᲢᲝᲠᲘᲘᲡ ᲓᲐᲛᲐᲢᲔᲑᲐ',
     ctaBlog: 'ისტორიების კატალოგი',
   },
   links: {
@@ -39,6 +40,7 @@ const ka: Dictionary = {
   blog: {
     label: 'ბლოგი',
     latestTitle: 'ბოლო სტატიები',
+    latestTitleCaps: 'ᲑᲝᲚᲝ ᲡᲢᲐᲢᲘᲔᲑᲘ',
     latestDesc: 'escort tbilisi, eskortebi, nightlife — გზამკვლევები და რჩევები.',
     empty: 'სტატიები მალე დაემატება.',
     emptyList: 'ჯერ არ არის გამოქვეყნებული სტატიები. მალე დაემატება.',
