@@ -2,7 +2,7 @@ import 'server-only';
 
 import fs from 'fs';
 import path from 'path';
-import { list, put, del } from '@vercel/blob';
+import { list, put, del, get } from '@vercel/blob';
 import { parseMarkdown, serializeMarkdown } from '@/lib/blog-parse';
 import type { BlogPost, BlogPostInput } from '@/lib/types/blog';
 
@@ -40,8 +40,10 @@ async function readFromBlob(): Promise<{ name: string; content: string }[]> {
   const posts: { name: string; content: string }[] = [];
   for (const blob of blobs) {
     if (!blob.pathname.endsWith('.md')) continue;
-    const res = await fetch(blob.url);
-    if (res.ok) posts.push({ name: path.basename(blob.pathname), content: await res.text() });
+    const result = await get(blob.pathname, { access: 'private' });
+    if (!result) continue;
+    const content = await new Response(result.stream).text();
+    posts.push({ name: path.basename(blob.pathname), content });
   }
   return posts;
 }
@@ -98,7 +100,7 @@ async function writePost(slug: string, markdown: string): Promise<void> {
   const filename = filenameForSlug(slug);
   if (USE_BLOB) {
     await put(`${BLOB_PREFIX}${filename}`, markdown, {
-      access: 'public',
+      access: 'private',
       addRandomSuffix: false,
       allowOverwrite: true,
       contentType: 'text/markdown',
