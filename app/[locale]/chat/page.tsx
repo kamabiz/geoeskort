@@ -1,5 +1,10 @@
+import Link from 'next/link';
 import { ChatRoom } from '@/components/community/ChatRoom';
+import { getCurrentUser } from '@/lib/community/auth';
+import { SOCKET_CONFIG } from '@/lib/community/socket-config';
+import { getCommunityDict } from '@/lib/i18n/community-dict';
 import { isLocale } from '@/lib/i18n/config';
+import { localePath } from '@/lib/i18n/paths';
 import type { Locale } from '@/lib/i18n/types';
 import { pageMetadata } from '@/lib/seo';
 
@@ -10,19 +15,41 @@ export const dynamic = 'force-dynamic';
 export async function generateMetadata({ params }: Props) {
   const { locale: raw } = await params;
   if (!isLocale(raw)) return {};
-  return pageMetadata({
-    locale: raw as Locale,
-    path: '/chat/',
-    title: 'Community chat',
-    description: 'General community chat room',
-  });
+  const cd = getCommunityDict(raw as Locale);
+  return pageMetadata({ locale: raw as Locale, path: '/chat/', title: cd.chat.title, description: cd.chat.lead });
 }
 
 export default async function ChatPage({ params }: Props) {
-  await params;
+  const { locale: raw } = await params;
+  if (!isLocale(raw)) return null;
+  const locale = raw as Locale;
+  const cd = getCommunityDict(locale);
+  const user = await getCurrentUser();
+
   return (
     <main className="container community-page">
-      <ChatRoom title="General chat room" />
+      <div className="page-header">
+        <h1>{cd.chat.title}</h1>
+        <p className="community-page__lead">{cd.chat.lead}</p>
+      </div>
+      {!user ? (
+        <p>{cd.chat.loginRequired} <Link href={localePath(locale, '/login/')}>{cd.auth.login}</Link></p>
+      ) : !user.isPremium ? (
+        <div className="community-premium-lock">
+          <p>{cd.chat.premiumRequired}</p>
+          <Link href={localePath(locale, '/user/subscription/')} className="btn btn--primary">{cd.chat.premiumBtn}</Link>
+        </div>
+      ) : (
+        <ChatRoom
+          title={cd.chat.title}
+          roomId={SOCKET_CONFIG.liveRoomId}
+          labels={{
+            send: cd.chat.send,
+            placeholder: cd.chat.sendPlaceholder,
+            loginRequired: cd.chat.loginRequired,
+          }}
+        />
+      )}
     </main>
   );
 }

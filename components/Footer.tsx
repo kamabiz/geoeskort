@@ -1,9 +1,21 @@
 import Link from 'next/link';
 import { TopGeCounter } from '@/components/TopGeCounter';
+import { getCommunityDict } from '@/lib/i18n/community-dict';
 import { localePath } from '@/lib/i18n/paths';
 import type { Dictionary, Locale } from '@/lib/i18n/types';
 
-export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
+type Props = {
+  locale: Locale;
+  dict: Dictionary;
+  username?: string | null;
+};
+
+export function Footer({ locale, dict, username }: Props) {
+  const cd = getCommunityDict(locale);
+  const profileHref = username
+    ? localePath(locale, `/u/${username}/`)
+    : localePath(locale, '/login/');
+
   return (
     <footer className="site-footer">
       <div className="container">
@@ -12,37 +24,55 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
             <Link href={localePath(locale, '/')} className="site-logo">
               GEO<span>ESKORT</span>
             </Link>
-            <p>
-              {dict.footer.tagline.split('KAMA.BIZ')[0]}
-              <a href="https://kama.biz" rel="noopener noreferrer">
-                KAMA.BIZ
-              </a>
-            </p>
+            <p>{dict.footer.tagline}</p>
           </div>
+
           <div className="footer-links">
             <div className="footer-col">
-              <h4>KAMA.BIZ</h4>
+              <h4>{cd.footer.modules}</h4>
               <ul>
-                <li><a href="https://kama.biz/tbilisi" rel="noopener noreferrer">Escort Tbilisi</a></li>
-                <li><a href="https://kama.biz/batumi" rel="noopener noreferrer">Escort Batumi</a></li>
-                <li><a href="https://kama.biz/girls" rel="noopener noreferrer">Eskort Gogoebi</a></li>
-                <li><a href="https://kama.biz/escorts" rel="noopener noreferrer">Escorts</a></li>
+                <li><Link href={localePath(locale, '/history/')}>{cd.nav.history}</Link></li>
+                <li><Link href={localePath(locale, '/questions/')}>{cd.nav.questions}</Link></li>
+                <li><Link href={localePath(locale, '/medical/')}>{cd.nav.medical}</Link></li>
+                <li><Link href={localePath(locale, '/crush/')}>{cd.nav.crush}</Link></li>
+                <li><Link href={localePath(locale, '/positionVariants/')}>{cd.nav.positions}</Link></li>
+                <li><Link href={localePath(locale, '/zodiac/')}>{cd.nav.zodiac}</Link></li>
               </ul>
             </div>
+
             <div className="footer-col">
-              <h4>{dict.footer.geoeskort}</h4>
+              <h4>{cd.footer.chat}</h4>
+              <ul>
+                <li><Link href={localePath(locale, '/conversationRoom/')}>{cd.nav.conversation}</Link></li>
+                <li><Link href={localePath(locale, '/chat/')}>{cd.nav.chat}</Link></li>
+                <li><Link href={localePath(locale, '/messages/')}>{cd.nav.messages}</Link></li>
+              </ul>
+            </div>
+
+            <div className="footer-col">
+              <h4>{cd.footer.account}</h4>
+              <ul>
+                <li><Link href={localePath(locale, '/login/')}>{cd.auth.login}</Link></li>
+                <li><Link href={localePath(locale, '/register/')}>{cd.auth.register}</Link></li>
+                <li><Link href={profileHref}>{cd.nav.profile}</Link></li>
+                <li><Link href={localePath(locale, '/points/')}>{dict.footer.points}</Link></li>
+                <li><Link href={localePath(locale, '/user/subscription/')}>{dict.footer.premium}</Link></li>
+              </ul>
+            </div>
+
+            <div className="footer-col">
+              <h4>{cd.footer.info}</h4>
               <ul>
                 <li><Link href={localePath(locale, '/blog/')}>{dict.footer.blog}</Link></li>
-                <li><Link href={localePath(locale, '/about/')}>{dict.footer.about}</Link></li>
+                <li><Link href={localePath(locale, '/aboutUs/')}>{dict.footer.about}</Link></li>
                 <li><Link href={localePath(locale, '/rules/')}>{dict.footer.rules}</Link></li>
                 <li><Link href={localePath(locale, '/privacy/')}>{dict.footer.privacy}</Link></li>
                 <li><Link href={localePath(locale, '/contact/')}>{dict.footer.contact}</Link></li>
-                <li><Link href={localePath(locale, '/points/')}>{dict.footer.points}</Link></li>
-                <li><Link href={localePath(locale, '/premium/')}>{dict.footer.premium}</Link></li>
               </ul>
             </div>
           </div>
         </div>
+
         <div className="footer-bottom">
           <span>&copy; 2026 GEOESKORT</span>
           <TopGeCounter />

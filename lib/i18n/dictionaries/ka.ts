@@ -2,9 +2,9 @@ import type { Dictionary } from '../types';
 
 const ka: Dictionary = {
   meta: {
-    homeTitle: 'GEOESKORT • Nightlife & Escort გზამკვლევი საქართველოში +18',
+    homeTitle: 'GEOESKORT • ქართული 18+ პლატფორმა',
     homeDescription:
-      'GEOESKORT – ღამის ცხოვრება, escort tbilisi, eskortebi საქართველოში. ინფორმაციული ბლოგი და სასარგებლო ლინკები KAMA.BIZ-ზე.',
+      'GEOESKORT — გამოცდილება, ისტორიები, რჩევები და საუბარი ერთ სივრცეში. მხოლოდ სრულწლოვანთათვის.',
     blogTitle: 'ბლოგი – Nightlife & Escort საქართველო',
     blogDescription:
       'GEOESKORT ბლოგი — escort tbilisi, eskortebi, ღამის ცხოვრება თბილისში და ბათუმში.',
@@ -14,16 +14,16 @@ const ka: Dictionary = {
     privacyDescription: 'GEOESKORT კონფიდენციალურობის პოლიტიკა.',
     postNotFound: 'სტატია ვერ მოიძებნა',
   },
-  ageNotice: '18+ • Adults only • მხოლოდ სრულწლოვანთათვის',
-  nav: { home: 'მთავარი', blog: 'ბლოგი', contact: 'კონტაქტი', menu: 'Menu', chat: 'ჩათი', messages: 'შეტყობინებები', profile: 'პროფილი', submit: 'გამოქვეყნება' },
+  ageNotice: '18+ • მხოლოდ სრულწლოვანთათვის',
+  nav: { home: 'მთავარი', blog: 'ბლოგი', contact: 'კონტაქტი', menu: 'მენიუ', chat: 'ჩათი', messages: 'წერილები', profile: 'პროფილი', submit: 'დამატება' },
   hero: {
-    badge: '+18 • Georgia Nightlife Guide',
-    titleBefore: 'Nightlife & ',
-    titleEm: 'Escort',
-    titleAfter: ' კულტურა საქართველოში',
-    lead: 'GEOESKORT არის ინფორმაციული პორტალი — ბლოგი ღამის ცხოვრების, escort tbilisi და eskortebi თემებზე. პროფილების კატალოგი ცალკეა: KAMA.BIZ.',
-    ctaPrimary: 'ესკორტები საქართველოში →',
-    ctaBlog: 'ბლოგის წაკითხვა',
+    badge: '+18 • ღია სივრცე სრულწლოვანთათვის',
+    titleBefore: '',
+    titleEm: 'გამოცდილება',
+    titleAfter: ', რჩევა და საუბარი ერთ პლატფორმაზე',
+    lead: 'აქ შეგიძლიათ გაუზიაროთ თქვენი ისტორია, იპოვოთ პასუხები, წაიკითხოთ სასარგებლო სტატიები და გაეცნოთ ახალ ადამიანებს.',
+    ctaPrimary: 'ისტორიის დამატება',
+    ctaBlog: 'ისტორიების კატალოგი',
   },
   links: {
     label: 'KAMA.BIZ',
@@ -65,12 +65,12 @@ const ka: Dictionary = {
     btn: 'Escort Tbilisi → KAMA.BIZ',
   },
   footer: {
-    tagline: 'Nightlife & escort გზამკვლევი საქართველოში. პროფილების კატალოგი — KAMA.BIZ',
+    tagline: 'ქართული 18+ პლატფორმა — ისტორიები, რჩევები და საუბარი ერთ სივრცეში.',
     geoeskort: 'GEOESKORT',
-    blog: 'ბლოგი',
+    blog: 'სტატიები',
     contact: 'კონტაქტი',
     privacy: 'კონფიდენციალურობა',
-    legal: '18+ • ინფორმაციული პორტალი • არა პროფილების კატალოგი',
+    legal: '18+ • მხოლოდ სრულწლოვანთათვის',
     about: 'ჩვენს შესახებ',
     rules: 'წესები',
     points: 'ქულები',

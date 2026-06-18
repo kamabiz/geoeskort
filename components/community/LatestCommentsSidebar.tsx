@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { getCommunityCategoryLabel } from '@/lib/community/categories';
+import { getCommunityDict } from '@/lib/i18n/community-dict';
 import { localePath } from '@/lib/i18n/paths';
 import { formatDateKa } from '@/lib/format-date';
 import type { Locale } from '@/lib/i18n/types';
@@ -16,25 +17,30 @@ type CommentItem = {
 type Props = {
   locale: Locale;
   comments: CommentItem[];
+  variant?: 'default' | 'modern';
 };
 
-export function LatestCommentsSidebar({ locale, comments }: Props) {
+export function LatestCommentsSidebar({ locale, comments, variant = 'default' }: Props) {
+  const cd = getCommunityDict(locale);
+  const className = variant === 'modern' ? 'forum-panel' : 'community-sidebar';
+
   return (
-    <aside className="community-sidebar">
-      <h3 className="community-sidebar__title">Latest comments</h3>
+    <aside className={className}>
+      <h3 className="forum-panel__title">{cd.comments.latest}</h3>
       {comments.length === 0 ? (
-        <p className="community-sidebar__empty">No comments yet.</p>
+        <p className="forum-panel__empty">{cd.comments.empty}</p>
       ) : (
-        <ul className="community-sidebar__list">
+        <ul className="forum-panel__comments">
           {comments.map((comment) => (
             <li key={comment.id}>
-              <Link href={localePath(locale, `/p/${comment.post.id}/`)}>
-                <strong>{comment.isAnonymous || !comment.author ? 'Anonymous' : comment.author.username}</strong>
-                <span className="community-sidebar__context">
-                  {getCommunityCategoryLabel(comment.post.category)}: {comment.post.title.slice(0, 40)}
+              <Link href={localePath(locale, `/history/view/${comment.post.id}/`)}>
+                <span className="forum-panel__comment-user">
+                  {comment.isAnonymous || !comment.author ? cd.post.anonymous : comment.author.username}
                 </span>
-                <span className="community-sidebar__body">{comment.body.slice(0, 100)}</span>
-                <time>{formatDateKa(comment.createdAt.toISOString())}</time>
+                <span className="forum-panel__comment-body">{comment.body.slice(0, 80)}</span>
+                <span className="forum-panel__comment-meta">
+                  {getCommunityCategoryLabel(comment.post.category)} · {formatDateKa(comment.createdAt.toISOString())}
+                </span>
               </Link>
             </li>
           ))}

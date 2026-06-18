@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { getCommunityDict } from '@/lib/i18n/community-dict';
 import { localePath } from '@/lib/i18n/paths';
 import type { Locale } from '@/lib/i18n/types';
 
@@ -12,25 +13,26 @@ type Props = {
 
 export function BottomNav({ locale, username }: Props) {
   const pathname = usePathname();
+  const cd = getCommunityDict(locale);
   const profileHref = username
     ? localePath(locale, `/u/${username}/`)
     : localePath(locale, '/login/');
 
   const items = [
-    { href: localePath(locale, '/'), label: 'Home', icon: '🏠' },
-    { href: localePath(locale, '/chat/'), label: 'Chat', icon: '💬' },
-    { href: localePath(locale, '/messages/'), label: 'Messages', icon: '✉️' },
-    { href: profileHref, label: 'Profile', icon: '👤' },
+    { href: localePath(locale, '/'), label: cd.bottomNav.home, icon: '🏠', match: (p: string) => p === localePath(locale, '/') || p === `/${locale}` || p === `/${locale}/` },
+    { href: localePath(locale, '/chat/'), label: cd.bottomNav.chat, icon: '💬', match: (p: string) => p.startsWith(localePath(locale, '/chat')) },
+    { href: localePath(locale, '/messages/'), label: cd.bottomNav.messages, icon: '✉️', match: (p: string) => p.startsWith(localePath(locale, '/messages')) },
+    { href: profileHref, label: cd.bottomNav.profile, icon: '👤', match: (p: string) => p.startsWith(profileHref.replace(/\/$/, '')) || p.includes('/user') || p.includes('/login') || p.includes('/u/') },
   ];
 
   return (
-    <nav className="bottom-nav" aria-label="Mobile">
+    <nav className="bottom-nav" aria-label="მობილური ნავიგაცია">
       {items.map((item) => {
-        const active = pathname === item.href || pathname.startsWith(item.href.replace(/\/$/, ''));
+        const active = item.match(pathname);
         return (
-          <Link key={item.href} href={item.href} className={active ? 'is-active' : ''}>
-            <span aria-hidden>{item.icon}</span>
-            {item.label}
+          <Link key={item.href} href={item.href} className={active ? 'is-active' : ''} aria-current={active ? 'page' : undefined}>
+            <span className="bottom-nav__icon" aria-hidden>{item.icon}</span>
+            <span className="bottom-nav__label">{item.label}</span>
           </Link>
         );
       })}

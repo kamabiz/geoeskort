@@ -2,7 +2,9 @@
 
 import { useState } from 'react';
 
-export function PremiumCheckoutButton() {
+type Props = { label?: string };
+
+export function PremiumCheckoutButton({ label = 'Premium გამოწერა' }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -13,12 +15,12 @@ export function PremiumCheckoutButton() {
       const res = await fetch('/api/community/stripe/checkout/', { method: 'POST' });
       const data = (await res.json()) as { url?: string; error?: string };
       if (!res.ok || !data.url) {
-        setError(data.error || 'Checkout unavailable');
+        setError(data.error || 'გადახდა დროებით მიუწვდომელია');
         return;
       }
       window.location.href = data.url;
     } catch {
-      setError('Checkout failed');
+      setError('გადახდა ვერ მოხერხდა');
     } finally {
       setLoading(false);
     }
@@ -27,7 +29,7 @@ export function PremiumCheckoutButton() {
   return (
     <div>
       <button type="button" className="btn btn--primary" onClick={checkout} disabled={loading}>
-        {loading ? 'Redirecting…' : 'Subscribe with Stripe'}
+        {loading ? 'მიმდინარეობს...' : label}
       </button>
       {error && <p className="community-form__error">{error}</p>}
     </div>

@@ -21,9 +21,13 @@ const appRedirects = [
   permanent: true,
 }));
 
+const platformRedirects = [
+  { source: '/about/', destination: '/aboutUs/', permanent: true },
+].map((r) => ({ ...r, source: r.source, destination: r.destination }));
+
 const nextConfig: NextConfig = {
   trailingSlash: true,
-  redirects: async () => [...catalogRedirects, ...appRedirects],
+  redirects: async () => [...catalogRedirects, ...appRedirects, ...platformRedirects],
 };
 
 export default nextConfig;

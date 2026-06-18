@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { registerUser } from '@/lib/community/actions';
+import { getCommunityDict } from '@/lib/i18n/community-dict';
 import { isLocale } from '@/lib/i18n/config';
 import { localePath } from '@/lib/i18n/paths';
 import type { Locale } from '@/lib/i18n/types';
@@ -10,34 +11,36 @@ type Props = { params: Promise<{ locale: string }> };
 export async function generateMetadata({ params }: Props) {
   const { locale: raw } = await params;
   if (!isLocale(raw)) return {};
-  return pageMetadata({ locale: raw as Locale, path: '/register/', title: 'Register', description: 'Create a community account' });
+  const cd = getCommunityDict(raw as Locale);
+  return pageMetadata({ locale: raw as Locale, path: '/register/', title: cd.auth.register, description: cd.auth.register });
 }
 
 export default async function RegisterPage({ params }: Props) {
   const { locale: raw } = await params;
   if (!isLocale(raw)) return null;
   const locale = raw as Locale;
+  const cd = getCommunityDict(locale);
 
   return (
     <main className="container community-page">
-      <h1>Register</h1>
+      <h1>{cd.auth.register}</h1>
       <form action={registerUser} className="community-form">
         <label>
-          Username
+          {cd.auth.username}
           <input name="username" required minLength={3} autoComplete="username" />
         </label>
         <label>
-          Email (optional)
+          {cd.auth.email}
           <input name="email" type="email" autoComplete="email" />
         </label>
         <label>
-          Password
+          {cd.auth.password}
           <input name="password" type="password" required minLength={6} autoComplete="new-password" />
         </label>
-        <button type="submit" className="btn btn--primary">Create account</button>
+        <button type="submit" className="btn btn--primary">{cd.auth.submitRegister}</button>
       </form>
       <p>
-        Already have an account? <Link href={localePath(locale, '/login/')}>Log in</Link>
+        {cd.auth.hasAccount} <Link href={localePath(locale, '/login/')}>{cd.auth.login}</Link>
       </p>
     </main>
   );

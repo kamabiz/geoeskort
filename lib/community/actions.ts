@@ -12,8 +12,8 @@ import {
   setUserSessionCookie,
   verifyPassword,
 } from '@/lib/community/auth';
-import { isCommunityCategorySlug } from '@/lib/community/categories';
-import { awardPoints } from '@/lib/community/points';
+import { isCommunityCategorySlug, getStoryViewPath } from '@/lib/community/categories';
+import { PREMIUM_POINTS_COST, PREMIUM_DAYS, awardPoints } from '@/lib/community/points';
 import { computeReadingTimeMinutes } from '@/lib/community/text';
 import { touchUserActivity } from '@/lib/community/presence';
 
@@ -91,7 +91,7 @@ export async function submitPost(formData: FormData) {
   }
 
   revalidatePath('/');
-  redirect('/p/' + post.id + '/');
+  redirect(getStoryViewPath(post.id));
 }
 
 export async function createComment(formData: FormData) {
@@ -145,6 +145,39 @@ export async function upvotePost(postId: string) {
   revalidatePath('/p/' + postId + '/');
 }
 
+export async function redeemPremiumWithPoints() {
+  const user = await getCurrentUser();
+  if (!user) throw new Error('Login required');
+  if (user.isPremium) throw new Error('Already premium');
+
+  const fresh = await prisma.user.findUnique({ where: { id: user.id } });
+  if (!fresh || fresh.points < PREMIUM_POINTS_COST) {
+    throw new Error('Not enough points');
+  }
+
+  await prisma.$transaction([
+    prisma.user.update({
+      where: { id: user.id },
+      data: {
+        isPremium: true,
+        points: { decrement: PREMIUM_POINTS_COST },
+      },
+    }),
+    prisma.pointEvent.create({
+      data: {
+        userId: user.id,
+        action: 'PREMIUM_REDEEM',
+        points: -PREMIUM_POINTS_COST,
+      },
+    }),
+  ]);
+
+  await touchUserActivity(user.id);
+  revalidatePath('/user/subscription/');
+  revalidatePath('/premium/');
+  redirect('/user/subscription/?success=1');
+}
+
 export async function sendChatMessage(formData: FormData) {
   const user = await getCurrentUser();
   if (!user) throw new Error('Login required');
@@ -154,6 +187,11 @@ export async function sendChatMessage(formData: FormData) {
   const recipientId = String(formData.get('recipientId') || '') || null;
 
   if (!body) throw new Error('Message cannot be empty');
+
+  if (roomId === 'live' || recipientId) {
+    const fresh = await prisma.user.findUnique({ where: { id: user.id }, select: { isPremium: true } });
+    if (!fresh?.isPremium) throw new Error('Premium required');
+  }
 
   await prisma.message.create({
     data: {
@@ -165,7 +203,7 @@ export async function sendChatMessage(formData: FormData) {
   });
 
   await touchUserActivity(user.id);
-  revalidatePath(recipientId ? '/messages/' : '/chat/');
+  revalidatePath(recipientId ? '/messages/' : roomId === 'live' ? '/chat/' : '/conversationRoom/');
 }
 
 export async function heartbeat() {

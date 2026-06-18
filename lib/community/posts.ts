@@ -17,13 +17,26 @@ export async function getPublishedPosts(options: {
   limit?: number;
   skip?: number;
   category?: string;
-  orderBy?: 'latest' | 'views' | 'random';
+  categories?: string[];
+  orderBy?: 'latest' | 'views' | 'random' | 'active';
+  search?: string;
+  tag?: string;
 }) {
-  const { limit = 12, skip = 0, category, orderBy = 'latest' } = options;
+  const { limit = 12, skip = 0, category, categories, orderBy = 'latest', search, tag } = options;
 
   const where = {
     status: 'PUBLISHED' as const,
     ...(category ? { category } : {}),
+    ...(categories?.length ? { category: { in: categories } } : {}),
+    ...(tag ? { tags: { has: tag } } : {}),
+    ...(search
+      ? {
+          OR: [
+            { title: { contains: search, mode: 'insensitive' as const } },
+            { tags: { has: search.toLowerCase() } },
+          ],
+        }
+      : {}),
   };
 
   if (orderBy === 'random') {
@@ -53,10 +66,14 @@ export async function getPublishedPosts(options: {
   });
 }
 
-export async function getTopStoryOfDay(): Promise<PostWithAuthor | null> {
+export async function getTopStoryOfDay(categories?: string[]): Promise<PostWithAuthor | null> {
   const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
   return prisma.post.findFirst({
-    where: { status: 'PUBLISHED', createdAt: { gte: since } },
+    where: {
+      status: 'PUBLISHED',
+      createdAt: { gte: since },
+      ...(categories?.length ? { category: { in: categories } } : {}),
+    },
     include: postInclude,
     orderBy: [{ viewCount: 'desc' }, { createdAt: 'desc' }],
   });
@@ -114,9 +131,20 @@ export async function getUserProfile(username: string) {
   });
 }
 
+export async function getCommunityStats() {
+  const [storyCount, memberCount, commentCount, lastUser] = await Promise.all([
+    prisma.post.count({ where: { status: 'PUBLISHED' } }),
+    prisma.user.count(),
+    prisma.comment.count(),
+    prisma.user.findFirst({ orderBy: { createdAt: 'desc' }, select: { username: true, createdAt: true } }),
+  ]);
+  return { storyCount, memberCount, commentCount, lastUser };
+}
+
 export function displayAuthor(
   post: { isAnonymous: boolean; author: { username: string } | null },
+  anonymousLabel = 'ანონიმი',
 ): string {
-  if (post.isAnonymous || !post.author) return 'Anonymous';
+  if (post.isAnonymous || !post.author) return anonymousLabel;
   return post.author.username;
 }

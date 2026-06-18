@@ -4,6 +4,7 @@ export const SOCKET_CONFIG = {
   url: process.env.NEXT_PUBLIC_SOCKET_URL || '',
   pollingIntervalMs: 4000,
   generalRoomId: 'general',
+  liveRoomId: 'live',
 };
 
 export type ChatMessagePayload = {

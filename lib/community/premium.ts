@@ -8,4 +8,4 @@ export function canViewPremiumContent(user: Pick<User, 'isPremium'> | null, isPr
 }
 
 export const PREMIUM_LOCK_MESSAGE =
-  'This content is available to Premium members';
+  'ეს მასალა მხოლოდ Premium წევრებს ხელმისაწვდომია';
