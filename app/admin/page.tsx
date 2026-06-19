@@ -1,43 +1,48 @@
 import Link from 'next/link';
+import { AdminShell } from '@/components/admin/AdminShell';
 import { getCategoryLabel, getCategoryEmoji } from '@/lib/blog-categories';
-import { requireAuth, clearSessionCookie } from '@/lib/auth';
 import { recordPrimaryTitle } from '@/lib/admin-blog';
+import { getCommunityAuditStats } from '@/lib/admin-community';
+import { requireAuth } from '@/lib/auth';
 import { getAllRecordsAsync, getStorageMode } from '@/lib/blog-store';
-import { redirect } from 'next/navigation';
-
-async function logoutAction() {
-  'use server';
-  await clearSessionCookie();
-  redirect('/admin/login/');
-}
+import { safeCommunity } from '@/lib/community/safe';
 
 export default async function AdminDashboardPage() {
   await requireAuth();
   const records = await getAllRecordsAsync(true);
   const storage = getStorageMode();
+  const communityStats = await safeCommunity(
+    () => getCommunityAuditStats(),
+    { posts: 0, comments: 0, messages: 0, users: 0 },
+  );
 
   return (
-    <div className="admin-shell">
-      <header className="admin-header">
-        <div className="admin-header__brand">
-          <Link href="/admin/">GEO<span>ESKORT</span> Admin</Link>
+    <AdminShell section="blog">
+      <main className="admin-main admin-main--wide">
+        <div className="admin-dashboard__head">
+          <h1>Admin</h1>
+          <p className="admin-muted">Blog CMS and community moderation</p>
         </div>
-        <nav className="admin-header__nav">
-          <Link href="/" className="admin-btn admin-btn--ghost" target="_blank">
-            View site ↗
-          </Link>
-          <Link href="/admin/posts/new/" className="admin-btn admin-btn--primary">
-            + New post
-          </Link>
-          <form action={logoutAction}>
-            <button type="submit" className="admin-btn admin-btn--ghost">
-              Log out
-            </button>
-          </form>
-        </nav>
-      </header>
 
-      <main className="admin-main">
+        <div className="admin-hub">
+          <Link href="/admin/community/" className="admin-hub__card admin-hub__card--primary">
+            <span className="admin-hub__label">Stories &amp; chat moderation</span>
+            <strong className="admin-hub__title">Community audit</strong>
+            <p className="admin-muted">
+              {communityStats.posts} posts · {communityStats.comments} comments · {communityStats.messages} messages
+            </p>
+            <span className="admin-hub__cta">Review &amp; edit →</span>
+          </Link>
+          <div className="admin-hub__card">
+            <span className="admin-hub__label">SEO articles</span>
+            <strong className="admin-hub__title">Blog posts</strong>
+            <p className="admin-muted">{records.length} published articles</p>
+            <Link href="/admin/posts/new/" className="admin-hub__cta admin-hub__cta--inline">
+              + New blog post
+            </Link>
+          </div>
+        </div>
+
         {storage === 'unconfigured' && (
           <div className="admin-alert admin-alert--error">
             <strong>Production storage not configured.</strong> Vercel cannot write files to disk.
@@ -50,14 +55,14 @@ export default async function AdminDashboardPage() {
           </div>
         )}
 
-        <div className="admin-dashboard__head">
-          <h1>Blog posts</h1>
-          <p className="admin-muted">{records.length} posts</p>
-        </div>
-
         <div className="admin-alert admin-alert--info" style={{ marginBottom: '1.5rem' }}>
           <strong>Premium (archived):</strong> disabled — app is fully free.{' '}
           <Link href="/admin/premium/">View reference &amp; reactivation guide →</Link>
+        </div>
+
+        <div className="admin-dashboard__head">
+          <h2>Blog posts</h2>
+          <p className="admin-muted">{records.length} posts</p>
         </div>
 
         {records.length === 0 ? (
@@ -101,6 +106,6 @@ export default async function AdminDashboardPage() {
           </div>
         )}
       </main>
-    </div>
+    </AdminShell>
   );
 }

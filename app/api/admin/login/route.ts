@@ -8,7 +8,7 @@ import {
 export async function POST(request: NextRequest) {
   const body = await request.json();
   const username = String(body.username || '').trim();
-  const password = String(body.password || '');
+  const password = String(body.password || '').trim();
 
   if (!verifyCredentials(username, password)) {
     return NextResponse.json({ error: 'Invalid username or password' }, { status: 401 });

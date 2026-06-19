@@ -10,7 +10,7 @@ export default async function AdminLoginPage() {
       <div className="admin-login__card">
         <div className="admin-login__brand">
           <span className="admin-login__logo">GEO<span>ESKORT</span></span>
-          <p>Blog Admin</p>
+          <p>Blog &amp; community moderation</p>
         </div>
         <LoginForm />
       </div>
