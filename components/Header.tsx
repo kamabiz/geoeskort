@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { SiteLogo } from '@/components/SiteLogo';
+import { CommunityLogoutButton } from '@/components/community/CommunityLogoutButton';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { getCommunityDict } from '@/lib/i18n/community-dict';
@@ -105,6 +106,9 @@ export function Header({ locale, dict, username }: HeaderProps) {
             >
               <span className="site-nav__label-caps">{cd.navCaps.profile}</span>
             </Link>
+            {username && (
+              <CommunityLogoutButton locale={locale} label={cd.auth.logout} className="site-nav__link site-nav__logout" />
+            )}
           </div>
 
           <div className="site-nav__mobile">
@@ -118,6 +122,13 @@ export function Header({ locale, dict, username }: HeaderProps) {
                 {item.label}
               </Link>
             ))}
+            {username && (
+              <CommunityLogoutButton
+                locale={locale}
+                label={cd.auth.logout}
+                className="site-nav__link site-nav__logout site-nav__logout--mobile"
+              />
+            )}
           </div>
         </nav>
       </div>

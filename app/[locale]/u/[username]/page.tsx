@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { CommunityPostCard } from '@/components/community/CommunityPostCard';
+import { CommunityLogoutButton } from '@/components/community/CommunityLogoutButton';
+import { getCurrentUser } from '@/lib/community/auth';
 import { getUserProfile } from '@/lib/community/posts';
 import { safeCommunity } from '@/lib/community/safe';
 import { getCommunityDict } from '@/lib/i18n/community-dict';
@@ -32,6 +34,8 @@ export default async function UserProfilePage({ params }: Props) {
 
   const profile = await safeCommunity(() => getUserProfile(username.toLowerCase()), null);
   if (!profile) notFound();
+  const currentUser = await getCurrentUser();
+  const isOwnProfile = currentUser?.username === profile.username;
 
   return (
     <main className="container community-page">
@@ -48,8 +52,13 @@ export default async function UserProfilePage({ params }: Props) {
             <li><strong>{profile._count.posts}</strong> {cd.user.stories}</li>
             <li><strong>{profile._count.comments}</strong> {cd.user.comments}</li>
           </ul>
-          <p style={{ marginTop: '0.75rem' }}>
-            <Link href={localePath(locale, '/user/subscription/')} className="btn btn--ghost">{cd.user.subscription}</Link>
+          <p style={{ marginTop: '0.75rem', display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+            {isOwnProfile && (
+              <>
+                <Link href={localePath(locale, '/user/subscription/')} className="btn btn--ghost">{cd.user.subscription}</Link>
+                <CommunityLogoutButton locale={locale} label={cd.auth.logout} className="btn btn--ghost community-logout-btn" />
+              </>
+            )}
           </p>
         </div>
       </header>

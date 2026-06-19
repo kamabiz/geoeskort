@@ -1,12 +1,5 @@
 import Link from 'next/link';
-import { clearSessionCookie } from '@/lib/auth';
-import { redirect } from 'next/navigation';
-
-async function logoutAction() {
-  'use server';
-  await clearSessionCookie();
-  redirect('/admin/login/');
-}
+import { AdminLogoutButton } from '@/components/admin/AdminLogoutButton';
 
 type Section = 'blog' | 'community';
 
@@ -32,6 +25,7 @@ export function AdminShell({
           <Link href={backHref} className="admin-header__brand">
             {backLabel}
           </Link>
+          <AdminLogoutButton />
         </header>
         {children}
       </div>
@@ -62,11 +56,7 @@ export function AdminShell({
           <Link href="/" className="admin-btn admin-btn--ghost admin-btn--sm" target="_blank">
             View site ↗
           </Link>
-          <form action={logoutAction}>
-            <button type="submit" className="admin-btn admin-btn--ghost admin-btn--sm">
-              Log out
-            </button>
-          </form>
+          <AdminLogoutButton />
         </nav>
       </header>
       {children}

@@ -270,6 +270,17 @@ button, .btn, .nav-toggle {
     color: #ffb3cc;
   }
 
+  .site-nav__logout {
+    font-family: inherit;
+    cursor: pointer;
+    background: transparent;
+  }
+
+  .site-nav__logout:hover {
+    color: var(--text);
+    border-color: var(--border);
+  }
+
   .site-nav__more {
     position: relative;
   }

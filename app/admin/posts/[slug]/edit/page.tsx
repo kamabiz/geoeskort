@@ -1,8 +1,8 @@
 import { PostEditor } from '@/components/admin/PostEditor';
+import { AdminShell } from '@/components/admin/AdminShell';
 import { requireAuth } from '@/lib/auth';
 import { recordToAdminForm } from '@/lib/admin-blog';
 import { getRecordBySlugAsync } from '@/lib/blog-store';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 type Props = { params: Promise<{ slug: string }> };
@@ -14,15 +14,10 @@ export default async function EditPostPage({ params }: Props) {
   if (!record) notFound();
 
   return (
-    <div className="admin-shell">
-      <header className="admin-header admin-header--minimal">
-        <Link href="/admin/" className="admin-header__brand">
-          ← Back to posts
-        </Link>
-      </header>
+    <AdminShell minimal backHref="/admin/" backLabel="← Back to admin">
       <main className="admin-main admin-main--wide">
         <PostEditor mode="edit" initial={recordToAdminForm(record)} originalSlug={slug} />
       </main>
-    </div>
+    </AdminShell>
   );
 }

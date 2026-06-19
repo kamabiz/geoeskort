@@ -73,7 +73,7 @@
   z-index: 50;
 }
 
-.admin-header--minimal { justify-content: flex-start; }
+.admin-header--minimal { justify-content: space-between; }
 
 .admin-header__brand {
   font-family: Georgia, serif;

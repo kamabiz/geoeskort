@@ -1,25 +1,12 @@
 import Link from 'next/link';
+import { AdminShell } from '@/components/admin/AdminShell';
 import { requireAuth } from '@/lib/auth';
 
 export default async function AdminPremiumReferencePage() {
   await requireAuth();
 
   return (
-    <div className="admin-shell">
-      <header className="admin-header">
-        <div className="admin-header__brand">
-          <Link href="/admin/">GEO<span>ESKORT</span> Admin</Link>
-        </div>
-        <nav className="admin-header__nav">
-          <Link href="/admin/" className="admin-btn admin-btn--ghost">
-            ← Dashboard
-          </Link>
-          <Link href="/" className="admin-btn admin-btn--ghost" target="_blank">
-            View site ↗
-          </Link>
-        </nav>
-      </header>
-
+    <AdminShell section="blog">
       <main className="admin-main">
         <div className="admin-dashboard__head">
           <h1>Premium reference (archived)</h1>
@@ -99,7 +86,11 @@ NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_...`}</pre>
             <li>Test checkout, points redeem, content locks, chat/DM gates</li>
           </ol>
         </section>
+
+        <p style={{ marginTop: '1.5rem' }}>
+          <Link href="/admin/" className="admin-btn admin-btn--ghost">← Dashboard</Link>
+        </p>
       </main>
-    </div>
+    </AdminShell>
   );
 }
