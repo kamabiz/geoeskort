@@ -32,6 +32,7 @@ export default async function EditCommunityCommentPage({ params }: Props) {
             id: comment.id,
             body: comment.body,
             isAnonymous: comment.isAnonymous,
+            archived: !!comment.archivedAt,
             authorLabel: comment.isAnonymous || !comment.author ? 'Anonymous' : comment.author.username,
             createdAt: comment.createdAt.toISOString(),
             post: {

@@ -467,6 +467,33 @@
 .admin-badge--warn { background: rgba(232, 168, 56, 0.15); color: var(--admin-gold); }
 .admin-pagination { display: flex; align-items: center; gap: 1rem; margin-top: 1.5rem; }
 
+.admin-filter-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.75rem 0 0.25rem;
+}
+.admin-filter-pills__pill {
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--admin-border);
+  color: var(--admin-muted);
+  font-size: 0.8rem;
+  text-decoration: none;
+}
+.admin-filter-pills__pill--active {
+  border-color: rgba(232, 168, 56, 0.45);
+  color: var(--admin-gold);
+  background: var(--admin-gold-dim);
+}
+.admin-moderation-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+}
+.admin-moderation-actions--compact .admin-btn { margin-bottom: 0.15rem; }
+
 /* Admin hub */
 .admin-hub {
   display: grid;

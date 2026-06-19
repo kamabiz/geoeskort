@@ -20,10 +20,16 @@ export async function PATCH(request: Request, { params }: Params) {
     body?: string;
     category?: string;
     tags?: string[];
-    status?: 'DRAFT' | 'PUBLISHED';
+    status?: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
     isAnonymous?: boolean;
     isPremium?: boolean;
   } = {};
+
+  if (body.archive === true) {
+    data.status = 'ARCHIVED';
+  } else if (body.restore === true) {
+    data.status = 'PUBLISHED';
+  }
 
   if (typeof body.title === 'string') {
     const title = body.title.trim();
@@ -44,7 +50,9 @@ export async function PATCH(request: Request, { params }: Params) {
   if (Array.isArray(body.tags)) {
     data.tags = body.tags.filter((t: unknown) => typeof t === 'string').map((t: string) => t.trim().toLowerCase()).filter(Boolean);
   }
-  if (body.status === 'DRAFT' || body.status === 'PUBLISHED') data.status = body.status;
+  if (body.status === 'DRAFT' || body.status === 'PUBLISHED' || body.status === 'ARCHIVED') {
+    data.status = body.status;
+  }
   if (typeof body.isAnonymous === 'boolean') data.isAnonymous = body.isAnonymous;
   if (typeof body.isPremium === 'boolean') data.isPremium = body.isPremium;
 

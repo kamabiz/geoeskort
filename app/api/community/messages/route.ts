@@ -60,6 +60,7 @@ export async function GET(request: NextRequest) {
   const messages = await prisma.message.findMany({
     where: {
       ...where,
+      archivedAt: null,
       ...(since ? { createdAt: { gt: new Date(since) } } : {}),
     },
     orderBy: { createdAt: 'asc' },

@@ -47,30 +47,55 @@ export async function revalidateCommunityMessages(): Promise<void> {
 }
 
 export type CommunityAuditTab = 'posts' | 'comments' | 'messages' | 'users';
+export type CommunityAuditFilter = 'live' | 'archived' | 'all';
 
-export async function getCommunityAuditStats() {
-  const [posts, comments, messages, users] = await Promise.all([
-    prisma.post.count(),
-    prisma.comment.count(),
-    prisma.message.count(),
-    prisma.user.count(),
-  ]);
-  return { posts, comments, messages, users };
+function postFilterWhere(filter: CommunityAuditFilter) {
+  if (filter === 'live') return { status: 'PUBLISHED' as const };
+  if (filter === 'archived') return { status: 'ARCHIVED' as const };
+  return {};
 }
 
-export async function getCommunityAuditPosts(options: { page?: number; q?: string } = {}) {
+function archivedAtFilterWhere(filter: CommunityAuditFilter) {
+  if (filter === 'live') return { archivedAt: null };
+  if (filter === 'archived') return { archivedAt: { not: null } };
+  return {};
+}
+
+export async function getCommunityAuditStats() {
+  const [posts, comments, messages, users, archivedPosts, archivedComments, archivedMessages] =
+    await Promise.all([
+      prisma.post.count(),
+      prisma.comment.count(),
+      prisma.message.count(),
+      prisma.user.count(),
+      prisma.post.count({ where: { status: 'ARCHIVED' } }),
+      prisma.comment.count({ where: { archivedAt: { not: null } } }),
+      prisma.message.count({ where: { archivedAt: { not: null } } }),
+    ]);
+  return { posts, comments, messages, users, archivedPosts, archivedComments, archivedMessages };
+}
+
+export async function getCommunityAuditPosts(options: {
+  page?: number;
+  q?: string;
+  filter?: CommunityAuditFilter;
+} = {}) {
   const page = Math.max(1, options.page ?? 1);
   const skip = (page - 1) * PAGE_SIZE;
   const q = options.q?.trim();
+  const filter = options.filter ?? 'all';
 
-  const where = q
-    ? {
-        OR: [
-          { title: { contains: q, mode: 'insensitive' as const } },
-          { body: { contains: q, mode: 'insensitive' as const } },
-        ],
-      }
-    : undefined;
+  const where = {
+    ...postFilterWhere(filter),
+    ...(q
+      ? {
+          OR: [
+            { title: { contains: q, mode: 'insensitive' as const } },
+            { body: { contains: q, mode: 'insensitive' as const } },
+          ],
+        }
+      : {}),
+  };
 
   const [items, total] = await Promise.all([
     prisma.post.findMany({
@@ -89,12 +114,20 @@ export async function getCommunityAuditPosts(options: { page?: number; q?: strin
   return { items, total, page, pageSize: PAGE_SIZE, pages: Math.max(1, Math.ceil(total / PAGE_SIZE)) };
 }
 
-export async function getCommunityAuditComments(options: { page?: number; q?: string } = {}) {
+export async function getCommunityAuditComments(options: {
+  page?: number;
+  q?: string;
+  filter?: CommunityAuditFilter;
+} = {}) {
   const page = Math.max(1, options.page ?? 1);
   const skip = (page - 1) * PAGE_SIZE;
   const q = options.q?.trim();
+  const filter = options.filter ?? 'all';
 
-  const where = q ? { body: { contains: q, mode: 'insensitive' as const } } : undefined;
+  const where = {
+    ...archivedAtFilterWhere(filter),
+    ...(q ? { body: { contains: q, mode: 'insensitive' as const } } : {}),
+  };
 
   const [items, total] = await Promise.all([
     prisma.comment.findMany({
@@ -113,12 +146,20 @@ export async function getCommunityAuditComments(options: { page?: number; q?: st
   return { items, total, page, pageSize: PAGE_SIZE, pages: Math.max(1, Math.ceil(total / PAGE_SIZE)) };
 }
 
-export async function getCommunityAuditMessages(options: { page?: number; q?: string } = {}) {
+export async function getCommunityAuditMessages(options: {
+  page?: number;
+  q?: string;
+  filter?: CommunityAuditFilter;
+} = {}) {
   const page = Math.max(1, options.page ?? 1);
   const skip = (page - 1) * PAGE_SIZE;
   const q = options.q?.trim();
+  const filter = options.filter ?? 'all';
 
-  const where = q ? { body: { contains: q, mode: 'insensitive' as const } } : undefined;
+  const where = {
+    ...archivedAtFilterWhere(filter),
+    ...(q ? { body: { contains: q, mode: 'insensitive' as const } } : {}),
+  };
 
   const [items, total] = await Promise.all([
     prisma.message.findMany({

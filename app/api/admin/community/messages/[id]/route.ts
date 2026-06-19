@@ -14,13 +14,18 @@ export async function PATCH(request: Request, { params }: Params) {
   if (!existing) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
   const body = await request.json();
-  if (typeof body.body !== 'string') {
-    return NextResponse.json({ error: 'Body required' }, { status: 400 });
-  }
-  const text = body.body.trim();
-  if (!text) return NextResponse.json({ error: 'Body required' }, { status: 400 });
+  const data: { body?: string; archivedAt?: Date | null } = {};
 
-  const message = await prisma.message.update({ where: { id }, data: { body: text } });
+  if (body.archive === true) data.archivedAt = new Date();
+  if (body.restore === true) data.archivedAt = null;
+
+  if (typeof body.body === 'string') {
+    const text = body.body.trim();
+    if (!text) return NextResponse.json({ error: 'Body required' }, { status: 400 });
+    data.body = text;
+  }
+
+  const message = await prisma.message.update({ where: { id }, data });
   await revalidateCommunityMessages();
   return NextResponse.json({ ok: true, message });
 }

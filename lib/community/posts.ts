@@ -107,6 +107,7 @@ export async function incrementPostViews(id: string): Promise<void> {
 
 export async function getLatestComments(limit = 5) {
   return prisma.comment.findMany({
+    where: { archivedAt: null },
     take: limit,
     orderBy: { createdAt: 'desc' },
     include: {
@@ -135,7 +136,7 @@ export async function getCommunityStats() {
   const [storyCount, memberCount, commentCount, lastUser] = await Promise.all([
     prisma.post.count({ where: { status: 'PUBLISHED' } }),
     prisma.user.count(),
-    prisma.comment.count(),
+    prisma.comment.count({ where: { archivedAt: null } }),
     prisma.user.findFirst({ orderBy: { createdAt: 'desc' }, select: { username: true, createdAt: true } }),
   ]);
   return { storyCount, memberCount, commentCount, lastUser };

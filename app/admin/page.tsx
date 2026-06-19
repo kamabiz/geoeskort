@@ -13,7 +13,7 @@ export default async function AdminDashboardPage() {
   const storage = getStorageMode();
   const communityStats = await safeCommunity(
     () => getCommunityAuditStats(),
-    { posts: 0, comments: 0, messages: 0, users: 0 },
+    { posts: 0, comments: 0, messages: 0, users: 0, archivedPosts: 0, archivedComments: 0, archivedMessages: 0 },
   );
 
   return (

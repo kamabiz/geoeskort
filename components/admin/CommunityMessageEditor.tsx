@@ -1,22 +1,22 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useCommunityModerationMutations } from '@/components/admin/CommunityModerationActions';
 
 type MessageData = {
   id: string;
   body: string;
   roomId: string | null;
+  archived: boolean;
   senderLabel: string;
   recipientLabel: string | null;
   createdAt: string;
 };
 
 export function CommunityMessageEditor({ message }: { message: MessageData }) {
-  const router = useRouter();
+  const { archive, restore, remove, busy, error, setError } = useCommunityModerationMutations('messages', message.id);
   const [body, setBody] = useState(message.body);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
   async function save() {
@@ -32,26 +32,9 @@ export function CommunityMessageEditor({ message }: { message: MessageData }) {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Save failed');
       setSuccess('Saved.');
-      router.refresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Save failed');
     } finally {
-      setSaving(false);
-    }
-  }
-
-  async function remove() {
-    if (!confirm('Delete this message? This cannot be undone.')) return;
-    setSaving(true);
-    setError('');
-    try {
-      const res = await fetch(`/api/admin/community/messages/${message.id}/`, { method: 'DELETE' });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error || 'Delete failed');
-      router.push('/admin/community/?tab=messages');
-      router.refresh();
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Delete failed');
       setSaving(false);
     }
   }
@@ -71,12 +54,26 @@ export function CommunityMessageEditor({ message }: { message: MessageData }) {
           <p className="admin-muted">
             {context} · {new Date(message.createdAt).toLocaleString('ka-GE')}
           </p>
+          {message.archived && (
+            <p className="admin-badge admin-badge--warn" style={{ display: 'inline-block', marginTop: '0.5rem' }}>
+              Archived — hidden from site
+            </p>
+          )}
         </div>
         <div className="admin-editor__actions">
-          <button type="button" className="admin-btn admin-btn--danger" onClick={remove} disabled={saving}>
+          {message.archived ? (
+            <button type="button" className="admin-btn admin-btn--ghost" onClick={restore} disabled={busy || saving}>
+              Restore
+            </button>
+          ) : (
+            <button type="button" className="admin-btn admin-btn--ghost" onClick={archive} disabled={busy || saving}>
+              Archive
+            </button>
+          )}
+          <button type="button" className="admin-btn admin-btn--danger" onClick={remove} disabled={busy || saving}>
             Delete
           </button>
-          <button type="button" className="admin-btn admin-btn--primary" onClick={save} disabled={saving}>
+          <button type="button" className="admin-btn admin-btn--primary" onClick={save} disabled={busy || saving}>
             {saving ? 'Saving…' : 'Save'}
           </button>
         </div>

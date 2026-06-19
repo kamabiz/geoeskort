@@ -46,11 +46,12 @@ export default async function HistoryViewPage({ params }: Props) {
   const comments = await safeCommunity(
     () =>
       prisma.comment.findMany({
-        where: { postId: id, parentId: null },
+        where: { postId: id, parentId: null, archivedAt: null },
         orderBy: { createdAt: 'desc' },
         include: {
           author: { select: { username: true } },
           replies: {
+            where: { archivedAt: null },
             orderBy: { createdAt: 'asc' },
             include: { author: { select: { username: true } } },
           },

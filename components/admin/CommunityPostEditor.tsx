@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useCommunityModerationMutations } from '@/components/admin/CommunityModerationActions';
 import { COMMUNITY_CATEGORY_SLUGS, getCommunityCategoryLabel } from '@/lib/community/categories';
 
 type PostData = {
@@ -10,7 +11,7 @@ type PostData = {
   body: string;
   category: string;
   tags: string[];
-  status: 'DRAFT' | 'PUBLISHED';
+  status: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
   isAnonymous: boolean;
   isPremium: boolean;
   authorLabel: string;
@@ -20,6 +21,7 @@ type PostData = {
 
 export function CommunityPostEditor({ post }: { post: PostData }) {
   const router = useRouter();
+  const { archive, restore, remove, busy, error, setError } = useCommunityModerationMutations('posts', post.id);
   const [form, setForm] = useState({
     title: post.title,
     body: post.body,
@@ -30,8 +32,9 @@ export function CommunityPostEditor({ post }: { post: PostData }) {
     isPremium: post.isPremium,
   });
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+
+  const isArchived = post.status === 'ARCHIVED';
 
   async function save() {
     setSaving(true);
@@ -65,22 +68,6 @@ export function CommunityPostEditor({ post }: { post: PostData }) {
     }
   }
 
-  async function remove() {
-    if (!confirm('Delete this post and all its comments? This cannot be undone.')) return;
-    setSaving(true);
-    setError('');
-    try {
-      const res = await fetch(`/api/admin/community/posts/${post.id}/`, { method: 'DELETE' });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error || 'Delete failed');
-      router.push('/admin/community/?tab=posts');
-      router.refresh();
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Delete failed');
-      setSaving(false);
-    }
-  }
-
   return (
     <div className="admin-editor">
       <div className="admin-editor__top">
@@ -89,15 +76,31 @@ export function CommunityPostEditor({ post }: { post: PostData }) {
           <p className="admin-muted">
             {post.authorLabel} · {new Date(post.createdAt).toLocaleString('ka-GE')}
           </p>
+          {isArchived && (
+            <p className="admin-badge admin-badge--warn" style={{ display: 'inline-block', marginTop: '0.5rem' }}>
+              Archived — hidden from site
+            </p>
+          )}
         </div>
         <div className="admin-editor__actions">
-          <a href={post.publicPath} className="admin-btn admin-btn--ghost" target="_blank" rel="noopener">
-            View on site ↗
-          </a>
-          <button type="button" className="admin-btn admin-btn--danger" onClick={remove} disabled={saving}>
+          {!isArchived && (
+            <a href={post.publicPath} className="admin-btn admin-btn--ghost" target="_blank" rel="noopener">
+              View on site ↗
+            </a>
+          )}
+          {isArchived ? (
+            <button type="button" className="admin-btn admin-btn--ghost" onClick={restore} disabled={busy || saving}>
+              Restore
+            </button>
+          ) : (
+            <button type="button" className="admin-btn admin-btn--ghost" onClick={archive} disabled={busy || saving}>
+              Archive
+            </button>
+          )}
+          <button type="button" className="admin-btn admin-btn--danger" onClick={remove} disabled={busy || saving}>
             Delete
           </button>
-          <button type="button" className="admin-btn admin-btn--primary" onClick={save} disabled={saving}>
+          <button type="button" className="admin-btn admin-btn--primary" onClick={save} disabled={busy || saving}>
             {saving ? 'Saving…' : 'Save'}
           </button>
         </div>
@@ -146,9 +149,15 @@ export function CommunityPostEditor({ post }: { post: PostData }) {
             <span>Status</span>
             <select
               value={form.status}
-              onChange={(e) => setForm((f) => ({ ...f, status: e.target.value as 'DRAFT' | 'PUBLISHED' }))}
+              onChange={(e) =>
+                setForm((f) => ({
+                  ...f,
+                  status: e.target.value as 'DRAFT' | 'PUBLISHED' | 'ARCHIVED',
+                }))
+              }
             >
-              <option value="PUBLISHED">Published</option>
+              <option value="PUBLISHED">Published (live)</option>
+              <option value="ARCHIVED">Archived (hidden)</option>
               <option value="DRAFT">Draft (hidden)</option>
             </select>
           </label>

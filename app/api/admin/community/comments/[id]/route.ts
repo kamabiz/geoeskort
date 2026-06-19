@@ -17,7 +17,10 @@ export async function PATCH(request: Request, { params }: Params) {
   if (!existing) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
   const body = await request.json();
-  const data: { body?: string; isAnonymous?: boolean } = {};
+  const data: { body?: string; isAnonymous?: boolean; archivedAt?: Date | null } = {};
+
+  if (body.archive === true) data.archivedAt = new Date();
+  if (body.restore === true) data.archivedAt = null;
 
   if (typeof body.body === 'string') {
     const text = body.body.trim();

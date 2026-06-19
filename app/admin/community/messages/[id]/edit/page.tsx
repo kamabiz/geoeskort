@@ -31,6 +31,7 @@ export default async function EditCommunityMessagePage({ params }: Props) {
             id: message.id,
             body: message.body,
             roomId: message.roomId,
+            archived: !!message.archivedAt,
             senderLabel: message.sender.username,
             recipientLabel: message.recipient?.username ?? null,
             createdAt: message.createdAt.toISOString(),

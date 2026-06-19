@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { AdminShell } from '@/components/admin/AdminShell';
+import { CommunityModerationActions } from '@/components/admin/CommunityModerationActions';
 import {
   getCommunityAuditComments,
   getCommunityAuditMessages,
@@ -7,6 +8,7 @@ import {
   getCommunityAuditStats,
   getCommunityAuditUsers,
   getCommunityPostPublicPath,
+  type CommunityAuditFilter,
   type CommunityAuditTab,
 } from '@/lib/admin-community';
 import { getCommunityCategoryEmoji, getCommunityCategoryLabel } from '@/lib/community/categories';
@@ -15,7 +17,7 @@ import { makeExcerpt } from '@/lib/community/text';
 import { requireAuth } from '@/lib/auth';
 
 type Props = {
-  searchParams: Promise<{ tab?: string; page?: string; q?: string }>;
+  searchParams: Promise<{ tab?: string; page?: string; q?: string; filter?: string }>;
 };
 
 function parseTab(value: string | undefined): CommunityAuditTab {
@@ -23,10 +25,16 @@ function parseTab(value: string | undefined): CommunityAuditTab {
   return 'posts';
 }
 
-function auditHref(tab: CommunityAuditTab, page = 1, q?: string) {
+function parseFilter(value: string | undefined): CommunityAuditFilter {
+  if (value === 'live' || value === 'archived') return value;
+  return 'all';
+}
+
+function auditHref(tab: CommunityAuditTab, page = 1, q?: string, filter?: CommunityAuditFilter) {
   const params = new URLSearchParams({ tab });
   if (page > 1) params.set('page', String(page));
   if (q) params.set('q', q);
+  if (filter && filter !== 'all') params.set('filter', filter);
   return `/admin/community/?${params.toString()}`;
 }
 
@@ -48,14 +56,16 @@ export default async function AdminCommunityPage({ searchParams }: Props) {
 
   const sp = await searchParams;
   const tab = parseTab(sp.tab);
+  const filter = parseFilter(sp.filter);
   const page = Math.max(1, parseInt(sp.page || '1', 10) || 1);
   const q = sp.q?.trim() || undefined;
+  const listFilter = tab === 'users' ? undefined : filter;
 
   const [stats, postsData, commentsData, messagesData, usersData] = await Promise.all([
     getCommunityAuditStats(),
-    tab === 'posts' ? getCommunityAuditPosts({ page, q }) : null,
-    tab === 'comments' ? getCommunityAuditComments({ page, q }) : null,
-    tab === 'messages' ? getCommunityAuditMessages({ page, q }) : null,
+    tab === 'posts' ? getCommunityAuditPosts({ page, q, filter: listFilter }) : null,
+    tab === 'comments' ? getCommunityAuditComments({ page, q, filter: listFilter }) : null,
+    tab === 'messages' ? getCommunityAuditMessages({ page, q, filter: listFilter }) : null,
     tab === 'users' ? getCommunityAuditUsers({ page, q }) : null,
   ]);
 
@@ -81,12 +91,13 @@ export default async function AdminCommunityPage({ searchParams }: Props) {
         <div className="admin-dashboard__head">
           <h1>Community audit</h1>
           <p className="admin-muted">
-            User stories, forum posts, comments, and chat messages — edit or delete anything that breaks the rules.
+            User stories, forum posts, comments, and chat messages — archive to hide, delete only when permanent removal is needed.
           </p>
         </div>
 
         <form className="admin-audit-search" method="get">
           <input type="hidden" name="tab" value={tab} />
+          {listFilter && filter !== 'all' && <input type="hidden" name="filter" value={filter} />}
           <input
             type="search"
             name="q"
@@ -98,17 +109,37 @@ export default async function AdminCommunityPage({ searchParams }: Props) {
             Search
           </button>
           {q && (
-            <Link href={auditHref(tab)} className="admin-btn admin-btn--ghost admin-btn--sm">
+            <Link href={auditHref(tab, 1, undefined, filter)} className="admin-btn admin-btn--ghost admin-btn--sm">
               Clear
             </Link>
           )}
         </form>
 
+        {tab !== 'users' && (
+          <nav className="admin-filter-pills" aria-label="Visibility filter">
+            {(
+              [
+                ['all', 'All'],
+                ['live', 'Live on site'],
+                ['archived', 'Archived'],
+              ] as const
+            ).map(([value, label]) => (
+              <Link
+                key={value}
+                href={auditHref(tab, 1, q, value)}
+                className={`admin-filter-pills__pill${filter === value ? ' admin-filter-pills__pill--active' : ''}`}
+              >
+                {label}
+              </Link>
+            ))}
+          </nav>
+        )}
+
         <nav className="admin-tabs admin-tabs--page" aria-label="Community sections">
           {tabs.map((t) => (
             <Link
               key={t.id}
-              href={auditHref(t.id, 1, q)}
+              href={auditHref(t.id, 1, q, t.id === 'users' ? undefined : filter)}
               className={`admin-tabs__tab${tab === t.id ? ' admin-tabs__tab--active' : ''}`}
             >
               {t.label} ({t.count})
@@ -118,7 +149,11 @@ export default async function AdminCommunityPage({ searchParams }: Props) {
 
         <p className="admin-muted admin-audit-meta">
           Showing page {data.page} of {data.pages}
+          {filter !== 'all' && tab !== 'users' ? ` · ${filter}` : ''}
           {q ? ` · search: “${q}”` : ''}
+          {stats.archivedPosts + stats.archivedComments + stats.archivedMessages > 0 && (
+            <> · {stats.archivedPosts} archived posts, {stats.archivedComments} comments, {stats.archivedMessages} messages</>
+          )}
         </p>
 
         {tab === 'posts' && postsData && (
@@ -148,23 +183,29 @@ export default async function AdminCommunityPage({ searchParams }: Props) {
                       {getCommunityCategoryLabel(post.category)}
                     </td>
                     <td>
-                      <span className={`admin-badge admin-badge--${post.status === 'PUBLISHED' ? 'ok' : 'warn'}`}>
+                      <span className={`admin-badge admin-badge--${post.status === 'PUBLISHED' ? 'ok' : post.status === 'ARCHIVED' ? 'warn' : 'warn'}`}>
                         {post.status}
                       </span>
                     </td>
                     <td>{post.createdAt.toLocaleString('ka-GE')}</td>
                     <td>
-                      <Link href={`/admin/community/posts/${post.id}/edit/`} className="admin-btn admin-btn--sm">
-                        Edit
-                      </Link>
-                      <a
-                        href={getCommunityPostPublicPath(post.category, post.id)}
-                        className="admin-btn admin-btn--sm admin-btn--ghost"
-                        target="_blank"
-                        rel="noopener"
-                      >
-                        View
-                      </a>
+                      <CommunityModerationActions
+                        type="posts"
+                        id={post.id}
+                        archived={post.status === 'ARCHIVED'}
+                        editHref={`/admin/community/posts/${post.id}/edit/`}
+                        compact
+                      />
+                      {post.status === 'PUBLISHED' && (
+                        <a
+                          href={getCommunityPostPublicPath(post.category, post.id)}
+                          className="admin-btn admin-btn--sm admin-btn--ghost"
+                          target="_blank"
+                          rel="noopener"
+                        >
+                          View
+                        </a>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -201,9 +242,13 @@ export default async function AdminCommunityPage({ searchParams }: Props) {
                     </td>
                     <td>{comment.createdAt.toLocaleString('ka-GE')}</td>
                     <td>
-                      <Link href={`/admin/community/comments/${comment.id}/edit/`} className="admin-btn admin-btn--sm">
-                        Edit
-                      </Link>
+                      <CommunityModerationActions
+                        type="comments"
+                        id={comment.id}
+                        archived={comment.archivedAt != null}
+                        editHref={`/admin/community/comments/${comment.id}/edit/`}
+                        compact
+                      />
                     </td>
                   </tr>
                 ))}
@@ -236,9 +281,13 @@ export default async function AdminCommunityPage({ searchParams }: Props) {
                     </td>
                     <td>{message.createdAt.toLocaleString('ka-GE')}</td>
                     <td>
-                      <Link href={`/admin/community/messages/${message.id}/edit/`} className="admin-btn admin-btn--sm">
-                        Edit
-                      </Link>
+                      <CommunityModerationActions
+                        type="messages"
+                        id={message.id}
+                        archived={message.archivedAt != null}
+                        editHref={`/admin/community/messages/${message.id}/edit/`}
+                        compact
+                      />
                     </td>
                   </tr>
                 ))}
@@ -294,7 +343,7 @@ export default async function AdminCommunityPage({ searchParams }: Props) {
         {data.pages > 1 && (
           <nav className="admin-pagination">
             {data.page > 1 && (
-              <Link href={auditHref(tab, data.page - 1, q)} className="admin-btn admin-btn--sm">
+              <Link href={auditHref(tab, data.page - 1, q, filter)} className="admin-btn admin-btn--sm">
                 ← Previous
               </Link>
             )}
@@ -302,7 +351,7 @@ export default async function AdminCommunityPage({ searchParams }: Props) {
               Page {data.page} / {data.pages}
             </span>
             {data.page < data.pages && (
-              <Link href={auditHref(tab, data.page + 1, q)} className="admin-btn admin-btn--sm">
+              <Link href={auditHref(tab, data.page + 1, q, filter)} className="admin-btn admin-btn--sm">
                 Next →
               </Link>
             )}

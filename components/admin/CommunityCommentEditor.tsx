@@ -1,23 +1,23 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useCommunityModerationMutations } from '@/components/admin/CommunityModerationActions';
 
 type CommentData = {
   id: string;
   body: string;
   isAnonymous: boolean;
+  archived: boolean;
   authorLabel: string;
   createdAt: string;
   post: { id: string; title: string; category: string; publicPath: string };
 };
 
 export function CommunityCommentEditor({ comment }: { comment: CommentData }) {
-  const router = useRouter();
+  const { archive, restore, remove, busy, error, setError } = useCommunityModerationMutations('comments', comment.id);
   const [body, setBody] = useState(comment.body);
   const [isAnonymous, setIsAnonymous] = useState(comment.isAnonymous);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
   async function save() {
@@ -33,26 +33,9 @@ export function CommunityCommentEditor({ comment }: { comment: CommentData }) {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Save failed');
       setSuccess('Saved.');
-      router.refresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Save failed');
     } finally {
-      setSaving(false);
-    }
-  }
-
-  async function remove() {
-    if (!confirm('Delete this comment and its replies? This cannot be undone.')) return;
-    setSaving(true);
-    setError('');
-    try {
-      const res = await fetch(`/api/admin/community/comments/${comment.id}/`, { method: 'DELETE' });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error || 'Delete failed');
-      router.push('/admin/community/?tab=comments');
-      router.refresh();
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Delete failed');
       setSaving(false);
     }
   }
@@ -71,12 +54,26 @@ export function CommunityCommentEditor({ comment }: { comment: CommentData }) {
               {comment.post.title}
             </a>
           </p>
+          {comment.archived && (
+            <p className="admin-badge admin-badge--warn" style={{ display: 'inline-block', marginTop: '0.5rem' }}>
+              Archived — hidden from site
+            </p>
+          )}
         </div>
         <div className="admin-editor__actions">
-          <button type="button" className="admin-btn admin-btn--danger" onClick={remove} disabled={saving}>
+          {comment.archived ? (
+            <button type="button" className="admin-btn admin-btn--ghost" onClick={restore} disabled={busy || saving}>
+              Restore
+            </button>
+          ) : (
+            <button type="button" className="admin-btn admin-btn--ghost" onClick={archive} disabled={busy || saving}>
+              Archive
+            </button>
+          )}
+          <button type="button" className="admin-btn admin-btn--danger" onClick={remove} disabled={busy || saving}>
             Delete
           </button>
-          <button type="button" className="admin-btn admin-btn--primary" onClick={save} disabled={saving}>
+          <button type="button" className="admin-btn admin-btn--primary" onClick={save} disabled={busy || saving}>
             {saving ? 'Saving…' : 'Save'}
           </button>
         </div>

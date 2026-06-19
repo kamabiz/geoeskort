@@ -10,6 +10,7 @@ datasource db {
 enum PostStatus {
   DRAFT
   PUBLISHED
+  ARCHIVED
 }
 
 enum PointAction {
@@ -77,6 +78,7 @@ model Comment {
   parentId  String?
   isAnonymous Boolean @default(false)
   body      String   @db.Text
+  archivedAt DateTime?
   createdAt DateTime @default(now())
 
   post    Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
@@ -85,7 +87,7 @@ model Comment {
   replies Comment[] @relation("CommentReplies")
   upvotes CommentUpvote[]
 
-  @@index([postId, createdAt(sort: Desc)])
+  @@index([postId, archivedAt, createdAt(sort: Desc)])
   @@index([createdAt(sort: Desc)])
 }
 
@@ -95,12 +97,13 @@ model Message {
   recipientId String?
   roomId      String?
   body        String   @db.Text
+  archivedAt  DateTime?
   createdAt   DateTime @default(now())
 
   sender    User  @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
   recipient User? @relation("ReceivedMessages", fields: [recipientId], references: [id], onDelete: Cascade)
 
-  @@index([roomId, createdAt(sort: Desc)])
+  @@index([roomId, archivedAt, createdAt(sort: Desc)])
   @@index([senderId, recipientId, createdAt(sort: Desc)])
 }
 
