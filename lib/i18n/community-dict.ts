@@ -237,6 +237,7 @@ export type CommunityDict = {
     anonymous: string;
     premiumOnly: string;
     publish: string;
+    publishing: string;
     cancel: string;
     loginRequired: string;
   };
@@ -575,6 +576,7 @@ const ka: CommunityDict = {
     anonymous: 'ანონიმურად გამოქვეყნება',
     premiumOnly: 'მხოლოდ Premium-ისთვის',
     publish: 'გამოქვეყნება',
+    publishing: 'იტვირთება…',
     cancel: 'გაუქმება',
     loginRequired: 'ისტორიის დასამატებლად შედით ანგარიშში.',
   },

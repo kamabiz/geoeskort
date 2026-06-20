@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { SubmitPostForm } from '@/components/community/SubmitPostForm';
 import { getCurrentUser } from '@/lib/community/auth';
+import { isPremiumEnabled } from '@/lib/community/premium-config';
 import { getCommunityDict } from '@/lib/i18n/community-dict';
 import { isLocale } from '@/lib/i18n/config';
 import { localePath } from '@/lib/i18n/paths';
@@ -40,7 +41,12 @@ export default async function SubmitPage({ params, searchParams }: Props) {
         </div>
         <Link href={localePath(locale, '/history/')} className="btn btn--ghost">{cd.post.back}</Link>
       </div>
-      <SubmitPostForm locale={locale} defaultCategory={defaultCategory} moduleOnly={moduleOnly} />
+      <SubmitPostForm
+        locale={locale}
+        defaultCategory={defaultCategory}
+        moduleOnly={moduleOnly}
+        premiumOn={isPremiumEnabled()}
+      />
     </main>
   );
 }

@@ -95,6 +95,23 @@ export async function submitPost(formData: FormData) {
   if (!body || body.length < 20) throw new Error('Story body is too short');
   if (!isCommunityCategorySlug(category)) throw new Error('Invalid category');
 
+  const dedupSince = new Date(Date.now() - 5 * 60 * 1000);
+  const duplicate = await prisma.post.findFirst({
+    where: {
+      title,
+      body,
+      category,
+      createdAt: { gte: dedupSince },
+      ...(user
+        ? { authorId: user.id }
+        : { authorId: null, isAnonymous: true }),
+    },
+    orderBy: { createdAt: 'desc' },
+  });
+  if (duplicate) {
+    redirect(getStoryViewPath(duplicate.id));
+  }
+
   const post = await prisma.post.create({
     data: {
       title,
