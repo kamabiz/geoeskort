@@ -43,15 +43,24 @@ export default async function AdminDashboardPage() {
           </div>
         </div>
 
+        {storage === 'database' && (
+          <div className="admin-alert admin-alert--success">
+            <strong>Blog storage:</strong> Neon PostgreSQL (same database as community). Blob is no longer required.
+          </div>
+        )}
         {storage === 'unconfigured' && (
           <div className="admin-alert admin-alert--error">
-            <strong>Production storage not configured.</strong> Vercel cannot write files to disk.
-            Go to Vercel Dashboard → Storage → Blob → Create → Connect to project, then redeploy.
+            <strong>Production storage not configured.</strong> Set <code>DATABASE_URL</code> (Neon) on Vercel for blog + community.
           </div>
         )}
         {storage === 'filesystem' && (
           <div className="admin-alert admin-alert--info">
-            Storage: local files. On Vercel, add <code>BLOB_READ_WRITE_TOKEN</code> env var for persistent posts.
+            Storage: local <code>blog-content/</code> files. Production uses Neon via <code>DATABASE_URL</code>.
+          </div>
+        )}
+        {storage === 'blob' && (
+          <div className="admin-alert admin-alert--info">
+            Storage: Vercel Blob (legacy). Set <code>DATABASE_URL</code> to migrate blog posts to Neon automatically.
           </div>
         )}
 

@@ -22,6 +22,31 @@ enum PointAction {
   COMMENT_UPVOTED
 }
 
+enum BlogArticleStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model BlogArticle {
+  id           String            @id @default(cuid())
+  slug         String            @unique
+  category     String
+  publishedAt  String
+  status       BlogArticleStatus @default(PUBLISHED)
+  coverImage   String?
+  title        String
+  seoTitle     String            @default("")
+  excerpt      String            @db.Text
+  content      String            @db.Text
+  tags         String[]
+  focusKeyword String            @default("")
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@index([status, publishedAt(sort: Desc)])
+  @@index([category, status])
+}
+
 model User {
   id                   String    @id @default(cuid())
   username             String    @unique
