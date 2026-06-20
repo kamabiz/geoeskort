@@ -45,17 +45,25 @@ function isPostFile(name: string): boolean {
 }
 
 async function readFromBlob(): Promise<{ name: string; content: string }[]> {
-  const { blobs } = await list({ prefix: BLOB_PREFIX });
-  const posts: { name: string; content: string }[] = [];
-  for (const blob of blobs) {
-    const name = path.basename(blob.pathname);
-    if (!isPostFile(name)) continue;
-    const result = await get(blob.pathname, { access: 'private' });
-    if (!result) continue;
-    const content = await new Response(result.stream).text();
-    posts.push({ name, content });
+  try {
+    const { blobs } = await list({ prefix: BLOB_PREFIX });
+    const posts: { name: string; content: string }[] = [];
+    for (const blob of blobs) {
+      const name = path.basename(blob.pathname);
+      if (!isPostFile(name)) continue;
+      try {
+        const result = await get(blob.pathname, { access: 'private' });
+        if (!result) continue;
+        const content = await new Response(result.stream).text();
+        posts.push({ name, content });
+      } catch {
+        // Skip unreadable blob entries instead of failing the whole page.
+      }
+    }
+    return posts;
+  } catch {
+    return [];
   }
-  return posts;
 }
 
 function readFromFs(): { name: string; content: string }[] {
