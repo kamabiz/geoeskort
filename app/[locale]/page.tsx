@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { JsonLd } from '@/components/JsonLd';
 import { BlogCard } from '@/components/BlogCard';
+import { HomeCategoriesPanel } from '@/components/community/HomeCategoriesPanel';
 import { HomeForumSection } from '@/components/community/HomeForumSection';
 import { HomeMobileHub } from '@/components/community/HomeMobileHub';
 import { getCurrentUser } from '@/lib/community/auth';
@@ -118,16 +119,6 @@ export default async function HomePage({ params }: Props) {
                   </p>
                 )}
               </div>
-              <div className="hero__action-bar">
-                <Link href={localePath(locale, '/submit/')} className="hero__story-cta">
-                  <span className="hero__story-cta-icon" aria-hidden>✍️</span>
-                  <span className="hero__story-cta-text">
-                    <strong>{dict.hero.ctaPrimaryCaps}</strong>
-                    <small>{cd.home.ctaStoryHint}</small>
-                  </span>
-                  <span className="hero__story-cta-arrow" aria-hidden>→</span>
-                </Link>
-              </div>
             </div>
 
             <div className="hero__stats" role="list">
@@ -150,14 +141,11 @@ export default async function HomePage({ params }: Props) {
             </div>
           </div>
 
-          <nav className="dash-nav dash-nav--desktop" aria-label="მოდულები">
-            {cd.home.modules.map((mod) => (
-              <Link key={mod.href} href={localePath(locale, mod.href)} className="dash-nav__item">
-                <span className="dash-nav__icon" aria-hidden>{mod.icon}</span>
-                <span className="dash-nav__label">{mod.label}</span>
-              </Link>
-            ))}
-          </nav>
+          <HomeCategoriesPanel
+            locale={locale}
+            categoryCounts={categoryCounts}
+            className="home-hero-categories"
+          />
         </div>
         </section>
 

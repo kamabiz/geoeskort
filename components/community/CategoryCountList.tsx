@@ -1,5 +1,12 @@
 import Link from 'next/link';
-import { STORY_CATEGORIES, STORY_CATEGORY_SLUGS, MODULE_CATEGORIES } from '@/lib/community/categories';
+import {
+  STORY_CATEGORIES,
+  STORY_CATEGORY_SLUGS,
+  MODULE_CATEGORIES,
+  type StoryCategorySlug,
+} from '@/lib/community/categories';
+import { isPremiumEnabled } from '@/lib/community/premium-config';
+import { getCommunityDict } from '@/lib/i18n/community-dict';
 import { localePath } from '@/lib/i18n/paths';
 import type { Locale } from '@/lib/i18n/types';
 
@@ -9,8 +16,56 @@ type Props = {
   variant?: 'list' | 'chips';
 };
 
+function getVisibleStorySlugs(): StoryCategorySlug[] {
+  return STORY_CATEGORY_SLUGS.filter(
+    (slug) => isPremiumEnabled() || !STORY_CATEGORIES[slug].isPremiumOnly,
+  );
+}
+
 export function CategoryCountList({ locale, counts, variant = 'list' }: Props) {
+  const cd = getCommunityDict(locale);
   const countMap = new Map(counts.map((c) => [c.category, c.count]));
+  const storySlugs = getVisibleStorySlugs();
+  const categorySlugs = storySlugs.filter(
+    (slug) => slug !== 'various' && slug !== 'restricted-stories',
+  );
+  const premiumStorySlugs = storySlugs.filter((slug) => slug === 'restricted-stories');
+  const showVarious = storySlugs.includes('various');
+  const allStoriesCount = storySlugs.reduce(
+    (sum, slug) => sum + (countMap.get(slug) ?? 0),
+    0,
+  );
+
+  const renderStoryChip = (slug: StoryCategorySlug) => {
+    const cat = STORY_CATEGORIES[slug];
+    return (
+      <Link
+        key={slug}
+        href={localePath(locale, `/history/?category=${slug}`)}
+        className={`forum-chip${cat.isPremiumOnly ? ' forum-chip--premium' : ''}`}
+      >
+        <div className="forum-chip__head">
+          <span className="forum-chip__emoji">{cat.emoji}</span>
+          <span className="forum-chip__count">{countMap.get(slug) ?? 0}</span>
+        </div>
+        <span className="forum-chip__label">{cat.label}</span>
+      </Link>
+    );
+  };
+
+  const renderAllStoriesChip = () => (
+    <Link
+      key="all-stories"
+      href={localePath(locale, '/history/')}
+      className="forum-chip"
+    >
+      <div className="forum-chip__head">
+        <span className="forum-chip__emoji">📚</span>
+        <span className="forum-chip__count">{allStoriesCount}</span>
+      </div>
+      <span className="forum-chip__label">{cd.home.allStoriesChip}</span>
+    </Link>
+  );
 
   if (variant === 'chips') {
     return (
@@ -18,22 +73,9 @@ export function CategoryCountList({ locale, counts, variant = 'list' }: Props) {
         <div className="forum-chips-section">
           <p className="forum-chips-section__title">ისტორიები</p>
           <div className="forum-chips">
-            {STORY_CATEGORY_SLUGS.map((slug) => {
-              const cat = STORY_CATEGORIES[slug];
-              return (
-                <Link
-                  key={slug}
-                  href={localePath(locale, `/history/?category=${slug}`)}
-                  className={`forum-chip${cat.isPremiumOnly ? ' forum-chip--premium' : ''}`}
-                >
-                  <div className="forum-chip__head">
-                    <span className="forum-chip__emoji">{cat.emoji}</span>
-                    <span className="forum-chip__count">{countMap.get(slug) ?? 0}</span>
-                  </div>
-                  <span className="forum-chip__label">{cat.label}</span>
-                </Link>
-              );
-            })}
+            {categorySlugs.map(renderStoryChip)}
+            {renderAllStoriesChip()}
+            {premiumStorySlugs.map(renderStoryChip)}
           </div>
         </div>
         <div className="forum-chips-section">
@@ -48,6 +90,7 @@ export function CategoryCountList({ locale, counts, variant = 'list' }: Props) {
                 <span className="forum-chip__label">{mod.label}</span>
               </Link>
             ))}
+            {showVarious && renderStoryChip('various')}
           </div>
         </div>
       </div>
@@ -56,7 +99,7 @@ export function CategoryCountList({ locale, counts, variant = 'list' }: Props) {
 
   return (
     <div className="community-categories">
-      {STORY_CATEGORY_SLUGS.map((slug) => (
+      {categorySlugs.map((slug) => (
         <Link
           key={slug}
           href={localePath(locale, `/history/?category=${slug}`)}
@@ -66,6 +109,29 @@ export function CategoryCountList({ locale, counts, variant = 'list' }: Props) {
           <strong>{countMap.get(slug) ?? 0}</strong>
         </Link>
       ))}
+      <Link href={localePath(locale, '/history/')} className="community-categories__item">
+        <span>📚 {cd.home.allStoriesChip}</span>
+        <strong>{allStoriesCount}</strong>
+      </Link>
+      {premiumStorySlugs.map((slug) => (
+        <Link
+          key={slug}
+          href={localePath(locale, `/history/?category=${slug}`)}
+          className="community-categories__item"
+        >
+          <span>{STORY_CATEGORIES[slug].emoji} {STORY_CATEGORIES[slug].label}</span>
+          <strong>{countMap.get(slug) ?? 0}</strong>
+        </Link>
+      ))}
+      {showVarious && (
+        <Link
+          href={localePath(locale, '/history/?category=various')}
+          className="community-categories__item"
+        >
+          <span>{STORY_CATEGORIES.various.emoji} {STORY_CATEGORIES.various.label}</span>
+          <strong>{countMap.get('various') ?? 0}</strong>
+        </Link>
+      )}
     </div>
   );
 }

@@ -45,8 +45,10 @@ export type CommunityDict = {
     noStories: string;
     beFirst: string;
     randomPicks: string;
+    randomPicksCaps: string;
     categories: string;
     categoriesCaps: string;
+    allStoriesChip: string;
     statsStories: string;
     statsOnline: string;
     statsMembers: string;
@@ -54,6 +56,7 @@ export type CommunityDict = {
     statsLastReg: string;
     newPost: string;
     greetingHello: string;
+    greetingAnd: string;
     greetingGuest: string;
     greetingAuthHint: string;
     greetingAuthLogin: string;
@@ -345,14 +348,17 @@ const ka: CommunityDict = {
     noStories: 'ჯერ არავინ გამოუქვეყნებია ისტორია.',
     beFirst: 'იყავი პირველი →',
     randomPicks: 'შემთხვევითი არჩევანი',
+    randomPicksCaps: 'ᲨᲔᲛᲗᲮᲕᲔᲗᲘ ᲐᲠჩᲔᲕᲐᲜᲘ',
     categories: 'კატეგორიები',
     categoriesCaps: 'ᲙᲐᲢᲔᲒᲝᲠᲘᲔᲑᲘ',
+    allStoriesChip: 'სექსუალური ისტორიები',
     statsStories: 'ისტორია',
     statsOnline: 'ონლაინ',
     statsMembers: 'წევრი',
     statsComments: 'კომენტარი',
     statsLastReg: 'ბოლო რეგისტრაცია',
     greetingHello: 'გამარჯობა',
+    greetingAnd: 'და',
     greetingGuest: 'სტუმარო',
     greetingAuthHint: 'გაიარე',
     greetingAuthLogin: 'ავტორიზაცია',

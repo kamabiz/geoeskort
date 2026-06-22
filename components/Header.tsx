@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { SiteLogo } from '@/components/SiteLogo';
-import { CommunityLogoutButton } from '@/components/community/CommunityLogoutButton';
+import { ProfileNavMenu } from '@/components/community/ProfileNavMenu';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { getCommunityDict } from '@/lib/i18n/community-dict';
@@ -52,7 +52,6 @@ export function Header({ locale, dict, username }: HeaderProps) {
 
   const navAll = [
     ...navDesktop,
-    { href: profileHref, label: cd.nav.profile, caps: cd.navCaps.profile, profile: true },
   ];
 
   const isActive = (href: string) => {
@@ -98,16 +97,15 @@ export function Header({ locale, dict, username }: HeaderProps) {
                 <span className="site-nav__label-caps">{item.caps}</span>
               </Link>
             ))}
-            <Link
-              href={profileHref}
-              className={linkClass({ href: profileHref, profile: true })}
-              onClick={() => setOpen(false)}
-            >
-              <span className="site-nav__label-caps">{cd.navCaps.profile}</span>
-            </Link>
-            {username && (
-              <CommunityLogoutButton locale={locale} label={cd.auth.logout} className="site-nav__link site-nav__logout" />
-            )}
+            <ProfileNavMenu
+              locale={locale}
+              username={username ?? null}
+              profileCaps={cd.navCaps.profile}
+              profileLabel={cd.nav.profile}
+              logoutLabel={cd.auth.logout}
+              isProfileActive={isActive(profileHref)}
+              variant="desktop"
+            />
           </div>
 
           <div className="site-nav__mobile">
@@ -121,13 +119,15 @@ export function Header({ locale, dict, username }: HeaderProps) {
                 {item.label}
               </Link>
             ))}
-            {username && (
-              <CommunityLogoutButton
-                locale={locale}
-                label={cd.auth.logout}
-                className="site-nav__link site-nav__logout site-nav__logout--mobile"
-              />
-            )}
+            <ProfileNavMenu
+              locale={locale}
+              username={username ?? null}
+              profileCaps={cd.navCaps.profile}
+              profileLabel={cd.nav.profile}
+              logoutLabel={cd.auth.logout}
+              isProfileActive={isActive(profileHref)}
+              variant="mobile"
+            />
           </div>
         </nav>
       </div>
