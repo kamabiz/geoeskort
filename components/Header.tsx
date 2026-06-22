@@ -38,7 +38,6 @@ export function Header({ locale, dict, username }: HeaderProps) {
     { href: localePath(locale, '/history/'), label: cd.nav.history, caps: cd.navCaps.history },
     { href: localePath(locale, '/questions/'), label: cd.nav.questions, caps: cd.navCaps.questions },
     { href: localePath(locale, '/conversationRoom/'), label: cd.nav.conversation, caps: cd.navCaps.conversation },
-    { href: localePath(locale, '/chat/'), label: cd.nav.chat, caps: cd.navCaps.chat, live: true },
   ];
 
   const navMore = [

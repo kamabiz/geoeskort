@@ -2615,6 +2615,14 @@ button, .btn, .nav-toggle {
   min-width: 0;
 }
 
+.forum-mobile-only {
+  display: none;
+}
+
+.forum-desktop-only {
+  display: grid;
+}
+
 .forum-chips {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -3328,6 +3336,8 @@ button, .btn, .nav-toggle {
   .community-grid { grid-template-columns: 1fr; }
 
   .forum-grid { grid-template-columns: 1fr; }
+  .forum-desktop-only { display: none; }
+  .forum-mobile-only { display: block; }
 
   .history-categories {
     flex-wrap: nowrap;

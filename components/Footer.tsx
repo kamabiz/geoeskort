@@ -43,7 +43,6 @@ export function Footer({ locale, dict, username }: Props) {
               <h4>{cd.footer.chatCaps}</h4>
               <ul>
                 <li><Link href={localePath(locale, '/conversationRoom/')}>{cd.nav.conversation}</Link></li>
-                <li><Link href={localePath(locale, '/chat/')}>{cd.nav.chat}</Link></li>
                 <li><Link href={localePath(locale, '/messages/')}>{cd.nav.messages}</Link></li>
               </ul>
             </div>

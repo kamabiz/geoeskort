@@ -86,10 +86,17 @@ export function HomeForumSection({
                 <div className="forum-block__head">
                   <h3>{cd.home.randomPicks}</h3>
                 </div>
-                <div className="forum-grid">
+                <div className="forum-grid forum-desktop-only">
                   {randomPosts.map((post) => (
                     <CommunityPostCard key={post.id} post={post} locale={locale} viewPath="history" />
                   ))}
+                </div>
+                <div className="forum-mobile-only">
+                  <ForumScrollRow itemCount={randomPosts.length}>
+                    {randomPosts.map((post) => (
+                      <CommunityPostCard key={post.id} post={post} locale={locale} viewPath="history" />
+                    ))}
+                  </ForumScrollRow>
                 </div>
               </div>
             )}

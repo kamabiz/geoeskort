@@ -304,7 +304,7 @@ export async function sendChatMessage(formData: FormData) {
   });
 
   await touchUserActivity(user.id);
-  revalidatePath(recipientId ? '/messages/' : roomId === 'live' ? '/chat/' : '/conversationRoom/');
+  revalidatePath(recipientId ? '/messages/' : '/conversationRoom/');
 }
 
 export async function heartbeat() {

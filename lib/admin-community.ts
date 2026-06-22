@@ -40,7 +40,6 @@ export async function revalidateCommunityComment(postId: string, category?: stri
 
 export async function revalidateCommunityMessages(): Promise<void> {
   const { revalidatePath } = await import('next/cache');
-  revalidatePath('/chat/', 'page');
   revalidatePath('/conversationRoom/', 'page');
   revalidatePath('/messages/', 'page');
 }

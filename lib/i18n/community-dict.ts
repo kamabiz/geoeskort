@@ -377,7 +377,6 @@ const ka: CommunityDict = {
       { href: '/medical/', icon: '🩺', label: 'სექსოლოგია' },
       { href: '/crush/', icon: '💕', label: 'ქრაში' },
       { href: '/conversationRoom/', icon: '🗣️', label: 'საუბარი' },
-      { href: '/chat/', icon: '💬', label: 'LIVE ჩათი' },
       { href: '/positionVariants/', icon: '📖', label: 'პოზები' },
       { href: '/zodiac/', icon: '♈', label: 'ზოდიაქო' },
     ],

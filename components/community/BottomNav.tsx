@@ -20,7 +20,12 @@ export function BottomNav({ locale, username }: Props) {
 
   const items = [
     { href: localePath(locale, '/'), label: cd.bottomNav.home, icon: '🏠', match: (p: string) => p === localePath(locale, '/') || p === `/${locale}` || p === `/${locale}/` },
-    { href: localePath(locale, '/chat/'), label: cd.bottomNav.chat, icon: '💬', match: (p: string) => p.startsWith(localePath(locale, '/chat')) },
+    {
+      href: localePath(locale, '/conversationRoom/'),
+      label: cd.nav.conversation,
+      icon: '🗣️',
+      match: (p: string) => p.startsWith(localePath(locale, '/conversationRoom')),
+    },
     { href: localePath(locale, '/messages/'), label: cd.bottomNav.messages, icon: '✉️', match: (p: string) => p.startsWith(localePath(locale, '/messages')) },
     { href: profileHref, label: cd.bottomNav.profile, icon: '👤', match: (p: string) => p.startsWith(profileHref.replace(/\/$/, '')) || p.includes('/user') || p.includes('/login') || p.includes('/u/') },
   ];
