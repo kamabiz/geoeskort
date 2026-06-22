@@ -100,10 +100,6 @@ export function SubmitPostForm({
       )}
 
       <label>
-        {cd.submit.tags}
-        <input name="tags" placeholder={cd.submit.tagsPlaceholder} />
-      </label>
-      <label>
         {cd.submit.body}
         <textarea name="body" required minLength={20} rows={12} placeholder={cd.submit.bodyPlaceholder} />
       </label>

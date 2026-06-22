@@ -22,6 +22,56 @@ function parseTags(raw: string): string[] {
   return [...new Set(raw.split(',').map((t) => t.trim().toLowerCase()).filter(Boolean))].slice(0, 8);
 }
 
+const TAG_STOP_WORDS = new Set([
+  'და',
+  'რომ',
+  'თუ',
+  'არის',
+  'იყო',
+  'რა',
+  'ეს',
+  'იმ',
+  'მის',
+  'ჩემ',
+  'ჩემი',
+  'შენი',
+  'თქვენი',
+  'ჩვენი',
+  'they',
+  'them',
+  'the',
+  'with',
+  'from',
+  'that',
+  'this',
+  'have',
+  'just',
+  'for',
+  'are',
+  'was',
+  'you',
+  'your',
+  'not',
+]);
+
+function extractAutoTags(text: string, limit = 4): string[] {
+  const tokens = text.toLowerCase().match(/[\p{L}\p{N}][\p{L}\p{N}-]{2,}/gu) ?? [];
+  const counts = new Map<string, number>();
+
+  for (const token of tokens) {
+    const normalized = token.replace(/^-+|-+$/g, '');
+    if (!normalized) continue;
+    if (TAG_STOP_WORDS.has(normalized)) continue;
+    if (/^\d+$/.test(normalized)) continue;
+    counts.set(normalized, (counts.get(normalized) ?? 0) + 1);
+  }
+
+  return [...counts.entries()]
+    .sort((a, b) => b[1] - a[1] || b[0].length - a[0].length || a[0].localeCompare(b[0]))
+    .slice(0, limit)
+    .map(([tag]) => tag);
+}
+
 export type AuthActionState = { error: string } | null;
 
 export async function registerUser(
@@ -88,7 +138,10 @@ export async function submitPost(formData: FormData) {
   const body = String(formData.get('body') || '').trim();
   const moduleContext = String(formData.get('moduleContext') || '').trim();
   const category = resolveSubmitCategory(String(formData.get('category') || '').trim(), moduleContext);
-  const tags = parseTags(String(formData.get('tags') || ''));
+  const tags = [...new Set([...extractAutoTags(`${title} ${body}`), ...parseTags(String(formData.get('tags') || ''))])].slice(
+    0,
+    8,
+  );
   const isAnonymous = formData.get('anonymous') === 'on';
   const isPremium = formData.get('isPremium') === 'on';
 
