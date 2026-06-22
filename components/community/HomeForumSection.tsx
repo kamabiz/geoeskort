@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { CategoryCountList } from '@/components/community/CategoryCountList';
 import { CommunityPostCard } from '@/components/community/CommunityPostCard';
+import { ForumScrollRow } from '@/components/community/ForumScrollRow';
 import { ForumSidebarExtras } from '@/components/community/ForumSidebarExtras';
 import { LatestCommentsSidebar } from '@/components/community/LatestCommentsSidebar';
 import { OnlineMembersSidebar } from '@/components/community/OnlineMembersSidebar';
@@ -72,11 +73,11 @@ export function HomeForumSection({
                   <Link href={localePath(locale, '/submit/')}>{cd.home.beFirst}</Link>
                 </p>
               ) : (
-                <div className="forum-scroll">
+                <ForumScrollRow itemCount={latestPosts.length}>
                   {latestPosts.map((post) => (
                     <CommunityPostCard key={post.id} post={post} locale={locale} variant="compact" viewPath="history" />
                   ))}
-                </div>
+                </ForumScrollRow>
               )}
             </div>
 

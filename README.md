@@ -2,7 +2,7 @@
 
 Static landing page + blog about nightlife and escort culture in Georgia.
 
-**Not a profile catalog** — profiles live on [KAMA.BIZ](https://kama.biz).
+**Not a profile catalog** — profiles live on [INTIMGRAM](https://intimgram.com).
 
 ## Stack
 
@@ -105,11 +105,11 @@ Or use **Admin** (`/admin/`) or **REST API** (`POST /api/posts/publish/`) — se
 | Sitemap | Static XML file | Dynamic `app/sitemap.ts` |
 | Canonical URLs | Manual `<link>` | `alternates.canonical` |
 | JSON-LD | Inline scripts | Server-rendered |
-| Old catalog URLs | nginx redirects | `next.config.ts` redirects → kama.biz |
+| Old catalog URLs | nginx redirects | `next.config.ts` redirects → intimgram.com |
 
 ## Deploy
 
-Deploy as a standard Next.js app (Vercel, Node, or `output: 'standalone'`). Old catalog paths redirect to KAMA.BIZ automatically.
+Deploy as a standard Next.js app (Vercel, Node, or `output: 'standalone'`). Old catalog paths redirect to INTIMGRAM automatically.
 
 ---
 

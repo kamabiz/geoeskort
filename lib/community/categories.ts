@@ -127,3 +127,40 @@ export function getCommunityCategoryEmoji(slug: string): string {
 export function getStoryViewPath(id: string): string {
   return `/history/view/${id}/`;
 }
+
+export function getCommunityPostViewPath(category: string, id: string): string {
+  if (category === 'questions-advice') return `/questions/view/${id}/`;
+  if (isStoryCategorySlug(category)) return getStoryViewPath(id);
+  if (isModuleCategorySlug(category)) return `/p/${id}/`;
+  return `/p/${id}/`;
+}
+
+export function getCommunityPostListPath(category: string): string {
+  if (category === 'questions-advice') return '/questions/';
+  if (isStoryCategorySlug(category)) return `/history/?category=${category}`;
+  if (isModuleCategorySlug(category)) return MODULE_CATEGORIES[category].route;
+  return '/history/';
+}
+
+/** Enforced when submitting from a module page (questions, crush, etc.) */
+export const SUBMIT_MODULE_CATEGORIES = {
+  questions: 'questions-advice',
+  crush: 'dating-crush',
+  medical: 'sexology',
+} as const;
+
+export type SubmitModuleContext = keyof typeof SUBMIT_MODULE_CATEGORIES;
+
+export function isSubmitModuleContext(value: string): value is SubmitModuleContext {
+  return value in SUBMIT_MODULE_CATEGORIES;
+}
+
+export function resolveSubmitCategory(
+  category: string,
+  moduleContext?: string,
+): string {
+  if (moduleContext && isSubmitModuleContext(moduleContext)) {
+    return SUBMIT_MODULE_CATEGORIES[moduleContext];
+  }
+  return category;
+}

@@ -88,7 +88,7 @@ Content-Type: application/json
 
 \`\`\`html
 <h2>Heading</h2>
-<p>Your content here. Link to <a href="https://kama.biz/tbilisi">KAMA.BIZ</a>.</p>
+<p>Your content here. Link to <a href="https://intimgram.com/tbilisi">INTIMGRAM</a>.</p>
 \`\`\`
 ```
 

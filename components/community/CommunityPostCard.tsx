@@ -1,5 +1,10 @@
 import Link from 'next/link';
-import { getCommunityCategoryLabel, getStoryViewPath } from '@/lib/community/categories';
+import {
+  getCommunityCategoryEmoji,
+  getCommunityCategoryLabel,
+  getCommunityPostViewPath,
+  getStoryViewPath,
+} from '@/lib/community/categories';
 import { makeExcerpt } from '@/lib/community/text';
 import { displayAuthor, type PostWithAuthor } from '@/lib/community/posts';
 import { getCommunityDict } from '@/lib/i18n/community-dict';
@@ -28,15 +33,19 @@ export function CommunityPostCard({
       ? localePath(locale, getStoryViewPath(post.id))
       : viewPath === 'questions'
         ? localePath(locale, `/questions/view/${post.id}/`)
-        : localePath(locale, `/p/${post.id}/`);
+        : localePath(locale, getCommunityPostViewPath(post.category, post.id));
   const author = displayAuthor(post, cd.post.anonymous);
   const excerpt = makeExcerpt(post.body, variant === 'compact' ? 90 : 160);
   const TitleTag = headingLevel;
+  const categoryEmoji = getCommunityCategoryEmoji(post.category);
 
   return (
     <article className={`community-card community-card--${variant}`}>
       <div className="community-card__meta">
-        <span className="community-card__cat">{getCommunityCategoryLabel(post.category)}</span>
+        <span className="community-card__cat">
+          <span className="community-card__cat-emoji" aria-hidden>{categoryEmoji}</span>
+          {getCommunityCategoryLabel(post.category)}
+        </span>
         {post.isPremium && <span className="community-card__premium">{cd.post.premium}</span>}
         <time dateTime={post.createdAt.toISOString()}>{formatDateKa(post.createdAt.toISOString())}</time>
       </div>

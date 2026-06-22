@@ -1,5 +1,7 @@
 import type { NextConfig } from 'next';
 
+const INTIMGRAM_URL = 'https://intimgram.com';
+
 const catalogPaths = [
   'tbilisi', 'batumi', 'kutaisi', 'rustavi', 'telavi',
   'girls', 'boys', 'trans', 'escorts', 'independent', 'dominatrix',
@@ -8,7 +10,7 @@ const catalogPaths = [
 
 const catalogRedirects = catalogPaths.map((p) => ({
   source: `/${p}`,
-  destination: `https://kama.biz/${p}`,
+  destination: `${INTIMGRAM_URL}/${p}`,
   permanent: true,
 }));
 
@@ -17,7 +19,7 @@ const appRedirects = [
   'add-profile', 'manage-profiles', 'superadmin', 'admin-blog', 'xgeorgia', 'kamage',
 ].map((p) => ({
   source: `/${p}/:path*`,
-  destination: 'https://kama.biz/',
+  destination: `${INTIMGRAM_URL}/`,
   permanent: true,
 }));
 

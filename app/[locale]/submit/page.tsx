@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { SubmitPostForm } from '@/components/community/SubmitPostForm';
 import { getCurrentUser } from '@/lib/community/auth';
+import { type SubmitModuleContext, isSubmitModuleContext } from '@/lib/community/categories';
 import { isPremiumEnabled } from '@/lib/community/premium-config';
 import { getCommunityDict } from '@/lib/i18n/community-dict';
 import { isLocale } from '@/lib/i18n/config';
@@ -13,6 +14,12 @@ type Props = {
   searchParams: Promise<{ module?: string }>;
 };
 
+const MODULE_CANCEL: Record<SubmitModuleContext, string> = {
+  questions: '/questions/',
+  crush: '/crush/',
+  medical: '/medical/',
+};
+
 export async function generateMetadata({ params }: Props) {
   const { locale: raw } = await params;
   if (!isLocale(raw)) return {};
@@ -22,14 +29,15 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function SubmitPage({ params, searchParams }: Props) {
   const { locale: raw } = await params;
-  const { module } = await searchParams;
+  const { module: moduleRaw } = await searchParams;
   if (!isLocale(raw)) return null;
   const locale = raw as Locale;
   const cd = getCommunityDict(locale);
   const user = await getCurrentUser();
 
-  const defaultCategory = module === 'crush' ? 'dating-crush' : module === 'questions' ? 'questions-advice' : undefined;
-  const moduleOnly = module === 'crush' ? 'crush' : module === 'questions' ? 'questions' : undefined;
+  const moduleKey = moduleRaw?.replace(/\/+$/, '');
+  const moduleContext = moduleKey && isSubmitModuleContext(moduleKey) ? moduleKey : undefined;
+  const cancelHref = moduleContext ? MODULE_CANCEL[moduleContext] : '/history/';
 
   return (
     <main className="container community-page">
@@ -39,12 +47,14 @@ export default async function SubmitPage({ params, searchParams }: Props) {
           <p className="community-page__lead">{cd.submit.lead}</p>
           {!user && <p className="history-tags-note">{cd.submit.loginRequired}</p>}
         </div>
-        <Link href={localePath(locale, '/history/')} className="btn btn--ghost">{cd.post.back}</Link>
+        <Link href={localePath(locale, cancelHref)} className="btn btn--ghost">
+          {cd.post.back}
+        </Link>
       </div>
       <SubmitPostForm
         locale={locale}
-        defaultCategory={defaultCategory}
-        moduleOnly={moduleOnly}
+        moduleContext={moduleContext}
+        cancelHref={cancelHref}
         premiumOn={isPremiumEnabled()}
       />
     </main>

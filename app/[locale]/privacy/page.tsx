@@ -2,6 +2,7 @@ import { isLocale } from '@/lib/i18n/config';
 import { getDictionary } from '@/lib/i18n/get-dictionary';
 import type { Locale } from '@/lib/i18n/types';
 import { pageMetadata } from '@/lib/seo';
+import { CONTACT_EMAIL } from '@/lib/site';
 import { notFound } from 'next/navigation';
 
 type Props = { params: Promise<{ locale: string }> };
@@ -31,7 +32,7 @@ export default async function PrivacyPage({ params }: Props) {
       <p>{dict.privacy.p2}</p>
       <p>
         {dict.privacy.p3}{' '}
-        <a href="mailto:kama.escorts@proton.me">kama.escorts@proton.me</a>
+        <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
       </p>
     </main>
   );

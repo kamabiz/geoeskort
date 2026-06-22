@@ -71,9 +71,33 @@ export type Dictionary = {
   };
   contact: {
     title: string;
-    p1: string;
-    email: string;
-    p2: string;
+    lead: string;
+    badge: string;
+    form: {
+      title: string;
+      name: string;
+      namePlaceholder: string;
+      email: string;
+      emailPlaceholder: string;
+      subject: string;
+      subjectPlaceholder: string;
+      message: string;
+      messagePlaceholder: string;
+      submit: string;
+      sending: string;
+      successTitle: string;
+      successBody: string;
+      errorValidation: string;
+      errorService: string;
+    };
+    aside: {
+      emailTitle: string;
+      emailDesc: string;
+      topicsTitle: string;
+      topics: string[];
+      responseTitle: string;
+      responseDesc: string;
+    };
   };
   privacy: {
     title: string;

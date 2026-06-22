@@ -1,7 +1,12 @@
 import Link from 'next/link';
 import { CommentThread } from '@/components/community/CommentThread';
 import { PremiumLockedBody } from '@/components/community/PremiumLockedBody';
-import { getCommunityCategoryLabel, getStoryViewPath } from '@/lib/community/categories';
+import {
+  getCommunityCategoryEmoji,
+  getCommunityCategoryLabel,
+  getCommunityPostListPath,
+  getStoryViewPath,
+} from '@/lib/community/categories';
 import { getCommunityDict } from '@/lib/i18n/community-dict';
 import { canViewPremiumContent } from '@/lib/community/premium';
 import { displayAuthor, type PostWithAuthor } from '@/lib/community/posts';
@@ -30,17 +35,21 @@ type Props = {
 
 export function StoryDetail({ locale, post, comments, canView, backHref }: Props) {
   const cd = getCommunityDict(locale);
-  const back = backHref ?? localePath(locale, `/history/?category=${post.category}`);
+  const back = backHref ?? localePath(locale, getCommunityPostListPath(post.category));
+  const categoryEmoji = getCommunityCategoryEmoji(post.category);
 
   return (
     <main className="container community-page">
       <article className="post-wrap">
         <Link href={back} className="post-back">
-          {cd.post.back} {getCommunityCategoryLabel(post.category)}
+          {cd.post.back} {categoryEmoji} {getCommunityCategoryLabel(post.category)}
         </Link>
         <header className="post-header">
           <div className="post-meta">
-            <span className="post-cat">{getCommunityCategoryLabel(post.category)}</span>
+            <span className="post-cat">
+              <span className="post-cat__emoji" aria-hidden>{categoryEmoji}</span>
+              {getCommunityCategoryLabel(post.category)}
+            </span>
             {post.isPremium && <span className="community-card__premium">{cd.post.premium}</span>}
             <time dateTime={post.createdAt.toISOString()}>{formatDateKa(post.createdAt.toISOString())}</time>
             <span>{post.viewCount} {cd.post.views}</span>

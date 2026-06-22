@@ -10,7 +10,7 @@ export type SeoAnalysis = {
   excerptLength: number;
   wordCount: number;
   hasH2: boolean;
-  hasKamaLink: boolean;
+  hasIntimgramLink: boolean;
   slugLength: number;
   suggestions: SeoSuggestion[];
 };
@@ -81,7 +81,7 @@ export function analyzeSeo(input: {
   const wordCount = stripHtml(input.content).split(/\s+/).filter(Boolean).length;
   const hasH2 = /<h2[\s>]/i.test(input.content);
   const hasH1 = /<h1[\s>]/i.test(input.content);
-  const hasKamaLink = /kama\.biz/i.test(input.content);
+  const hasIntimgramLink = /intimgram\.com/i.test(input.content);
   const slugLength = input.slug.length;
   const kw = input.focusKeyword?.toLowerCase().trim() || '';
   const titleLower = displayTitle.toLowerCase();
@@ -146,12 +146,12 @@ export function analyzeSeo(input: {
     suggestions.push({ id: 'h1-warn', type: 'warning', message: 'Remove H1 from content — the page title is already H1.' });
   }
 
-  // KAMA link
-  if (hasKamaLink) {
+  // INTIMGRAM link
+  if (hasIntimgramLink) {
     score += 10;
-    suggestions.push({ id: 'kama-link', type: 'success', message: 'Includes link to KAMA.BIZ — good for internal linking strategy.' });
+    suggestions.push({ id: 'intimgram-link', type: 'success', message: 'Includes link to INTIMGRAM — good for internal linking strategy.' });
   } else {
-    suggestions.push({ id: 'kama-missing', type: 'tip', message: 'Add a contextual link to kama.biz/tbilisi or relevant catalog page.' });
+    suggestions.push({ id: 'intimgram-missing', type: 'tip', message: 'Add a contextual link to intimgram.com/tbilisi or relevant catalog page.' });
   }
 
   // Focus keyword
@@ -201,7 +201,7 @@ export function analyzeSeo(input: {
     excerptLength,
     wordCount,
     hasH2,
-    hasKamaLink,
+    hasIntimgramLink,
     slugLength,
     suggestions,
   };

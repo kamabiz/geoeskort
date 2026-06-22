@@ -10,7 +10,7 @@ import { getDictionary } from '@/lib/i18n/get-dictionary';
 import { absoluteUrl, localePath } from '@/lib/i18n/paths';
 import type { Locale } from '@/lib/i18n/types';
 import { pageMetadata } from '@/lib/seo';
-import { SITE_NAME, SITE_URL } from '@/lib/site';
+import { SITE_NAME, SITE_URL, INTIMGRAM_URL } from '@/lib/site';
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
@@ -100,7 +100,7 @@ export default async function BlogPostPage({ params }: Props) {
           <div className="post-content" dangerouslySetInnerHTML={{ __html: post.content }} />
           <div className="post-cta">
             <p>{dict.blog.cta}</p>
-            <a href="https://kama.biz" className="btn btn--primary" rel="noopener noreferrer">
+            <a href={INTIMGRAM_URL} className="btn btn--primary" rel="noopener noreferrer">
               {dict.blog.ctaBtn}
             </a>
           </div>

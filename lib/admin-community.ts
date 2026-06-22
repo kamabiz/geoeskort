@@ -2,7 +2,7 @@ import 'server-only';
 
 import {
   COMMUNITY_CATEGORY_SLUGS,
-  getStoryViewPath,
+  getCommunityPostViewPath,
   isStoryCategorySlug,
   MODULE_CATEGORIES,
   type ModuleCategorySlug,
@@ -12,11 +12,10 @@ import { prisma } from '@/lib/prisma';
 const PAGE_SIZE = 50;
 
 export function getCommunityPostPublicPath(category: string, id: string): string {
-  if (category === 'questions-advice') return `/questions/view/${id}/`;
-  if (isStoryCategorySlug(category)) return getStoryViewPath(id);
+  if (isStoryCategorySlug(category)) return getCommunityPostViewPath(category, id);
   const mod = MODULE_CATEGORIES[category as ModuleCategorySlug];
-  if (mod) return `${mod.route}`;
-  return `/p/${id}/`;
+  if (mod && category !== 'questions-advice') return mod.route;
+  return getCommunityPostViewPath(category, id);
 }
 
 export async function revalidateCommunityPost(post: { id: string; category: string }): Promise<void> {

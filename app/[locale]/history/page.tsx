@@ -4,7 +4,10 @@ import { CommunityPostCard } from '@/components/community/CommunityPostCard';
 import {
   STORY_CATEGORIES,
   STORY_CATEGORY_SLUGS,
+  MODULE_CATEGORIES,
+  MODULE_CATEGORY_SLUGS,
   isStoryCategorySlug,
+  isModuleCategorySlug,
 } from '@/lib/community/categories';
 import { getPublishedPosts, type PostWithAuthor } from '@/lib/community/posts';
 import { safeCommunity } from '@/lib/community/safe';
@@ -45,14 +48,15 @@ export default async function HistoryPage({ params, searchParams }: Props) {
   const page = Math.max(1, parseInt(pageRaw || '1', 10) || 1);
   const limit = 12;
   const skip = (page - 1) * limit;
-  const activeCategory = category && isStoryCategorySlug(category) ? category : undefined;
+  const activeCategory = category && (isStoryCategorySlug(category) || isModuleCategorySlug(category))
+    ? category
+    : undefined;
 
   const [posts, popular] = await Promise.all([
     safeCommunity(
       () =>
         getPublishedPosts({
           category: activeCategory,
-          categories: activeCategory ? undefined : STORY_CATEGORY_SLUGS,
           limit,
           skip,
           search: q,
@@ -109,6 +113,16 @@ export default async function HistoryPage({ params, searchParams }: Props) {
             {STORY_CATEGORIES[slug].isPremiumOnly && (
               <span className="community-card__premium">Premium</span>
             )}
+          </Link>
+        ))}
+        {MODULE_CATEGORY_SLUGS.map((slug) => (
+          <Link
+            key={slug}
+            href={localePath(locale, `/history/?category=${slug}`)}
+            className={`forum-chip${activeCategory === slug ? ' is-active' : ''}`}
+          >
+            <span className="forum-chip__emoji">{MODULE_CATEGORIES[slug].emoji}</span>
+            {MODULE_CATEGORIES[slug].label}
           </Link>
         ))}
       </div>

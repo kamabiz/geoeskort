@@ -5,9 +5,27 @@ import { defaultLocale } from './config';
 /** Path segment after locale, always starts with / and uses trailing slash for pages */
 export function normalizePath(path: string): string {
   if (!path || path === '/') return '/';
-  let p = path.startsWith('/') ? path : `/${path}`;
-  if (!p.endsWith('/')) p += '/';
-  return p;
+
+  let pathname = path;
+  let search = '';
+  let hash = '';
+
+  const hashIndex = pathname.indexOf('#');
+  if (hashIndex !== -1) {
+    hash = pathname.slice(hashIndex);
+    pathname = pathname.slice(0, hashIndex);
+  }
+
+  const searchIndex = pathname.indexOf('?');
+  if (searchIndex !== -1) {
+    search = pathname.slice(searchIndex);
+    pathname = pathname.slice(0, searchIndex);
+  }
+
+  if (!pathname.startsWith('/')) pathname = `/${pathname}`;
+  if (pathname !== '/' && !pathname.endsWith('/')) pathname += '/';
+
+  return pathname + search + hash;
 }
 
 /** Public URL path (Georgian only — no locale prefix) */

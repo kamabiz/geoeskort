@@ -48,13 +48,13 @@ function pickEmoji(category: string, slug: string, tags: string[]): string {
 export function fixLinks(html: string): string {
   const ext = ' rel="noopener"';
   return html
-    .replace(/href="\/escorts"/g, `href="https://kama.biz/escorts"${ext}`)
-    .replace(/href="\/tbilisi"/g, `href="https://kama.biz/tbilisi"${ext}`)
-    .replace(/href="\/batumi"/g, `href="https://kama.biz/batumi"${ext}`)
-    .replace(/href="\/girls"/g, `href="https://kama.biz/girls"${ext}`)
-    .replace(/href="\/boys"/g, `href="https://kama.biz/boys"${ext}`)
-    .replace(/href="\/kutaisi"/g, `href="https://kama.biz/kutaisi"${ext}`)
-    .replace(/href="\/independent"/g, `href="https://kama.biz/independent"${ext}`);
+    .replace(/href="\/escorts"/g, `href="https://intimgram.com/escorts"${ext}`)
+    .replace(/href="\/tbilisi"/g, `href="https://intimgram.com/tbilisi"${ext}`)
+    .replace(/href="\/batumi"/g, `href="https://intimgram.com/batumi"${ext}`)
+    .replace(/href="\/girls"/g, `href="https://intimgram.com/girls"${ext}`)
+    .replace(/href="\/boys"/g, `href="https://intimgram.com/boys"${ext}`)
+    .replace(/href="\/kutaisi"/g, `href="https://intimgram.com/kutaisi"${ext}`)
+    .replace(/href="\/independent"/g, `href="https://intimgram.com/independent"${ext}`);
 }
 
 export function parseMarkdown(raw: string, filename?: string): LegacyMarkdownPost | null {

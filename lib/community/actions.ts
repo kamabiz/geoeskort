@@ -12,7 +12,7 @@ import {
   setUserSessionCookie,
   verifyPassword,
 } from '@/lib/community/auth';
-import { isCommunityCategorySlug, getStoryViewPath } from '@/lib/community/categories';
+import { isCommunityCategorySlug, getCommunityPostViewPath, resolveSubmitCategory } from '@/lib/community/categories';
 import { PREMIUM_POINTS_COST, PREMIUM_DAYS, awardPoints } from '@/lib/community/points';
 import { isPremiumEnabled } from '@/lib/community/premium-config';
 import { computeReadingTimeMinutes } from '@/lib/community/text';
@@ -86,7 +86,8 @@ export async function submitPost(formData: FormData) {
   const user = await getCurrentUser();
   const title = String(formData.get('title') || '').trim();
   const body = String(formData.get('body') || '').trim();
-  const category = String(formData.get('category') || '').trim();
+  const moduleContext = String(formData.get('moduleContext') || '').trim();
+  const category = resolveSubmitCategory(String(formData.get('category') || '').trim(), moduleContext);
   const tags = parseTags(String(formData.get('tags') || ''));
   const isAnonymous = formData.get('anonymous') === 'on';
   const isPremium = formData.get('isPremium') === 'on';
@@ -109,7 +110,7 @@ export async function submitPost(formData: FormData) {
     orderBy: { createdAt: 'desc' },
   });
   if (duplicate) {
-    redirect(getStoryViewPath(duplicate.id));
+    redirect(getCommunityPostViewPath(duplicate.category, duplicate.id));
   }
 
   const post = await prisma.post.create({
@@ -132,7 +133,10 @@ export async function submitPost(formData: FormData) {
   }
 
   revalidatePath('/');
-  redirect(getStoryViewPath(post.id));
+  revalidatePath('/history/', 'page');
+  revalidatePath('/questions/', 'page');
+  revalidatePath(getCommunityPostViewPath(post.category, post.id), 'page');
+  redirect(getCommunityPostViewPath(post.category, post.id));
 }
 
 export async function createComment(formData: FormData) {

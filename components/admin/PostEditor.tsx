@@ -19,11 +19,11 @@ type Props = {
   originalSlug?: string;
 };
 
-const KAMA_SNIPPETS = [
-  { label: 'KAMA.BIZ main', html: '<a href="https://kama.biz" rel="noopener">KAMA.BIZ</a>' },
-  { label: 'Tbilisi', html: '<a href="https://kama.biz/tbilisi" rel="noopener">ესკორტი თბილისი</a>' },
-  { label: 'Batumi', html: '<a href="https://kama.biz/batumi" rel="noopener">ესკორტი ბათუმი</a>' },
-  { label: 'Girls', html: '<a href="https://kama.biz/girls" rel="noopener">ესკორტ გოგონები</a>' },
+const INTIMGRAM_SNIPPETS = [
+  { label: 'INTIMGRAM main', html: '<a href="https://intimgram.com" rel="noopener">INTIMGRAM</a>' },
+  { label: 'Tbilisi', html: '<a href="https://intimgram.com/tbilisi" rel="noopener">ესკორტი თბილისი</a>' },
+  { label: 'Batumi', html: '<a href="https://intimgram.com/batumi" rel="noopener">ესკორტი ბათუმი</a>' },
+  { label: 'Girls', html: '<a href="https://intimgram.com/girls" rel="noopener">ესკორტ გოგონები</a>' },
 ];
 
 const QUICK_TAGS = ['tbilisi', 'batumi', 'georgia', 'guide', 'wine', 'khinkali', 'festival'];
@@ -362,7 +362,7 @@ export function PostEditor({ mode, initial, originalSlug }: Props) {
                   <button type="button" onClick={() => wrapSelection('strong')}>Bold</button>
                   <button type="button" onClick={() => wrapSelection('li')}>LI</button>
                   <span className="admin-toolbar__sep" />
-                  {KAMA_SNIPPETS.map((s) => (
+                  {INTIMGRAM_SNIPPETS.map((s) => (
                     <button key={s.label} type="button" onClick={() => insertHtml(s.html)} title={s.html}>
                       + {s.label}
                     </button>
@@ -436,7 +436,7 @@ export function PostEditor({ mode, initial, originalSlug }: Props) {
               <li className={form.slug.length >= 3 ? 'done' : ''}>Clean URL slug</li>
               <li className={analysis.hasH2 ? 'done' : ''}>H2 subheading</li>
               <li className={analysis.wordCount >= 300 ? 'done' : ''}>300+ words</li>
-              <li className={analysis.hasKamaLink ? 'done' : ''}>KAMA.BIZ link</li>
+              <li className={analysis.hasIntimgramLink ? 'done' : ''}>INTIMGRAM link</li>
               <li className={form.tags.length >= 2 ? 'done' : ''}>2+ tags</li>
             </ul>
           </section>

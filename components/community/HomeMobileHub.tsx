@@ -13,6 +13,8 @@ type Props = {
   latestPost: PostWithAuthor | null;
   categoryCounts: { category: string; count: number }[];
   onlineCount: number;
+  storyCount: number;
+  memberCount: number;
 };
 
 const HUB_MODULES = [
@@ -29,6 +31,8 @@ export function HomeMobileHub({
   latestPost,
   categoryCounts,
   onlineCount,
+  storyCount,
+  memberCount,
 }: Props) {
   const cd = getCommunityDict(locale);
   const countMap = new Map(categoryCounts.map((c) => [c.category, c.count]));
@@ -109,15 +113,15 @@ export function HomeMobileHub({
             <Link href={localePath(locale, '/register/')}>{cd.home.greetingAuthRegister}</Link>
           </p>
         )}
-        <div className="home-hub-card__actions">
-          <Link href={localePath(locale, '/history/')} className="home-hub-card__btn home-hub-card__btn--primary">
-            <span aria-hidden>📚</span>
-            {cd.nav.history}
-          </Link>
-          <Link href={localePath(locale, '/conversationRoom/')} className="home-hub-card__btn home-hub-card__btn--ghost">
-            <span aria-hidden>🗣️</span>
-            {cd.nav.conversation}
-          </Link>
+        <div className="home-hub-card__stats hero__stats" role="list">
+          <span className="hero__stat" role="listitem">
+            <strong className="hero__stat-value">{storyCount}</strong>
+            <span className="hero__stat-label">{cd.home.statsStories}</span>
+          </span>
+          <span className="hero__stat" role="listitem">
+            <strong className="hero__stat-value">{memberCount}</strong>
+            <span className="hero__stat-label">{cd.home.statsMembers}</span>
+          </span>
         </div>
       </div>
 

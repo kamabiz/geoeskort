@@ -87,6 +87,8 @@ export default async function HomePage({ params }: Props) {
             latestPost={latestPosts[0] ?? null}
             categoryCounts={categoryCounts}
             onlineCount={presence.onlineCount}
+            storyCount={stats.storyCount}
+            memberCount={stats.memberCount}
           />
 
           <div className="hero__shell hero__shell--desktop">
