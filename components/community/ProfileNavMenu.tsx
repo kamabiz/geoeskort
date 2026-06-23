@@ -8,7 +8,6 @@ import type { Locale } from '@/lib/i18n/types';
 type Props = {
   locale: Locale;
   username: string | null;
-  profileCaps: string;
   profileLabel: string;
   settingsLabel: string;
   logoutLabel: string;
@@ -19,7 +18,6 @@ type Props = {
 export function ProfileNavMenu({
   locale,
   username,
-  profileCaps,
   profileLabel,
   settingsLabel,
   logoutLabel,
@@ -41,11 +39,7 @@ export function ProfileNavMenu({
           isProfileActive ? 'is-active' : '',
         ].filter(Boolean).join(' ')}
       >
-        {variant === 'desktop' ? (
-          <span className="site-nav__label-caps">{profileCaps}</span>
-        ) : (
-          profileLabel
-        )}
+        {profileLabel}
       </Link>
     );
   }
@@ -81,7 +75,7 @@ export function ProfileNavMenu({
         aria-haspopup="menu"
         aria-expanded="false"
       >
-        <span className="site-nav__label-caps">{profileCaps}</span>
+        {profileLabel}
         <span className="site-nav__more-caret" aria-hidden>▾</span>
       </button>
       <div className="site-nav__dropdown" role="menu">

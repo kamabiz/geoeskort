@@ -65,7 +65,7 @@ export default async function HomePage({ params }: Props) {
       safeCommunity(() => getPresenceStats(), { totalMembers: 0, onlineCount: 0, onlineMembers: [] }),
       safeCommunity(() => getLatestComments(5), []),
       safeCommunity(() => getCommunityStats(), { storyCount: 0, memberCount: 0, commentCount: 0, lastUser: null }),
-      safeCommunity(() => getLeaderboard(10), []),
+      safeCommunity(() => getLeaderboard(5), []),
     ]);
 
   const topStory = topStories[0] ?? null;

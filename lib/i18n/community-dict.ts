@@ -387,7 +387,7 @@ const ka: CommunityDict = {
     sectionLead: 'აქ ჩანს უახლესი ისტორიები, აქტიური მომხმარებლები და საუბრის ბოლო ნაკადი.',
     topStory: 'დღის ტოპ ისტორია',
     topStories: 'ტოპ ისტორიები',
-    topStoriesCaps: 'ᲢᲝᲞ ᲘᲡᲢᲝᲠᲘᲔᲑᲘ',
+    topStoriesCaps: 'დღის ისტორიები',
     newPost: 'ახალი პოსტი',
     latestStories: 'ბოლო ისტორიები',
     latestStoriesCaps: 'ᲑᲝᲚᲝ ᲘᲡᲢᲝᲠᲘᲔᲑᲘ',

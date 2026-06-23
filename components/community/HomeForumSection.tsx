@@ -133,7 +133,7 @@ export function HomeForumSection({
                   />
                   <div className="forum-desktop-only forum-sidebar-stack">
                     <LatestCommentsSidebar locale={locale} comments={latestComments} variant="modern" />
-                    <PointsLeaderboardSidebar locale={locale} leaders={topLeaders} variant="modern" />
+                    <PointsLeaderboardSidebar locale={locale} leaders={topLeaders} variant="modern" limit={5} />
                   </div>
                 </aside>
               </div>

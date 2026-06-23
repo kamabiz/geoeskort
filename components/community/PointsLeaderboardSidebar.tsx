@@ -16,21 +16,24 @@ type Props = {
   locale: Locale;
   leaders: Leader[];
   variant?: 'default' | 'modern';
+  limit?: number;
 };
 
-export function PointsLeaderboardSidebar({ locale, leaders, variant = 'default' }: Props) {
+export function PointsLeaderboardSidebar({ locale, leaders, variant = 'default', limit }: Props) {
   const cd = getCommunityDict(locale);
   const className = variant === 'modern' ? 'forum-panel forum-panel--points' : 'community-sidebar';
+  const visibleLeaders = limit ? leaders.slice(0, limit) : leaders;
+  const title = limit ? `ᲥᲣᲚᲔᲑᲘᲡ TOP ${limit}` : cd.home.pointsTopCaps;
 
   return (
     <aside className={className}>
-      <h3 className="forum-panel__title">🏆 {cd.home.pointsTopCaps}</h3>
-      {leaders.length === 0 ? (
+      <h3 className="forum-panel__title">🏆 {title}</h3>
+      {visibleLeaders.length === 0 ? (
         <p className="forum-panel__empty">{cd.home.leaderboardEmpty}</p>
       ) : (
         <>
           <ol className="forum-panel__leaderboard">
-            {leaders.map((user, index) => (
+            {visibleLeaders.map((user, index) => (
               <li
                 key={user.id}
                 className={`forum-panel__leader${index < 3 ? ` forum-panel__leader--top${index + 1}` : ''}`}

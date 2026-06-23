@@ -25,7 +25,7 @@ export function HomeTopStoriesRow({ locale, topStories, className }: Props) {
         .join(' ')}
     >
       <div className="forum-block__head">
-        <h3>🔥 {cd.home.topStoriesCaps}</h3>
+        <h3>{cd.home.topStoriesCaps}</h3>
       </div>
       <div className="forum-featured-row__grid">
         {topStories.map((post) => (

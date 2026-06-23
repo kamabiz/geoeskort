@@ -1638,8 +1638,13 @@ button, .btn, .nav-toggle {
   margin-bottom: 0.5rem;
 }
 
+.section--home .section__label {
+  color: var(--text);
+}
+
 .section--home .section__title {
   font-size: 1.15rem;
+  color: var(--accent-purple-light);
 }
 
 .section__title {
@@ -3179,7 +3184,7 @@ button, .btn, .nav-toggle {
     grid-column: 1 / -1;
     display: flex;
     flex-direction: column;
-    gap: 0.85rem;
+    gap: 0.35rem;
   }
 
   .forum-hub__lower-body {
@@ -3233,6 +3238,10 @@ button, .btn, .nav-toggle {
   border-radius: 0;
   box-shadow: none;
   backdrop-filter: none;
+}
+
+.home-hero-top-stories .forum-featured-row__grid .community-card.community-card--no-votes {
+  padding-top: 0;
 }
 
 .home-hero-top-stories .community-card.community-card--no-votes:hover,
@@ -3318,6 +3327,10 @@ button, .btn, .nav-toggle {
     margin-bottom: 0.65rem;
   }
 
+  .home-hero-top-stories.forum-featured-row > .forum-block__head {
+    margin-bottom: 0;
+  }
+
   .forum-featured-row .forum-block__head h3 {
     font-size: 1rem;
   }
@@ -3339,6 +3352,10 @@ button, .btn, .nav-toggle {
   letter-spacing: 0.06em;
 }
 
+.home-surface .forum-block__head h3 {
+  color: var(--accent-purple-light);
+}
+
 .forum-block__head a {
   font-size: 0.82rem;
   font-weight: 600;
@@ -3347,6 +3364,15 @@ button, .btn, .nav-toggle {
 }
 
 .forum-block__head a:hover { color: var(--accent); }
+
+.home-hero-top-stories > .forum-block__head,
+.forum-hub__lower-head.forum-block__head {
+  margin-bottom: 0;
+}
+
+.forum-grid .community-card:first-child {
+  padding-top: 0;
+}
 
 .forum-empty {
   color: var(--text-muted);
@@ -3496,6 +3522,17 @@ button, .btn, .nav-toggle {
 .forum-grid .reddit-actions--card {
   margin: 0;
   padding: 0;
+  font-size: 0.68rem;
+  gap: 0.35rem 0.75rem;
+}
+
+.forum-grid .reddit-actions--card .reddit-actions__item {
+  gap: 0.25rem;
+}
+
+.forum-grid .reddit-actions--card .reddit-actions__icon svg {
+  width: 0.68rem;
+  height: 0.68rem;
 }
 
 .forum-mobile-only {
@@ -3695,7 +3732,7 @@ button, .btn, .nav-toggle {
 }
 
 .forum-panel--points .forum-panel__points {
-  color: var(--accent-purple-light);
+  color: var(--accent);
 }
 
 .forum-panel--points .forum-panel__link-more:hover {
@@ -3777,6 +3814,7 @@ button, .btn, .nav-toggle {
   font-size: 0.78rem;
   font-weight: 600;
   line-height: 1.2;
+  color: var(--accent-purple-light);
 }
 
 .forum-panel__points {
@@ -3978,13 +4016,19 @@ button, .btn, .nav-toggle {
   flex-shrink: 0;
 }
 
-.forum-panel__name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.forum-panel__name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--accent-purple-light);
+}
 
 .forum-panel__badge { font-size: 0.75rem; }
 
 .forum-panel__comment-user {
   font-weight: 600;
-  color: var(--accent);
+  color: var(--accent-purple-light);
   font-size: 0.78rem;
   display: inline-flex;
   align-items: center;

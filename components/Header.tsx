@@ -45,15 +45,15 @@ export function Header({ locale, dict, username, greetingHello, greetingGuest }:
     : localePath(locale, '/login/');
 
   const navPrimary = [
-    { href: localePath(locale, '/'), label: dict.nav.home, caps: cd.navCaps.home },
-    { href: localePath(locale, '/history/'), label: cd.nav.history, caps: cd.navCaps.history },
-    { href: localePath(locale, '/questions/'), label: cd.nav.questions, caps: cd.navCaps.questions },
-    { href: localePath(locale, '/conversationRoom/'), label: cd.nav.conversation, caps: cd.navCaps.conversation },
+    { href: localePath(locale, '/'), label: dict.nav.home },
+    { href: localePath(locale, '/history/'), label: cd.nav.history },
+    { href: localePath(locale, '/questions/'), label: cd.nav.questions },
+    { href: localePath(locale, '/conversationRoom/'), label: cd.nav.conversation },
   ];
 
   const navMore = [
-    { href: localePath(locale, '/medical/'), label: cd.nav.medical, caps: cd.navCaps.medical },
-    { href: localePath(locale, '/crush/'), label: cd.nav.crush, caps: cd.navCaps.crush },
+    { href: localePath(locale, '/medical/'), label: cd.nav.medical },
+    { href: localePath(locale, '/crush/'), label: cd.nav.crush },
   ];
 
   const navDesktop = [...navPrimary, ...navMore];
@@ -111,7 +111,7 @@ export function Header({ locale, dict, username, greetingHello, greetingGuest }:
       observer.disconnect();
       window.removeEventListener('resize', evaluateNavFit);
     };
-  }, [evaluateNavFit, username, greetingHello, greetingGuest, cd.navCaps.profile]);
+  }, [evaluateNavFit, username, greetingHello, greetingGuest, cd.nav.profile]);
 
   const greetingBlock = greetingHello ? (
     <div className="site-nav__greeting">
@@ -132,7 +132,7 @@ export function Header({ locale, dict, username, greetingHello, greetingGuest }:
 
   const desktopLinks = navDesktop.map((item) => (
     <Link key={item.href} href={item.href} className={linkClass(item)}>
-      <span className="site-nav__label-caps">{item.caps}</span>
+      {item.label}
     </Link>
   ));
 
@@ -147,7 +147,7 @@ export function Header({ locale, dict, username, greetingHello, greetingGuest }:
             {desktopLinks}
             {greetingBlock}
             <span className="site-nav__more-btn site-nav__link--profile site-nav__probe-profile">
-              <span className="site-nav__label-caps">{cd.navCaps.profile}</span>
+              {cd.nav.profile}
               <span className="site-nav__more-caret" aria-hidden>
                 ▾
               </span>
@@ -172,14 +172,13 @@ export function Header({ locale, dict, username, greetingHello, greetingGuest }:
                 className={linkClass(navDesktop[index])}
                 onClick={() => setOpen(false)}
               >
-                <span className="site-nav__label-caps">{navDesktop[index].caps}</span>
+                {navDesktop[index].label}
               </Link>
             ))}
             {greetingBlock}
             <ProfileNavMenu
               locale={locale}
               username={username ?? null}
-              profileCaps={cd.navCaps.profile}
               profileLabel={cd.nav.profile}
               settingsLabel={cd.user.settings}
               logoutLabel={cd.auth.logout}
@@ -222,7 +221,6 @@ export function Header({ locale, dict, username, greetingHello, greetingGuest }:
             <ProfileNavMenu
               locale={locale}
               username={username ?? null}
-              profileCaps={cd.navCaps.profile}
               profileLabel={cd.nav.profile}
               settingsLabel={cd.user.settings}
               logoutLabel={cd.auth.logout}
