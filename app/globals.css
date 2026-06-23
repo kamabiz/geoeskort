@@ -63,6 +63,18 @@ button, .btn, .nav-toggle {
 
 .container { width: var(--container); margin-inline: auto; }
 
+@media (min-width: 900px) {
+  :root {
+    --container: calc(100% - 2.5rem);
+  }
+}
+
+@media (min-width: 1400px) {
+  :root {
+    --container: calc(100% - 3rem);
+  }
+}
+
 /* ── Header ── */
 .site-header {
   position: sticky;
