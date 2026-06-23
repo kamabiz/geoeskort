@@ -129,15 +129,15 @@ export function StoryDetail({
                 {post.readingTimeMinutes} {cd.post.minRead}
               </span>
             </div>
+
+            <CommentThread
+              locale={locale}
+              postId={post.id}
+              comments={comments}
+              commentCount={commentCount}
+            />
           </div>
         </div>
-
-        <CommentThread
-          locale={locale}
-          postId={post.id}
-          comments={comments}
-          commentCount={commentCount}
-        />
       </article>
     </main>
   );

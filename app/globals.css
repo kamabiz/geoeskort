@@ -1848,6 +1848,22 @@ button, .btn, .nav-toggle {
   padding: 1.25rem 0 2rem;
 }
 
+.post-wrap.reddit-post {
+  max-width: none;
+}
+
+@media (min-width: 768px) {
+  .post-wrap.reddit-post {
+    max-width: 100%;
+  }
+}
+
+@media (min-width: 1100px) {
+  .post-wrap.reddit-post {
+    max-width: min(1120px, 100%);
+  }
+}
+
 .post-back {
   display: inline-flex;
   align-items: center;
@@ -1874,9 +1890,53 @@ button, .btn, .nav-toggle {
   border: none;
   border-radius: 0;
   padding: 0;
-  font-size: 0.98rem;
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
   line-height: 1.65;
+  color: rgba(240, 238, 245, 0.94);
   margin-bottom: 0.75rem;
+  word-break: break-word;
+  text-wrap: pretty;
+}
+
+.post-content--reddit p {
+  margin: 0 0 0.9em;
+}
+
+.post-content--reddit p:last-child {
+  margin-bottom: 0;
+}
+
+.post-content--reddit h2,
+.post-content--reddit h3 {
+  font-family: var(--font-body);
+  font-weight: 700;
+  margin: 1.25em 0 0.5em;
+}
+
+.post-content--reddit h2:first-child,
+.post-content--reddit h3:first-child,
+.post-content--reddit p:first-child {
+  margin-top: 0;
+}
+
+.post-content--reddit code {
+  font-size: 0.88em;
+  padding: 0.12em 0.35em;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+@media (min-width: 768px) {
+  .post-content--reddit {
+    font-size: 1rem;
+    line-height: 1.75;
+    max-width: none;
+  }
+
+  .post-content--reddit p {
+    margin-bottom: 1.15em;
+  }
 }
 
 .post-tags {
@@ -3849,8 +3909,8 @@ a.community-card__stat:hover .community-card__stat-icon {
 }
 .community-comments { margin-top: 1.5rem; }
 .post-wrap .community-comments {
-  margin-top: 1rem;
-  padding-top: 1rem;
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
   border-top: 1px solid var(--border);
 }
 .community-comments__list { list-style: none; padding: 0; margin: 1rem 0 0; display: grid; gap: 1rem; }
@@ -4079,7 +4139,13 @@ a.community-card__stat:hover .community-card__stat-icon {
 .reddit-comments__list {
   display: grid;
   gap: 0;
-  margin-top: 1rem;
+  margin-top: 0.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.reddit-comment-form {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
   border-top: 1px solid var(--border);
 }
 

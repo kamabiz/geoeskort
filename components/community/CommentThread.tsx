@@ -103,21 +103,6 @@ export function CommentThread({ locale, postId, comments, commentCount }: Props)
         </h2>
       </div>
 
-      <form action={createComment} className="community-form community-form--compact reddit-comment-form">
-        <input type="hidden" name="postId" value={postId} />
-        <label>
-          {cd.comments.add}
-          <textarea name="body" required rows={3} placeholder={cd.comments.placeholder} />
-        </label>
-        <div className="reddit-comment-form__actions">
-          <label className="community-form__check">
-            <input type="checkbox" name="anonymous" />
-            {cd.comments.anonymous}
-          </label>
-          <button type="submit" className="btn btn--primary btn--sm">{cd.comments.post}</button>
-        </div>
-      </form>
-
       {comments.length === 0 ? (
         <p className="reddit-comments__empty">{cd.comments.empty}</p>
       ) : (
@@ -143,6 +128,21 @@ export function CommentThread({ locale, postId, comments, commentCount }: Props)
           ))}
         </div>
       )}
+
+      <form action={createComment} className="community-form community-form--compact reddit-comment-form">
+        <input type="hidden" name="postId" value={postId} />
+        <label>
+          {cd.comments.add}
+          <textarea name="body" required rows={3} placeholder={cd.comments.placeholder} />
+        </label>
+        <div className="reddit-comment-form__actions">
+          <label className="community-form__check">
+            <input type="checkbox" name="anonymous" />
+            {cd.comments.anonymous}
+          </label>
+          <button type="submit" className="btn btn--primary btn--sm">{cd.comments.post}</button>
+        </div>
+      </form>
     </section>
   );
 }
