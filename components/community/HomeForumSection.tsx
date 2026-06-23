@@ -111,9 +111,8 @@ export function HomeForumSection({
                   </div>
                 </>
               )}
-              <div className="forum-mobile-only forum-sidebar-stack">
+              <div className="forum-mobile-only">
                 <LatestCommentsSidebar locale={locale} comments={latestComments} variant="modern" />
-                <PointsLeaderboardSidebar locale={locale} leaders={topLeaders} variant="modern" />
               </div>
             </div>
 

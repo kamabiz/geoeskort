@@ -95,35 +95,33 @@ export default async function HomePage({ params }: Props) {
           />
 
           <div className="hero__shell hero__shell--desktop">
-            <div className="hero__content">
-              <div className="hero__greeting">
-                <h1 className="hero__headline">
-                  {cd.home.greetingHello},{' '}
-                  {user ? (
-                    <Link
-                      href={localePath(locale, `/u/${user.username}/`)}
-                      className="hero__headline-user"
-                    >
-                      @{user.username}
-                    </Link>
-                  ) : (
-                    <span className="hero__headline-user hero__headline-user--guest">
-                      @{cd.home.greetingGuest}
-                    </span>
-                  )}
-                </h1>
-                {!user && (
-                  <p className="hero__headline-hint">
-                    {cd.home.greetingAuthHint}{' '}
-                    <Link href={localePath(locale, '/login/')}>{cd.home.greetingAuthLogin}</Link>
-                    {' / '}
-                    <Link href={localePath(locale, '/register/')}>{cd.home.greetingAuthRegister}</Link>
-                  </p>
+            <div className="hero__greeting hero__greeting--desktop">
+              <h1 className="hero__headline">
+                {cd.home.greetingHello},{' '}
+                {user ? (
+                  <Link
+                    href={localePath(locale, `/u/${user.username}/`)}
+                    className="hero__headline-user"
+                  >
+                    @{user.username}
+                  </Link>
+                ) : (
+                  <span className="hero__headline-user hero__headline-user--guest">
+                    @{cd.home.greetingGuest}
+                  </span>
                 )}
-              </div>
+              </h1>
+              {!user && (
+                <p className="hero__headline-hint">
+                  {cd.home.greetingAuthHint}{' '}
+                  <Link href={localePath(locale, '/login/')}>{cd.home.greetingAuthLogin}</Link>
+                  {' / '}
+                  <Link href={localePath(locale, '/register/')}>{cd.home.greetingAuthRegister}</Link>
+                </p>
+              )}
             </div>
 
-            <div className="hero__stats" role="list">
+            <div className="hero__stats hero__stats--desktop" role="list">
               <span className="hero__stat" role="listitem">
                 <strong className="hero__stat-value">{stats.storyCount}</strong>
                 <span className="hero__stat-label">{cd.home.statsStories}</span>
