@@ -92,39 +92,6 @@ export function HomeMobileHub({
         ) : null}
       </div>
 
-      <div className="home-hub-card">
-        <span className="home-hub-card__badge">{cd.home.badge}</span>
-        <h1 className="home-hub-card__greeting">
-          {cd.home.greetingHello},{' '}
-          {user ? (
-            <Link href={localePath(locale, `/u/${user.username}/`)} className="home-hub-card__user">
-              @{user.username}
-            </Link>
-          ) : (
-            <span className="home-hub-card__user home-hub-card__user--guest">@{cd.home.greetingGuest}</span>
-          )}
-        </h1>
-        <p className="home-hub-card__lead">{cd.home.lead}</p>
-        {!user && (
-          <p className="home-hub-card__auth">
-            {cd.home.greetingAuthHint}{' '}
-            <Link href={localePath(locale, '/login/')}>{cd.home.greetingAuthLogin}</Link>
-            {' / '}
-            <Link href={localePath(locale, '/register/')}>{cd.home.greetingAuthRegister}</Link>
-          </p>
-        )}
-        <div className="home-hub-card__stats hero__stats" role="list">
-          <span className="hero__stat" role="listitem">
-            <strong className="hero__stat-value">{storyCount}</strong>
-            <span className="hero__stat-label">{cd.home.statsStories}</span>
-          </span>
-          <span className="hero__stat" role="listitem">
-            <strong className="hero__stat-value">{memberCount}</strong>
-            <span className="hero__stat-label">{cd.home.statsMembers}</span>
-          </span>
-        </div>
-      </div>
-
       <nav className="home-module-grid" aria-label={cd.home.sidebarQuickTitle}>
         {HUB_MODULES.map((mod) => {
           const count = moduleCount(mod);

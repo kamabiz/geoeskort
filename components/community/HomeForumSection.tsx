@@ -72,31 +72,33 @@ export function HomeForumSection({
               <h3>{cd.home.latestStoriesCaps}</h3>
               <Link href={localePath(locale, '/submit/')}>{cd.home.writeYours}</Link>
             </div>
-            {latestPosts.length === 0 ? (
-              <p className="forum-empty">
-                {cd.home.noStories}{' '}
-                <Link href={localePath(locale, '/submit/')}>{cd.home.beFirst}</Link>
-              </p>
-            ) : (
-              <ForumScrollRow itemCount={latestPosts.length}>
-                {latestPosts.map((post) => (
-                  <CommunityPostCard
-                    key={post.id}
-                    post={post}
-                    locale={locale}
-                    viewPath="history"
-                    showVotes={false}
-                    excerptLength={240}
-                    bodyPreview
-                  />
-                ))}
-              </ForumScrollRow>
-            )}
+            <div className="forum-desktop-only">
+              {latestPosts.length === 0 ? (
+                <p className="forum-empty">
+                  {cd.home.noStories}{' '}
+                  <Link href={localePath(locale, '/submit/')}>{cd.home.beFirst}</Link>
+                </p>
+              ) : (
+                <ForumScrollRow itemCount={latestPosts.length}>
+                  {latestPosts.map((post) => (
+                    <CommunityPostCard
+                      key={post.id}
+                      post={post}
+                      locale={locale}
+                      viewPath="history"
+                      showVotes={false}
+                      excerptLength={240}
+                      bodyPreview
+                    />
+                  ))}
+                </ForumScrollRow>
+              )}
+            </div>
           </div>
 
           <div className="forum-hub__lower">
             {randomPosts.length > 0 && (
-              <div className="forum-hub__lower-head forum-block__head">
+              <div className="forum-hub__lower-head forum-block__head forum-desktop-only">
                 <h3>{cd.home.randomPicksCaps}</h3>
               </div>
             )}
@@ -104,20 +106,11 @@ export function HomeForumSection({
             <div className="forum-hub__lower-body">
               <div className="forum-hub__main-lower">
                 {randomPosts.length > 0 && (
-                  <>
-                    <div className="forum-grid forum-desktop-only">
-                      {randomPosts.map((post) => (
-                        <CommunityPostCard key={post.id} post={post} locale={locale} viewPath="history" showVotes={false} excerptLength={160} bodyPreview />
-                      ))}
-                    </div>
-                    <div className="forum-mobile-only">
-                      <ForumScrollRow itemCount={randomPosts.length}>
-                        {randomPosts.map((post) => (
-                          <CommunityPostCard key={post.id} post={post} locale={locale} viewPath="history" showVotes={false} excerptLength={240} bodyPreview />
-                        ))}
-                      </ForumScrollRow>
-                    </div>
-                  </>
+                  <div className="forum-grid forum-desktop-only">
+                    {randomPosts.map((post) => (
+                      <CommunityPostCard key={post.id} post={post} locale={locale} viewPath="history" showVotes={false} excerptLength={160} bodyPreview />
+                    ))}
+                  </div>
                 )}
                 <div className="forum-mobile-only">
                   <LatestCommentsSidebar locale={locale} comments={latestComments} variant="modern" />
@@ -144,6 +137,7 @@ export function HomeForumSection({
             locale={locale}
             categoryCounts={categoryCounts}
             className="forum-mobile-only"
+            mobileCollapsedCount={6}
           />
         </div>
       </div>

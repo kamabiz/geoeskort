@@ -15,6 +15,7 @@ type Props = {
   counts: { category: string; count: number }[];
   variant?: 'list' | 'chips';
   showSectionTitles?: boolean;
+  maxPrimaryChips?: number;
 };
 
 function getVisibleStorySlugs(): StoryCategorySlug[] {
@@ -23,7 +24,13 @@ function getVisibleStorySlugs(): StoryCategorySlug[] {
   );
 }
 
-export function CategoryCountList({ locale, counts, variant = 'list', showSectionTitles = true }: Props) {
+export function CategoryCountList({
+  locale,
+  counts,
+  variant = 'list',
+  showSectionTitles = true,
+  maxPrimaryChips,
+}: Props) {
   const cd = getCommunityDict(locale);
   const countMap = new Map(counts.map((c) => [c.category, c.count]));
   const storySlugs = getVisibleStorySlugs();
@@ -90,15 +97,25 @@ export function CategoryCountList({ locale, counts, variant = 'list', showSectio
   ];
 
   if (variant === 'chips') {
+    const primaryChipItems: (StoryCategorySlug | 'all-stories')[] = [
+      ...categorySlugs,
+      'all-stories',
+      ...premiumStorySlugs,
+      ...(showVarious ? ['various' as const] : []),
+    ];
+    const visiblePrimaryChipItems =
+      typeof maxPrimaryChips === 'number' && maxPrimaryChips > 0
+        ? primaryChipItems.slice(0, maxPrimaryChips)
+        : primaryChipItems;
+
     return (
       <div className="forum-chips-wrap">
         <div className="forum-chips-section">
           {showSectionTitles && <p className="forum-chips-section__title">ისტორიები</p>}
           <div className="forum-chips forum-chips--primary">
-            {categorySlugs.map(renderStoryChip)}
-            {renderAllStoriesChip()}
-            {premiumStorySlugs.map(renderStoryChip)}
-            {showVarious && renderStoryChip('various')}
+            {visiblePrimaryChipItems.map((item) =>
+              item === 'all-stories' ? renderAllStoriesChip() : renderStoryChip(item),
+            )}
           </div>
         </div>
         <div className="forum-chips-section">
