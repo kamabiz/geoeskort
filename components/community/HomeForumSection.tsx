@@ -101,39 +101,43 @@ export function HomeForumSection({
               </div>
             )}
 
-            <div className="forum-hub__main-lower">
-              {randomPosts.length > 0 && (
-                <>
-                  <div className="forum-grid forum-desktop-only">
-                    {randomPosts.map((post) => (
-                      <CommunityPostCard key={post.id} post={post} locale={locale} viewPath="history" showVotes={false} excerptLength={160} bodyPreview />
-                    ))}
-                  </div>
-                  <div className="forum-mobile-only">
-                    <ForumScrollRow itemCount={randomPosts.length}>
+            <div className="forum-hub__lower-body">
+              <div className="forum-hub__main-lower">
+                {randomPosts.length > 0 && (
+                  <>
+                    <div className="forum-grid forum-desktop-only">
                       {randomPosts.map((post) => (
-                        <CommunityPostCard key={post.id} post={post} locale={locale} viewPath="history" showVotes={false} excerptLength={240} bodyPreview />
+                        <CommunityPostCard key={post.id} post={post} locale={locale} viewPath="history" showVotes={false} excerptLength={160} bodyPreview />
                       ))}
-                    </ForumScrollRow>
+                    </div>
+                    <div className="forum-mobile-only">
+                      <ForumScrollRow itemCount={randomPosts.length}>
+                        {randomPosts.map((post) => (
+                          <CommunityPostCard key={post.id} post={post} locale={locale} viewPath="history" showVotes={false} excerptLength={240} bodyPreview />
+                        ))}
+                      </ForumScrollRow>
+                    </div>
+                  </>
+                )}
+                <div className="forum-mobile-only">
+                  <LatestCommentsSidebar locale={locale} comments={latestComments} variant="modern" />
+                </div>
+              </div>
+
+              <div className="forum-hub__aside-track">
+                <aside className="forum-hub__aside">
+                  <OnlineMembersSidebar
+                    locale={locale}
+                    onlineMembers={presence.onlineMembers}
+                    variant="modern"
+                  />
+                  <div className="forum-desktop-only forum-sidebar-stack">
+                    <LatestCommentsSidebar locale={locale} comments={latestComments} variant="modern" />
+                    <PointsLeaderboardSidebar locale={locale} leaders={topLeaders} variant="modern" />
                   </div>
-                </>
-              )}
-              <div className="forum-mobile-only">
-                <LatestCommentsSidebar locale={locale} comments={latestComments} variant="modern" />
+                </aside>
               </div>
             </div>
-
-            <aside className="forum-hub__aside">
-              <OnlineMembersSidebar
-                locale={locale}
-                onlineMembers={presence.onlineMembers}
-                variant="modern"
-              />
-              <div className="forum-desktop-only forum-sidebar-stack">
-                <LatestCommentsSidebar locale={locale} comments={latestComments} variant="modern" />
-                <PointsLeaderboardSidebar locale={locale} leaders={topLeaders} variant="modern" />
-              </div>
-            </aside>
           </div>
 
           <HomeCategoriesPanel

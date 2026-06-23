@@ -68,30 +68,43 @@ export function CategoryCountList({ locale, counts, variant = 'list', showSectio
     </Link>
   );
 
+  const renderModuleChip = (slug: keyof typeof MODULE_CATEGORIES) => {
+    const mod = MODULE_CATEGORIES[slug];
+    return (
+      <Link key={mod.slug} href={localePath(locale, mod.route)} className="forum-chip forum-chip--module">
+        <div className="forum-chip__head">
+          <span className="forum-chip__emoji">{mod.emoji}</span>
+          <span className="forum-chip__count">{countMap.get(mod.slug) ?? 0}</span>
+        </div>
+        <span className="forum-chip__label">{mod.label}</span>
+      </Link>
+    );
+  };
+
+  const moduleSlugs: (keyof typeof MODULE_CATEGORIES)[] = [
+    'questions-advice',
+    'sexology',
+    'zodiac-compatibility',
+    'dating-crush',
+    'positions-education',
+  ];
+
   if (variant === 'chips') {
     return (
       <div className="forum-chips-wrap">
         <div className="forum-chips-section">
           {showSectionTitles && <p className="forum-chips-section__title">ისტორიები</p>}
-          <div className="forum-chips">
+          <div className="forum-chips forum-chips--primary">
             {categorySlugs.map(renderStoryChip)}
             {renderAllStoriesChip()}
             {premiumStorySlugs.map(renderStoryChip)}
+            {showVarious && renderStoryChip('various')}
           </div>
         </div>
         <div className="forum-chips-section">
           {showSectionTitles && <p className="forum-chips-section__title">განყოფილებები</p>}
-          <div className="forum-chips">
-            {Object.values(MODULE_CATEGORIES).map((mod) => (
-              <Link key={mod.slug} href={localePath(locale, mod.route)} className="forum-chip forum-chip--module">
-                <div className="forum-chip__head">
-                  <span className="forum-chip__emoji">{mod.emoji}</span>
-                  <span className="forum-chip__count">{countMap.get(mod.slug) ?? 0}</span>
-                </div>
-                <span className="forum-chip__label">{mod.label}</span>
-              </Link>
-            ))}
-            {showVarious && renderStoryChip('various')}
+          <div className="forum-chips forum-chips--modules">
+            {moduleSlugs.map(renderModuleChip)}
           </div>
         </div>
       </div>
