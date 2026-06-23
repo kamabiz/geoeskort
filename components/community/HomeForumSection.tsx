@@ -106,7 +106,7 @@ export function HomeForumSection({
                 <>
                   <div className="forum-grid forum-desktop-only">
                     {randomPosts.map((post) => (
-                      <CommunityPostCard key={post.id} post={post} locale={locale} viewPath="history" showVotes={false} excerptLength={240} bodyPreview />
+                      <CommunityPostCard key={post.id} post={post} locale={locale} viewPath="history" showVotes={false} excerptLength={160} bodyPreview />
                     ))}
                   </div>
                   <div className="forum-mobile-only">
