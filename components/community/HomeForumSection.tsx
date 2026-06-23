@@ -80,7 +80,15 @@ export function HomeForumSection({
             ) : (
               <ForumScrollRow itemCount={latestPosts.length}>
                 {latestPosts.map((post) => (
-                  <CommunityPostCard key={post.id} post={post} locale={locale} variant="compact" viewPath="history" showVotes={false} />
+                  <CommunityPostCard
+                    key={post.id}
+                    post={post}
+                    locale={locale}
+                    viewPath="history"
+                    showVotes={false}
+                    excerptLength={240}
+                    bodyPreview
+                  />
                 ))}
               </ForumScrollRow>
             )}
@@ -98,13 +106,13 @@ export function HomeForumSection({
                 <>
                   <div className="forum-grid forum-desktop-only">
                     {randomPosts.map((post) => (
-                      <CommunityPostCard key={post.id} post={post} locale={locale} viewPath="history" showVotes={false} />
+                      <CommunityPostCard key={post.id} post={post} locale={locale} viewPath="history" showVotes={false} excerptLength={240} bodyPreview />
                     ))}
                   </div>
                   <div className="forum-mobile-only">
                     <ForumScrollRow itemCount={randomPosts.length}>
                       {randomPosts.map((post) => (
-                        <CommunityPostCard key={post.id} post={post} locale={locale} viewPath="history" showVotes={false} />
+                        <CommunityPostCard key={post.id} post={post} locale={locale} viewPath="history" showVotes={false} excerptLength={240} bodyPreview />
                       ))}
                     </ForumScrollRow>
                   </div>

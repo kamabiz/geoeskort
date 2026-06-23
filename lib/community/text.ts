@@ -22,6 +22,55 @@ export function makeExcerpt(body: string, maxLength = 160): string {
   return `${plain.slice(0, maxLength).trim()}…`;
 }
 
+function stripTitlePrefix(text: string, title: string): string {
+  const normalizedTitle = stripMarkdown(title).trim();
+  if (!normalizedTitle || !text) return text;
+
+  if (text.startsWith(normalizedTitle)) {
+    return text.slice(normalizedTitle.length).replace(/^[\s.,!?…\-–—]+/, '').trim();
+  }
+
+  const lowerText = text.toLocaleLowerCase();
+  const lowerTitle = normalizedTitle.toLocaleLowerCase();
+  if (lowerText.startsWith(lowerTitle)) {
+    return text.slice(normalizedTitle.length).replace(/^[\s.,!?…\-–—]+/, '').trim();
+  }
+
+  return text;
+}
+
+export function makeBodyPreview(body: string, title: string, maxLength = 240): string {
+  const plain = stripMarkdown(body);
+  if (!plain) return '';
+
+  const normalizedTitle = stripMarkdown(title).trim();
+  const paragraphs = body
+    .replace(/\r\n/g, '\n')
+    .split(/\n\s*\n/)
+    .map((part) => stripMarkdown(part).trim())
+    .filter(Boolean);
+
+  let preview = '';
+
+  if (paragraphs.length > 1) {
+    preview =
+      paragraphs.find(
+        (part) =>
+          part !== normalizedTitle &&
+          !normalizedTitle.startsWith(part) &&
+          !part.startsWith(normalizedTitle),
+      ) ?? '';
+  }
+
+  if (!preview) {
+    preview = stripTitlePrefix(plain, title);
+    if (!preview) preview = plain;
+  }
+
+  if (preview.length <= maxLength) return preview;
+  return `${preview.slice(0, maxLength).trim()}…`;
+}
+
 function escapeHtml(text: string): string {
   return text
     .replace(/&/g, '&amp;')

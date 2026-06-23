@@ -7,7 +7,7 @@ import {
   getCommunityPostViewPath,
   getStoryViewPath,
 } from '@/lib/community/categories';
-import { makeExcerpt } from '@/lib/community/text';
+import { makeBodyPreview, makeExcerpt } from '@/lib/community/text';
 import { displayAuthor, type PostWithAuthor } from '@/lib/community/posts';
 import { getCommunityDict } from '@/lib/i18n/community-dict';
 import { localePath } from '@/lib/i18n/paths';
@@ -23,6 +23,8 @@ type Props = {
   isLoggedIn?: boolean;
   showVotes?: boolean;
   showExcerpt?: boolean;
+  excerptLength?: number;
+  bodyPreview?: boolean;
 };
 
 export function CommunityPostCard({
@@ -34,6 +36,8 @@ export function CommunityPostCard({
   isLoggedIn = false,
   showVotes = true,
   showExcerpt = false,
+  excerptLength,
+  bodyPreview = false,
 }: Props) {
   const cd = getCommunityDict(locale);
   const href =
@@ -44,7 +48,10 @@ export function CommunityPostCard({
         : localePath(locale, getCommunityPostViewPath(post.category, post.id));
   const author = displayAuthor(post, cd.post.anonymous);
   const showAuthorAvatar = !post.isAnonymous && !!post.author;
-  const excerpt = makeExcerpt(post.body, showExcerpt ? 140 : variant === 'compact' ? 90 : 160);
+  const excerptMax = excerptLength ?? (showExcerpt ? 140 : variant === 'compact' ? 90 : 160);
+  const excerpt = bodyPreview
+    ? makeBodyPreview(post.body, post.title, excerptMax)
+    : makeExcerpt(post.body, excerptMax);
   const TitleTag = headingLevel;
   const upvoteCount = post._count?.upvotes ?? 0;
   const commentCount = post._count?.comments ?? 0;
@@ -89,10 +96,10 @@ export function CommunityPostCard({
             <span className="community-card__compact-meta-line">
               {showAuthorAvatar ? (
                 <Link href={localePath(locale, `/u/${post.author!.username}/`)} className="community-card__author-link">
-                  u/{author}
+                  {author}
                 </Link>
               ) : (
-                <span>u/{author}</span>
+                <span>{author}</span>
               )}
               <span className="reddit-meta__sep" aria-hidden>·</span>
               <time dateTime={post.createdAt.toISOString()}>{formatDateKa(post.createdAt.toISOString())}</time>
@@ -131,33 +138,29 @@ export function CommunityPostCard({
       )}
       <div className="community-card__body">
         <div className="reddit-meta reddit-meta--card">
-          <span className="reddit-meta__sub reddit-meta__sub--static">
-            {getCommunityCategoryLabel(post.category)}
-          </span>
-          <span className="reddit-meta__sep" aria-hidden>
-            ·
-          </span>
-          <span className="reddit-meta__author">
-            {showAuthorAvatar ? (
-              <Link href={localePath(locale, `/u/${post.author!.username}/`)} className="community-card__author-link">
-                u/{author}
-              </Link>
-            ) : (
-              <span>u/{author}</span>
-            )}
-          </span>
-          <span className="reddit-meta__sep" aria-hidden>
-            ·
-          </span>
-          <time dateTime={post.createdAt.toISOString()}>{formatDateKa(post.createdAt.toISOString())}</time>
-          {post.isPremium && (
-            <>
-              <span className="reddit-meta__sep" aria-hidden>
-                ·
-              </span>
+          <div className="reddit-meta__row reddit-meta__row--top">
+            <span className="reddit-meta__sub reddit-meta__sub--static">
+              {getCommunityCategoryLabel(post.category)}
+            </span>
+            {post.isPremium && (
               <span className="reddit-flair reddit-flair--premium">{cd.post.premium}</span>
-            </>
-          )}
+            )}
+          </div>
+          <div className="reddit-meta__row reddit-meta__row--bottom">
+            <span className="reddit-meta__author">
+              {showAuthorAvatar ? (
+                <Link href={localePath(locale, `/u/${post.author!.username}/`)} className="community-card__author-link">
+                  {author}
+                </Link>
+              ) : (
+                <span>{author}</span>
+              )}
+            </span>
+            <span className="reddit-meta__sep" aria-hidden>
+              ·
+            </span>
+            <time dateTime={post.createdAt.toISOString()}>{formatDateKa(post.createdAt.toISOString())}</time>
+          </div>
         </div>
 
         <TitleTag className={`community-card__title${isFeatured ? ' community-card__title--featured' : ''}`}>
@@ -165,18 +168,27 @@ export function CommunityPostCard({
         </TitleTag>
 
         <p className="community-card__excerpt">
-            {post.isPremium ? cd.post.premiumPreview : excerpt}
+          {post.isPremium ? cd.post.premiumPreview : excerpt || makeExcerpt(post.body, excerptMax)}
         </p>
 
         <div className="reddit-actions reddit-actions--card">
           <Link href={href} className="reddit-actions__item reddit-actions__link">
-            💬 {commentCount} {cd.post.commentsLabel}
+            <ActionIcon variant="comment">
+              <IconComment />
+            </ActionIcon>
+            <span>{commentCount} {cd.post.commentsLabel}</span>
           </Link>
           <span className="reddit-actions__item">
-            👁 {post.viewCount} {cd.post.views}
+            <ActionIcon variant="views">
+              <IconEye />
+            </ActionIcon>
+            <span>{post.viewCount} {cd.post.views}</span>
           </span>
           <span className="reddit-actions__item">
-            {post.readingTimeMinutes} {cd.post.minRead}
+            <ActionIcon variant="time">
+              <IconClock />
+            </ActionIcon>
+            <span>{post.readingTimeMinutes} {cd.post.minRead}</span>
           </span>
         </div>
       </div>
@@ -186,6 +198,14 @@ export function CommunityPostCard({
 
 function CardStatIcon({ children }: { children: ReactNode }) {
   return <span className="community-card__stat-icon">{children}</span>;
+}
+
+function ActionIcon({ variant, children }: { variant: 'comment' | 'views' | 'time'; children: ReactNode }) {
+  return (
+    <span className={`reddit-actions__icon reddit-actions__icon--${variant}`}>
+      {children}
+    </span>
+  );
 }
 
 function IconComment() {

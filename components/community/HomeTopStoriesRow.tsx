@@ -34,10 +34,10 @@ export function HomeTopStoriesRow({ locale, topStories, className }: Props) {
             post={post}
             locale={locale}
             headingLevel="h3"
-            variant="compact"
-            showExcerpt
             viewPath="history"
             showVotes={false}
+            excerptLength={240}
+            bodyPreview
           />
         ))}
       </div>
