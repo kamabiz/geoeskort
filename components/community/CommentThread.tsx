@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { CommunityAvatar } from '@/components/community/CommunityAvatar';
 import { createComment } from '@/lib/community/actions';
 import { getCommunityDict } from '@/lib/i18n/community-dict';
 import { formatDateKa } from '@/lib/format-date';
@@ -11,7 +12,7 @@ type CommentNode = {
   createdAt: Date;
   isAnonymous: boolean;
   parentId: string | null;
-  author: { username: string } | null;
+  author: { username: string; avatar: string | null } | null;
   replies?: CommentNode[];
 };
 
@@ -31,6 +32,24 @@ function displayName(
 
 export function CommentThread({ locale, postId, comments }: Props) {
   const cd = getCommunityDict(locale);
+  const renderAuthor = (item: { isAnonymous: boolean; author: { username: string; avatar: string | null } | null }) => {
+    const isPublicAuthor = !!item.author && !item.isAnonymous;
+    const name = displayName(item, cd.post.anonymous);
+    return (
+      <span className="community-comments__author">
+        <CommunityAvatar
+          username={isPublicAuthor ? item.author?.username : cd.post.anonymous}
+          avatar={isPublicAuthor ? item.author?.avatar : null}
+          size="sm"
+        />
+        {isPublicAuthor ? (
+          <Link href={localePath(locale, `/u/${item.author!.username}/`)}>{name}</Link>
+        ) : (
+          <span>{name}</span>
+        )}
+      </span>
+    );
+  };
 
   return (
     <section className="community-comments">
@@ -52,22 +71,14 @@ export function CommentThread({ locale, postId, comments }: Props) {
         {comments.map((comment) => (
           <li key={comment.id} className="community-comments__item">
             <div className="community-comments__head">
-              <strong>
-                {comment.author && !comment.isAnonymous ? (
-                  <Link href={localePath(locale, `/u/${comment.author.username}/`)}>
-                    {displayName(comment, cd.post.anonymous)}
-                  </Link>
-                ) : (
-                  displayName(comment, cd.post.anonymous)
-                )}
-              </strong>
+              <strong>{renderAuthor(comment)}</strong>
               <time>{formatDateKa(comment.createdAt.toISOString())}</time>
             </div>
             <p>{comment.body}</p>
             {(comment.replies ?? []).map((reply) => (
               <div key={reply.id} className="community-comments__reply">
                 <div className="community-comments__head">
-                  <strong>{displayName(reply, cd.post.anonymous)}</strong>
+                  <strong>{renderAuthor(reply)}</strong>
                   <time>{formatDateKa(reply.createdAt.toISOString())}</time>
                 </div>
                 <p>{reply.body}</p>

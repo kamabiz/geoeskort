@@ -3,6 +3,7 @@ import 'server-only';
 import crypto from 'crypto';
 import { cookies } from 'next/headers';
 import { prisma } from '@/lib/prisma';
+import { buildDefaultAvatarDataUri } from '@/lib/community/avatar';
 
 export const GUEST_CHAT_COOKIE = 'geoeskort_guest_chat';
 export const GUEST_MESSAGE_LIMIT = 1;
@@ -68,7 +69,11 @@ export async function createGuestUser(): Promise<{ id: string; username: string 
     const username = `guest_${crypto.randomBytes(4).toString('hex')}`;
     try {
       return await prisma.user.create({
-        data: { username },
+        data: {
+          username,
+          gender: 'nonBinary',
+          avatar: buildDefaultAvatarDataUri({ username, gender: 'nonBinary' }),
+        },
         select: { id: true, username: true },
       });
     } catch {

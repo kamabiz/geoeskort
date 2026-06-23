@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { CommunityAvatar } from '@/components/community/CommunityAvatar';
 import {
   getCommunityCategoryEmoji,
   getCommunityCategoryLabel,
@@ -35,6 +36,7 @@ export function CommunityPostCard({
         ? localePath(locale, `/questions/view/${post.id}/`)
         : localePath(locale, getCommunityPostViewPath(post.category, post.id));
   const author = displayAuthor(post, cd.post.anonymous);
+  const showAuthorAvatar = !post.isAnonymous && !!post.author;
   const excerpt = makeExcerpt(post.body, variant === 'compact' ? 90 : 160);
   const TitleTag = headingLevel;
   const categoryEmoji = getCommunityCategoryEmoji(post.category);
@@ -58,7 +60,20 @@ export function CommunityPostCard({
         </p>
       )}
       <div className="community-card__footer">
-        <span>{author}</span>
+        <span className="community-card__author">
+          <CommunityAvatar
+            username={showAuthorAvatar ? post.author?.username : cd.post.anonymous}
+            avatar={showAuthorAvatar ? post.author?.avatar : null}
+            size="xs"
+          />
+          {showAuthorAvatar ? (
+            <Link href={localePath(locale, `/u/${post.author!.username}/`)} className="community-card__author-link">
+              {author}
+            </Link>
+          ) : (
+            <span className="community-card__author-name">{author}</span>
+          )}
+        </span>
         <span>{post.viewCount} {cd.post.views}</span>
         <span>{post.readingTimeMinutes} {cd.post.minRead}</span>
       </div>

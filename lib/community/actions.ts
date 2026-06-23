@@ -12,6 +12,7 @@ import {
   setUserSessionCookie,
   verifyPassword,
 } from '@/lib/community/auth';
+import { buildDefaultAvatarDataUri, parseAvatarGender } from '@/lib/community/avatar';
 import { isCommunityCategorySlug, getCommunityPostViewPath, resolveSubmitCategory } from '@/lib/community/categories';
 import { PREMIUM_POINTS_COST, PREMIUM_DAYS, awardPoints } from '@/lib/community/points';
 import { isPremiumEnabled } from '@/lib/community/premium-config';
@@ -81,9 +82,11 @@ export async function registerUser(
   const username = normalizeUsername(String(formData.get('username') || ''));
   const password = String(formData.get('password') || '');
   const email = String(formData.get('email') || '').trim() || null;
+  const gender = parseAvatarGender(String(formData.get('gender') || ''));
 
   if (!username || username.length < 3) return { error: 'usernameTooShort' };
   if (password.length < 6) return { error: 'passwordTooShort' };
+  if (!gender) return { error: 'invalidGender' };
   if (!process.env.DATABASE_URL) return { error: 'serviceUnavailable' };
 
   try {
@@ -94,7 +97,9 @@ export async function registerUser(
       data: {
         username,
         email,
+        gender,
         passwordHash: hashPassword(password),
+        avatar: buildDefaultAvatarDataUri({ username, gender }),
       },
     });
 

@@ -19,7 +19,7 @@ export function HomeCategoriesPanel({ locale, categoryCounts, className }: Props
         <h3>{cd.home.categoriesCaps}</h3>
         <Link href={localePath(locale, '/history/')}>ყველა →</Link>
       </div>
-      <CategoryCountList locale={locale} counts={categoryCounts} variant="chips" />
+      <CategoryCountList locale={locale} counts={categoryCounts} variant="chips" showSectionTitles={false} />
     </div>
   );
 }

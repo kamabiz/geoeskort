@@ -10,6 +10,7 @@ type Props = {
   username: string | null;
   profileCaps: string;
   profileLabel: string;
+  settingsLabel: string;
   logoutLabel: string;
   isProfileActive: boolean;
   variant?: 'desktop' | 'mobile';
@@ -20,6 +21,7 @@ export function ProfileNavMenu({
   username,
   profileCaps,
   profileLabel,
+  settingsLabel,
   logoutLabel,
   isProfileActive,
   variant = 'desktop',
@@ -27,6 +29,7 @@ export function ProfileNavMenu({
   const profileHref = username
     ? localePath(locale, `/u/${username}/`)
     : localePath(locale, '/login/');
+  const settingsHref = localePath(locale, '/user/settings/');
 
   if (!username) {
     return (
@@ -57,6 +60,9 @@ export function ProfileNavMenu({
           <Link href={profileHref} className="site-nav__link site-nav__profile-menu-item">
             {profileLabel}
           </Link>
+          <Link href={settingsHref} className="site-nav__link site-nav__profile-menu-item">
+            {settingsLabel}
+          </Link>
           <CommunityLogoutButton
             locale={locale}
             label={logoutLabel}
@@ -85,6 +91,13 @@ export function ProfileNavMenu({
           role="menuitem"
         >
           {profileLabel}
+        </Link>
+        <Link
+          href={settingsHref}
+          className="site-nav__link site-nav__dropdown-link"
+          role="menuitem"
+        >
+          {settingsLabel}
         </Link>
         <CommunityLogoutButton
           locale={locale}

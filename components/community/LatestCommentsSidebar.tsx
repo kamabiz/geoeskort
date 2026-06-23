@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { CommunityAvatar } from '@/components/community/CommunityAvatar';
 import { getCommunityCategoryLabel } from '@/lib/community/categories';
 import { getCommunityDict } from '@/lib/i18n/community-dict';
 import { localePath } from '@/lib/i18n/paths';
@@ -10,7 +11,7 @@ type CommentItem = {
   body: string;
   createdAt: Date;
   isAnonymous: boolean;
-  author: { username: string } | null;
+  author: { username: string; avatar: string | null } | null;
   post: { id: string; title: string; category: string };
 };
 
@@ -24,6 +25,9 @@ export function LatestCommentsSidebar({ locale, comments, variant = 'default' }:
   const cd = getCommunityDict(locale);
   const className = variant === 'modern' ? 'forum-panel' : 'community-sidebar';
 
+  const displayCommentUser = (comment: CommentItem) =>
+    comment.isAnonymous || !comment.author ? cd.post.anonymous : comment.author.username;
+
   return (
     <aside className={className}>
       <h3 className="forum-panel__title">{cd.comments.latestCaps}</h3>
@@ -35,7 +39,12 @@ export function LatestCommentsSidebar({ locale, comments, variant = 'default' }:
             <li key={comment.id}>
               <Link href={localePath(locale, `/history/view/${comment.post.id}/`)}>
                 <span className="forum-panel__comment-user">
-                  {comment.isAnonymous || !comment.author ? cd.post.anonymous : comment.author.username}
+                  <CommunityAvatar
+                    username={displayCommentUser(comment)}
+                    avatar={comment.isAnonymous ? null : comment.author?.avatar}
+                    size="xs"
+                  />
+                  {displayCommentUser(comment)}
                 </span>
                 <span className="forum-panel__comment-body">{comment.body.slice(0, 80)}</span>
                 <span className="forum-panel__comment-meta">

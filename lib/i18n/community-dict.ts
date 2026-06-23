@@ -156,15 +156,46 @@ export type CommunityDict = {
     selectMember: string;
     loginRequired: string;
     dmWith: string;
+    filterAll: string;
+    filterFemale: string;
+    filterMale: string;
+    filterNonBinary: string;
   };
   user: {
     subscription: string;
+    settings: string;
     points: string;
     stories: string;
     comments: string;
     giftPoints: string;
     verified: string;
     premium: string;
+  };
+  settings: {
+    title: string;
+    lead: string;
+    backToProfile: string;
+    save: string;
+    emailOptional: string;
+    currentPassword: string;
+    newPassword: string;
+    confirmPassword: string;
+    avatarTitle: string;
+    avatarUpload: string;
+    avatarUploadHint: string;
+    successUsername: string;
+    successEmail: string;
+    successPassword: string;
+    successAvatar: string;
+    errorLoginRequired: string;
+    errorInvalidEmail: string;
+    errorEmailTaken: string;
+    errorInvalidCurrentPassword: string;
+    errorPasswordMismatch: string;
+    errorNoPasswordSet: string;
+    errorInvalidAvatarType: string;
+    errorAvatarTooLarge: string;
+    errorAvatarRequired: string;
   };
   points: {
     title: string;
@@ -217,6 +248,10 @@ export type CommunityDict = {
     username: string;
     password: string;
     email: string;
+    gender: string;
+    genderFemale: string;
+    genderMale: string;
+    genderNonBinary: string;
     noAccount: string;
     hasAccount: string;
     submitLogin: string;
@@ -226,6 +261,7 @@ export type CommunityDict = {
     errorUsernameTaken: string;
     errorUsernameTooShort: string;
     errorPasswordTooShort: string;
+    errorInvalidGender: string;
     errorServiceUnavailable: string;
   };
   submit: {
@@ -468,15 +504,46 @@ const ka: CommunityDict = {
     selectMember: 'აირჩიეთ წევრი საუბრის დასაწყებად.',
     loginRequired: 'წერილების სანახავად შედით ანგარიშში.',
     dmWith: 'მიმოწერა @',
+    filterAll: 'ყველა',
+    filterFemale: 'ქალი',
+    filterMale: 'კაცი',
+    filterNonBinary: 'არაბინარული',
   },
   user: {
     subscription: 'გამოწერა',
+    settings: 'პარამეტრები',
     points: 'ქულები',
     stories: 'ისტორია',
     comments: 'კომენტარი',
     giftPoints: 'ქულების ჩუქება',
     verified: 'ვერიფიცირებული',
     premium: 'Premium',
+  },
+  settings: {
+    title: 'პროფილის პარამეტრები',
+    lead: 'შეცვალე სახელი, პაროლი, ელ-ფოსტა ან პროფილის სურათი.',
+    backToProfile: '← პროფილი',
+    save: 'შენახვა',
+    emailOptional: 'ელ-ფოსტა (არასავალდებულო)',
+    currentPassword: 'მიმდინარე პაროლი',
+    newPassword: 'ახალი პაროლი',
+    confirmPassword: 'გაიმეორე ახალი პაროლი',
+    avatarTitle: 'პროფილის სურათი',
+    avatarUpload: 'სურათის ატვირთვა',
+    avatarUploadHint: 'JPG, PNG, WebP ან GIF — მაქს. 512 KB. თუ ფაილი არ აირჩევ, გამოყენებული იქნება სქესის მიხედვით SVG ავატარი.',
+    successUsername: 'მომხმარებლის სახელი განახლდა.',
+    successEmail: 'ელ-ფოსტა განახლდა.',
+    successPassword: 'პაროლი განახლდა.',
+    successAvatar: 'პროფილის სურათი განახლდა.',
+    errorLoginRequired: 'პარამეტრების შესაცვლელად შესვლა საჭიროა.',
+    errorInvalidEmail: 'ელ-ფოსტის ფორმატი არასწორია.',
+    errorEmailTaken: 'ეს ელ-ფოსტა უკვე გამოყენებულია.',
+    errorInvalidCurrentPassword: 'მიმდინარე პაროლი არასწორია.',
+    errorPasswordMismatch: 'ახალი პაროლები ერთმანეთს არ ემთხვევა.',
+    errorNoPasswordSet: 'ამ ანგარიშს პაროლი არ აქვს დაყენებული.',
+    errorInvalidAvatarType: 'დაუშვებელი სურათის ფორმატი. გამოიყენე JPG, PNG, WebP ან GIF.',
+    errorAvatarTooLarge: 'სურათი ძალიან დიდია (მაქს. 512 KB).',
+    errorAvatarRequired: 'აირჩიე სქესი ან ატვირთე სურათი.',
   },
   points: {
     title: 'ქულების წესები',
@@ -558,6 +625,10 @@ const ka: CommunityDict = {
     username: 'მომხმარებლის სახელი',
     password: 'პაროლი',
     email: 'ელ-ფოსტა (არასავალდებულო)',
+    gender: 'სქესი / იდენტობა',
+    genderFemale: 'ქალი (She/Her)',
+    genderMale: 'კაცი (He/Him)',
+    genderNonBinary: 'არაბინარული (They/Them)',
     noAccount: 'არ გაქვთ ანგარიში?',
     hasAccount: 'უკვე გაქვთ ანგარიში?',
     submitLogin: 'შესვლა',
@@ -567,6 +638,7 @@ const ka: CommunityDict = {
     errorUsernameTaken: 'ეს სახელი უკვე დაკავებულია.',
     errorUsernameTooShort: 'სახელი უნდა იყოს მინიმუმ 3 ლათინური ასო ან ციფრი.',
     errorPasswordTooShort: 'პაროლი უნდა იყოს მინიმუმ 6 სიმბოლო.',
+    errorInvalidGender: 'გთხოვთ აირჩიოთ სქესი / იდენტობა.',
     errorServiceUnavailable: 'ავტორიზაცია დროებით მიუწვდომელია. სცადეთ მოგვიანებით.',
   },
   submit: {

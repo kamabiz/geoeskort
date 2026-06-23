@@ -102,6 +102,7 @@ export function Header({ locale, dict, username }: HeaderProps) {
               username={username ?? null}
               profileCaps={cd.navCaps.profile}
               profileLabel={cd.nav.profile}
+              settingsLabel={cd.user.settings}
               logoutLabel={cd.auth.logout}
               isProfileActive={isActive(profileHref)}
               variant="desktop"
@@ -124,6 +125,7 @@ export function Header({ locale, dict, username }: HeaderProps) {
               username={username ?? null}
               profileCaps={cd.navCaps.profile}
               profileLabel={cd.nav.profile}
+              settingsLabel={cd.user.settings}
               logoutLabel={cd.auth.logout}
               isProfileActive={isActive(profileHref)}
               variant="mobile"

@@ -35,6 +35,7 @@ export default async function LoginPage({ params }: Props) {
           usernameTaken: cd.auth.errorUsernameTaken,
           usernameTooShort: cd.auth.errorUsernameTooShort,
           passwordTooShort: cd.auth.errorPasswordTooShort,
+          invalidGender: cd.auth.errorInvalidGender,
           serviceUnavailable: cd.auth.errorServiceUnavailable,
         }}
       >

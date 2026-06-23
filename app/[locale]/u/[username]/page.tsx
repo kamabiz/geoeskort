@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { CommunityAvatar } from '@/components/community/CommunityAvatar';
 import { notFound } from 'next/navigation';
 import { CommunityPostCard } from '@/components/community/CommunityPostCard';
 import { CommunityLogoutButton } from '@/components/community/CommunityLogoutButton';
@@ -40,9 +41,7 @@ export default async function UserProfilePage({ params }: Props) {
   return (
     <main className="container community-page">
       <header className="community-profile">
-        <div className="community-avatar community-avatar--lg">
-          {profile.avatar ? '🖼' : profile.username[0]?.toUpperCase()}
-        </div>
+        <CommunityAvatar username={profile.username} avatar={profile.avatar} size="lg" />
         <div>
           <h1>@{profile.username}</h1>
           {profile.isPremium && <span className="community-card__premium">{cd.user.premium}</span>}
@@ -55,6 +54,7 @@ export default async function UserProfilePage({ params }: Props) {
           <p style={{ marginTop: '0.75rem', display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
             {isOwnProfile && (
               <>
+                <Link href={localePath(locale, '/user/settings/')} className="btn btn--ghost">{cd.user.settings}</Link>
                 <Link href={localePath(locale, '/user/subscription/')} className="btn btn--ghost">{cd.user.subscription}</Link>
                 <CommunityLogoutButton locale={locale} label={cd.auth.logout} className="btn btn--ghost community-logout-btn" />
               </>

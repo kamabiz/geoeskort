@@ -53,6 +53,7 @@ model User {
   email                String?   @unique
   passwordHash         String?
   avatar               String?
+  gender               String?
   bio                  String    @default("")
   points               Int       @default(0)
   isPremium            Boolean   @default(false)

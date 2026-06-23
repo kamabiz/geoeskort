@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { CommunityAvatar } from '@/components/community/CommunityAvatar';
 import { CommentThread } from '@/components/community/CommentThread';
 import { PremiumLockedBody } from '@/components/community/PremiumLockedBody';
 import {
@@ -21,7 +22,7 @@ type CommentNode = {
   createdAt: Date;
   isAnonymous: boolean;
   parentId: string | null;
-  author: { username: string } | null;
+  author: { username: string; avatar: string | null } | null;
   replies?: CommentNode[];
 };
 
@@ -37,6 +38,7 @@ export function StoryDetail({ locale, post, comments, canView, backHref }: Props
   const cd = getCommunityDict(locale);
   const back = backHref ?? localePath(locale, getCommunityPostListPath(post.category));
   const categoryEmoji = getCommunityCategoryEmoji(post.category);
+  const showAuthorAvatar = !post.isAnonymous && !!post.author;
 
   return (
     <main className="container community-page">
@@ -56,7 +58,21 @@ export function StoryDetail({ locale, post, comments, canView, backHref }: Props
             <span>{post.readingTimeMinutes} {cd.post.minRead}</span>
           </div>
           <h1 className="post-title">{post.title}</h1>
-          <p className="post-excerpt">{cd.post.by} {displayAuthor(post, cd.post.anonymous)}</p>
+          <p className="post-excerpt post-excerpt--author">
+            <CommunityAvatar
+              username={showAuthorAvatar ? post.author?.username : cd.post.anonymous}
+              avatar={showAuthorAvatar ? post.author?.avatar : null}
+              size="sm"
+            />
+            <span>{cd.post.by} </span>
+            {showAuthorAvatar ? (
+              <Link href={localePath(locale, `/u/${post.author!.username}/`)}>
+                {displayAuthor(post, cd.post.anonymous)}
+              </Link>
+            ) : (
+              <span>{displayAuthor(post, cd.post.anonymous)}</span>
+            )}
+          </p>
           {post.tags.length > 0 && (
             <div className="post-tags">
               {post.tags.map((tag) => (
@@ -70,8 +86,8 @@ export function StoryDetail({ locale, post, comments, canView, backHref }: Props
         ) : (
           <PremiumLockedBody locale={locale} />
         )}
+        <CommentThread locale={locale} postId={post.id} comments={comments} />
       </article>
-      <CommentThread locale={locale} postId={post.id} comments={comments} />
     </main>
   );
 }

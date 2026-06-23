@@ -8,6 +8,7 @@ type ErrorMessages = {
   usernameTaken: string;
   usernameTooShort: string;
   passwordTooShort: string;
+  invalidGender: string;
   serviceUnavailable: string;
 };
 
@@ -30,6 +31,8 @@ export function AuthForm({ action, errors, submitLabel, children }: Props) {
           ? errors.usernameTooShort
           : state?.error === 'passwordTooShort'
             ? errors.passwordTooShort
+            : state?.error === 'invalidGender'
+              ? errors.invalidGender
             : state?.error === 'serviceUnavailable'
               ? errors.serviceUnavailable
               : null;

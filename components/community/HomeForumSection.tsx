@@ -15,7 +15,7 @@ type CommentItem = {
   body: string;
   createdAt: Date;
   isAnonymous: boolean;
-  author: { username: string } | null;
+  author: { username: string; avatar: string | null } | null;
   post: { id: string; title: string; category: string };
 };
 

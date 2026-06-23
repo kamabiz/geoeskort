@@ -14,6 +14,7 @@ type Props = {
   locale: Locale;
   counts: { category: string; count: number }[];
   variant?: 'list' | 'chips';
+  showSectionTitles?: boolean;
 };
 
 function getVisibleStorySlugs(): StoryCategorySlug[] {
@@ -22,7 +23,7 @@ function getVisibleStorySlugs(): StoryCategorySlug[] {
   );
 }
 
-export function CategoryCountList({ locale, counts, variant = 'list' }: Props) {
+export function CategoryCountList({ locale, counts, variant = 'list', showSectionTitles = true }: Props) {
   const cd = getCommunityDict(locale);
   const countMap = new Map(counts.map((c) => [c.category, c.count]));
   const storySlugs = getVisibleStorySlugs();
@@ -71,7 +72,7 @@ export function CategoryCountList({ locale, counts, variant = 'list' }: Props) {
     return (
       <div className="forum-chips-wrap">
         <div className="forum-chips-section">
-          <p className="forum-chips-section__title">ისტორიები</p>
+          {showSectionTitles && <p className="forum-chips-section__title">ისტორიები</p>}
           <div className="forum-chips">
             {categorySlugs.map(renderStoryChip)}
             {renderAllStoriesChip()}
@@ -79,7 +80,7 @@ export function CategoryCountList({ locale, counts, variant = 'list' }: Props) {
           </div>
         </div>
         <div className="forum-chips-section">
-          <p className="forum-chips-section__title">განყოფილებები</p>
+          {showSectionTitles && <p className="forum-chips-section__title">განყოფილებები</p>}
           <div className="forum-chips">
             {Object.values(MODULE_CATEGORIES).map((mod) => (
               <Link key={mod.slug} href={localePath(locale, mod.route)} className="forum-chip forum-chip--module">

@@ -35,6 +35,7 @@ export default async function RegisterPage({ params }: Props) {
           usernameTaken: cd.auth.errorUsernameTaken,
           usernameTooShort: cd.auth.errorUsernameTooShort,
           passwordTooShort: cd.auth.errorPasswordTooShort,
+          invalidGender: cd.auth.errorInvalidGender,
           serviceUnavailable: cd.auth.errorServiceUnavailable,
         }}
       >
@@ -49,6 +50,14 @@ export default async function RegisterPage({ params }: Props) {
         <label>
           {cd.auth.password}
           <input name="password" type="password" required minLength={6} autoComplete="new-password" />
+        </label>
+        <label>
+          {cd.auth.gender}
+          <select name="gender" required defaultValue="nonBinary">
+            <option value="female">{cd.auth.genderFemale}</option>
+            <option value="male">{cd.auth.genderMale}</option>
+            <option value="nonBinary">{cd.auth.genderNonBinary}</option>
+          </select>
         </label>
       </AuthForm>
       <p>

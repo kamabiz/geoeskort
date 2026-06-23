@@ -49,11 +49,11 @@ export default async function HistoryViewPage({ params }: Props) {
         where: { postId: id, parentId: null, archivedAt: null },
         orderBy: { createdAt: 'desc' },
         include: {
-          author: { select: { username: true } },
+          author: { select: { username: true, avatar: true } },
           replies: {
             where: { archivedAt: null },
             orderBy: { createdAt: 'asc' },
-            include: { author: { select: { username: true } } },
+            include: { author: { select: { username: true, avatar: true } } },
           },
         },
       }),

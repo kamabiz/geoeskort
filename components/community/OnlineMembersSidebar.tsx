@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { CommunityAvatar } from '@/components/community/CommunityAvatar';
 import { getCommunityDict } from '@/lib/i18n/community-dict';
 import { localePath } from '@/lib/i18n/paths';
 import type { Locale } from '@/lib/i18n/types';
@@ -48,9 +49,7 @@ export function OnlineMembersSidebar({
           {members.map((member) => (
             <li key={member.id}>
               <Link href={localePath(locale, `/u/${member.username}/`)}>
-                <span className="forum-panel__avatar">
-                  {member.avatar ? '🖼' : member.username[0]?.toUpperCase()}
-                </span>
+                <CommunityAvatar username={member.username} avatar={member.avatar} size="sm" className="forum-panel__avatar" />
                 <span className="forum-panel__name">{member.username}</span>
                 {member.isPremium && <span className="forum-panel__badge">👑</span>}
               </Link>
