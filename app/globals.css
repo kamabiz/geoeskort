@@ -11,6 +11,10 @@
   --text-muted: #9490a8;
   --accent: #e8a838;
   --accent-dim: rgba(232, 168, 56, 0.15);
+  --logo-pink: #ee2a7b;
+  --logo-pink-light: #ff6b9d;
+  --logo-pink-dim: rgba(238, 42, 123, 0.14);
+  --logo-pink-border: rgba(255, 107, 157, 0.28);
   --red: #c41e3a;
   --red-dim: rgba(196, 30, 58, 0.2);
   --gradient-hero: linear-gradient(135deg, #0a0a0c 0%, #0c0c10 45%, #08080c 100%);
@@ -1413,7 +1417,7 @@ button, .btn, .nav-toggle {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: var(--accent);
+  color: var(--logo-pink-light);
   margin-bottom: 0.5rem;
 }
 
@@ -2806,6 +2810,30 @@ button, .btn, .nav-toggle {
   height: 100%;
 }
 
+.forum-featured-row__grid .community-card--compact-rich .community-card__body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.forum-featured-row__grid .community-card--compact-rich .community-card__compact-foot {
+  margin-top: auto;
+}
+
+.community-card--compact-rich .community-card__excerpt--compact {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
 .forum-featured-row__grid .community-card--compact:only-child {
   grid-column: 1 / -1;
 }
@@ -3024,12 +3052,14 @@ button, .btn, .nav-toggle {
 .forum-chip__count {
   font-size: 0.7rem;
   font-weight: 700;
-  color: var(--accent);
-  background: var(--accent-dim);
+  color: var(--logo-pink-light);
+  background: linear-gradient(135deg, rgba(255, 107, 157, 0.2), rgba(238, 42, 123, 0.12));
+  border: 1px solid var(--logo-pink-border);
   padding: 0.1rem 0.45rem;
   border-radius: 999px;
   min-width: 1.25rem;
   text-align: center;
+  box-shadow: 0 0 10px rgba(238, 42, 123, 0.08);
 }
 
 /* Category tiles — home grid */
@@ -3143,12 +3173,21 @@ button, .btn, .nav-toggle {
 }
 
 .forum-panel--points {
-  border-color: rgba(232, 168, 56, 0.22);
-  background: linear-gradient(160deg, rgba(232, 168, 56, 0.07), rgba(255, 255, 255, 0.02));
+  border-color: var(--logo-pink-border);
+  background: linear-gradient(160deg, rgba(255, 107, 157, 0.08), rgba(238, 42, 123, 0.04), rgba(255, 255, 255, 0.02));
 }
 
 .forum-panel--points .forum-panel__title {
-  color: var(--accent);
+  color: var(--logo-pink-light);
+  text-shadow: 0 0 16px rgba(238, 42, 123, 0.18);
+}
+
+.forum-panel--points .forum-panel__points {
+  color: var(--logo-pink-light);
+}
+
+.forum-panel--points .forum-panel__link-more:hover {
+  color: var(--logo-pink-light);
 }
 
 .forum-sidebar-stack {
@@ -3580,10 +3619,12 @@ button, .btn, .nav-toggle {
   padding: 0.15rem 0.45rem 0.15rem 0.35rem;
   font-size: 0.62rem;
   font-weight: 600;
-  color: var(--accent);
-  background: var(--accent-dim);
+  color: var(--logo-pink-light);
+  background: linear-gradient(135deg, rgba(255, 107, 157, 0.16), rgba(238, 42, 123, 0.1));
+  border: 1px solid var(--logo-pink-border);
   border-radius: 999px;
   line-height: 1.2;
+  box-shadow: 0 0 12px rgba(238, 42, 123, 0.08);
 }
 
 .community-card__cat-pill-emoji {

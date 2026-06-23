@@ -22,6 +22,7 @@ type Props = {
   viewPath?: 'history' | 'questions' | 'default';
   isLoggedIn?: boolean;
   showVotes?: boolean;
+  showExcerpt?: boolean;
 };
 
 export function CommunityPostCard({
@@ -32,6 +33,7 @@ export function CommunityPostCard({
   viewPath = 'default',
   isLoggedIn = false,
   showVotes = true,
+  showExcerpt = false,
 }: Props) {
   const cd = getCommunityDict(locale);
   const href =
@@ -42,7 +44,7 @@ export function CommunityPostCard({
         : localePath(locale, getCommunityPostViewPath(post.category, post.id));
   const author = displayAuthor(post, cd.post.anonymous);
   const showAuthorAvatar = !post.isAnonymous && !!post.author;
-  const excerpt = makeExcerpt(post.body, variant === 'compact' ? 90 : 160);
+  const excerpt = makeExcerpt(post.body, showExcerpt ? 140 : variant === 'compact' ? 90 : 160);
   const TitleTag = headingLevel;
   const upvoteCount = post._count?.upvotes ?? 0;
   const commentCount = post._count?.comments ?? 0;
@@ -52,7 +54,7 @@ export function CommunityPostCard({
 
   if (isCompact) {
     return (
-      <article className={`community-card community-card--reddit community-card--compact${showVotes ? '' : ' community-card--no-votes'}`}>
+      <article className={`community-card community-card--reddit community-card--compact${showExcerpt ? ' community-card--compact-rich' : ''}${showVotes ? '' : ' community-card--no-votes'}`}>
         {showVotes && (
           <VoteColumn
             postId={post.id}
@@ -76,6 +78,12 @@ export function CommunityPostCard({
           <TitleTag className="community-card__title community-card__title--compact">
             <Link href={href}>{post.title}</Link>
           </TitleTag>
+
+          {showExcerpt && (
+            <p className="community-card__excerpt community-card__excerpt--compact">
+              {post.isPremium ? cd.post.premiumPreview : excerpt}
+            </p>
+          )}
 
           <div className="community-card__compact-foot">
             <span className="community-card__compact-meta-line">

@@ -40,6 +40,7 @@ export type CommunityDict = {
     sectionLead: string;
     topStory: string;
     topStories: string;
+    topStoriesCaps: string;
     latestStories: string;
     latestStoriesCaps: string;
     writeYours: string;
@@ -386,6 +387,7 @@ const ka: CommunityDict = {
     sectionLead: 'აქ ჩანს უახლესი ისტორიები, აქტიური მომხმარებლები და საუბრის ბოლო ნაკადი.',
     topStory: 'დღის ტოპ ისტორია',
     topStories: 'ტოპ ისტორიები',
+    topStoriesCaps: 'ᲢᲝᲞ ᲘᲡᲢᲝᲠᲘᲔᲑᲘ',
     newPost: 'ახალი პოსტი',
     latestStories: 'ბოლო ისტორიები',
     latestStoriesCaps: 'ᲑᲝᲚᲝ ᲘᲡᲢᲝᲠᲘᲔᲑᲘ',

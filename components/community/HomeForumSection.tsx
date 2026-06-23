@@ -64,7 +64,7 @@ export function HomeForumSection({
           {topStories.length > 0 && (
             <div className="forum-hub__featured forum-featured-row forum-featured--hide-mobile">
               <div className="forum-block__head">
-                <h3>🔥 {cd.home.topStories}</h3>
+                <h3>🔥 {cd.home.topStoriesCaps}</h3>
               </div>
               <div className="forum-featured-row__grid">
                 {topStories.map((post) => (
@@ -74,6 +74,7 @@ export function HomeForumSection({
                     locale={locale}
                     headingLevel="h3"
                     variant="compact"
+                    showExcerpt
                     viewPath="history"
                     showVotes={false}
                   />
