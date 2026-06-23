@@ -70,9 +70,9 @@ export async function getPublishedPosts(options: {
   });
 }
 
-export async function getTopStoryOfDay(categories?: string[]): Promise<PostWithAuthor | null> {
+export async function getTopStoriesOfDay(categories?: string[], limit = 2): Promise<PostWithAuthor[]> {
   const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
-  return prisma.post.findFirst({
+  return prisma.post.findMany({
     where: {
       status: 'PUBLISHED',
       createdAt: { gte: since },
@@ -80,7 +80,13 @@ export async function getTopStoryOfDay(categories?: string[]): Promise<PostWithA
     },
     include: postInclude,
     orderBy: [{ viewCount: 'desc' }, { createdAt: 'desc' }],
+    take: limit,
   });
+}
+
+export async function getTopStoryOfDay(categories?: string[]): Promise<PostWithAuthor | null> {
+  const stories = await getTopStoriesOfDay(categories, 1);
+  return stories[0] ?? null;
 }
 
 export async function getCategoryCounts() {

@@ -11,7 +11,7 @@ import {
   getCommunityStats,
   getLatestComments,
   getPublishedPosts,
-  getTopStoryOfDay,
+  getTopStoriesOfDay,
   type PostWithAuthor,
 } from '@/lib/community/posts';
 import { STORY_CATEGORY_SLUGS } from '@/lib/community/categories';
@@ -54,10 +54,10 @@ export default async function HomePage({ params }: Props) {
   const cd = getCommunityDict(locale);
   const posts = (await getAllPosts()).slice(0, 4);
 
-  const [user, topStory, latestPosts, randomPosts, categoryCounts, presence, latestComments, stats, topLeaders] =
+  const [user, topStories, latestPosts, randomPosts, categoryCounts, presence, latestComments, stats, topLeaders] =
     await Promise.all([
       getCurrentUser(),
-      safeCommunity(() => getTopStoryOfDay(STORY_CATEGORY_SLUGS), null),
+      safeCommunity(() => getTopStoriesOfDay(STORY_CATEGORY_SLUGS, 2), [] as PostWithAuthor[]),
       safeCommunity(() => getPublishedPosts({ categories: STORY_CATEGORY_SLUGS, limit: 5 }), [] as PostWithAuthor[]),
       safeCommunity(() => getPublishedPosts({ categories: STORY_CATEGORY_SLUGS, limit: 4, orderBy: 'random' }), [] as PostWithAuthor[]),
       safeCommunity(() => getCategoryCounts(), []),
@@ -66,6 +66,8 @@ export default async function HomePage({ params }: Props) {
       safeCommunity(() => getCommunityStats(), { storyCount: 0, memberCount: 0, commentCount: 0, lastUser: null }),
       safeCommunity(() => getLeaderboard(10), []),
     ]);
+
+  const topStory = topStories[0] ?? null;
 
   return (
     <>
@@ -151,7 +153,7 @@ export default async function HomePage({ params }: Props) {
 
         <HomeForumSection
         locale={locale}
-        topStory={topStory}
+        topStories={topStories}
         latestPosts={latestPosts}
         randomPosts={randomPosts}
         categoryCounts={categoryCounts}
