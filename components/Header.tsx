@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { SiteLogo } from '@/components/SiteLogo';
 import { ProfileNavMenu } from '@/components/community/ProfileNavMenu';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { getCommunityDict } from '@/lib/i18n/community-dict';
 import { localePath } from '@/lib/i18n/paths';
 import type { Dictionary, Locale } from '@/lib/i18n/types';
@@ -13,11 +13,20 @@ type HeaderProps = {
   locale: Locale;
   dict: Dictionary;
   username?: string | null;
+  greetingHello?: string;
+  greetingGuest?: string;
 };
 
-export function Header({ locale, dict, username }: HeaderProps) {
+const MOBILE_MAX_WIDTH = 768;
+const NAV_TOGGLE_RESERVE = 52;
+
+export function Header({ locale, dict, username, greetingHello, greetingGuest }: HeaderProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [compactNav, setCompactNav] = useState(false);
+  const innerRef = useRef<HTMLDivElement>(null);
+  const logoRef = useRef<HTMLDivElement>(null);
+  const probeRef = useRef<HTMLDivElement>(null);
   const cd = getCommunityDict(locale);
 
   useEffect(() => {
@@ -26,7 +35,9 @@ export function Header({ locale, dict, username }: HeaderProps) {
 
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [open]);
 
   const profileHref = username
@@ -45,14 +56,8 @@ export function Header({ locale, dict, username }: HeaderProps) {
     { href: localePath(locale, '/crush/'), label: cd.nav.crush, caps: cd.navCaps.crush },
   ];
 
-  const navDesktop = [
-    ...navPrimary,
-    ...navMore,
-  ];
-
-  const navAll = [
-    ...navDesktop,
-  ];
+  const navDesktop = [...navPrimary, ...navMore];
+  const navAll = [...navDesktop];
 
   const isActive = (href: string) => {
     const normalized = href.replace(/\/$/, '') || '/';
@@ -72,10 +77,83 @@ export function Header({ locale, dict, username }: HeaderProps) {
     return classes.join(' ');
   };
 
+  const evaluateNavFit = useCallback(() => {
+    const inner = innerRef.current;
+    const logo = logoRef.current;
+    const probe = probeRef.current;
+
+    if (!inner || !logo || !probe) return;
+
+    if (window.innerWidth <= MOBILE_MAX_WIDTH) {
+      setCompactNav(true);
+      return;
+    }
+
+    const available = inner.clientWidth - logo.offsetWidth - NAV_TOGGLE_RESERVE;
+    setCompactNav(probe.scrollWidth > available);
+  }, []);
+
+  useLayoutEffect(() => {
+    evaluateNavFit();
+
+    const inner = innerRef.current;
+    const probe = probeRef.current;
+    const logo = logoRef.current;
+    if (!inner || !probe || !logo) return;
+
+    const observer = new ResizeObserver(() => evaluateNavFit());
+    observer.observe(inner);
+    observer.observe(probe);
+    observer.observe(logo);
+
+    window.addEventListener('resize', evaluateNavFit);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', evaluateNavFit);
+    };
+  }, [evaluateNavFit, username, greetingHello, greetingGuest, cd.navCaps.profile]);
+
+  const greetingBlock = greetingHello ? (
+    <div className="site-nav__greeting">
+      <span className="site-nav__greeting-text">
+        {greetingHello},{' '}
+        {username ? (
+          <Link href={profileHref} className="site-nav__greeting-user">
+            @{username}
+          </Link>
+        ) : (
+          <span className="site-nav__greeting-user site-nav__greeting-user--guest">
+            @{greetingGuest}
+          </span>
+        )}
+      </span>
+    </div>
+  ) : null;
+
+  const desktopLinks = navDesktop.map((item) => (
+    <Link key={item.href} href={item.href} className={linkClass(item)}>
+      <span className="site-nav__label-caps">{item.caps}</span>
+    </Link>
+  ));
+
   return (
-    <header className="site-header">
-      <div className="container site-header__inner">
-        <SiteLogo href={localePath(locale, '/')} />
+    <header className={`site-header${compactNav ? ' site-header--compact-nav' : ''}`}>
+      <div ref={innerRef} className="container site-header__inner">
+        <div ref={logoRef} className="site-header__logo-wrap">
+          <SiteLogo href={localePath(locale, '/')} />
+        </div>
+        <div ref={probeRef} className="site-nav__fit-probe" aria-hidden="true">
+          <div className="site-nav__desktop site-nav__desktop--probe">
+            {desktopLinks}
+            {greetingBlock}
+            <span className="site-nav__more-btn site-nav__link--profile site-nav__probe-profile">
+              <span className="site-nav__label-caps">{cd.navCaps.profile}</span>
+              <span className="site-nav__more-caret" aria-hidden>
+                ▾
+              </span>
+            </span>
+          </div>
+        </div>
         <button
           className="nav-toggle"
           type="button"
@@ -87,16 +165,17 @@ export function Header({ locale, dict, username }: HeaderProps) {
         </button>
         <nav className={`site-nav${open ? ' is-open' : ''}`} aria-label="Main">
           <div className="site-nav__desktop">
-            {navDesktop.map((item) => (
+            {desktopLinks.map((link, index) => (
               <Link
-                key={item.href}
-                href={item.href}
-                className={linkClass(item)}
+                key={navDesktop[index].href}
+                href={navDesktop[index].href}
+                className={linkClass(navDesktop[index])}
                 onClick={() => setOpen(false)}
               >
-                <span className="site-nav__label-caps">{item.caps}</span>
+                <span className="site-nav__label-caps">{navDesktop[index].caps}</span>
               </Link>
             ))}
+            {greetingBlock}
             <ProfileNavMenu
               locale={locale}
               username={username ?? null}
@@ -110,6 +189,26 @@ export function Header({ locale, dict, username }: HeaderProps) {
           </div>
 
           <div className="site-nav__mobile">
+            {greetingHello && (
+              <div className="site-nav__mobile-greeting">
+                <span className="site-nav__greeting-text">
+                  {greetingHello},{' '}
+                  {username ? (
+                    <Link
+                      href={profileHref}
+                      className="site-nav__greeting-user"
+                      onClick={() => setOpen(false)}
+                    >
+                      @{username}
+                    </Link>
+                  ) : (
+                    <span className="site-nav__greeting-user site-nav__greeting-user--guest">
+                      @{greetingGuest}
+                    </span>
+                  )}
+                </span>
+              </div>
+            )}
             {navAll.map((item) => (
               <Link
                 key={item.href}
@@ -133,7 +232,14 @@ export function Header({ locale, dict, username }: HeaderProps) {
           </div>
         </nav>
       </div>
-      {open && <button type="button" className="nav-backdrop" aria-label="დახურვა" onClick={() => setOpen(false)} />}
+      {open && (
+        <button
+          type="button"
+          className="nav-backdrop"
+          aria-label="დახურვა"
+          onClick={() => setOpen(false)}
+        />
+      )}
     </header>
   );
 }

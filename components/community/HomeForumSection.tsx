@@ -21,7 +21,6 @@ type CommentItem = {
 
 type Props = {
   locale: Locale;
-  topStories: PostWithAuthor[];
   latestPosts: PostWithAuthor[];
   randomPosts: PostWithAuthor[];
   categoryCounts: { category: string; count: number }[];
@@ -47,7 +46,6 @@ type Props = {
 
 export function HomeForumSection({
   locale,
-  topStories,
   latestPosts,
   randomPosts,
   categoryCounts,
@@ -61,26 +59,12 @@ export function HomeForumSection({
     <section className="forum-hub forum-hub--compact">
       <div className="container">
         <div className="forum-hub__layout">
-          {topStories.length > 0 && (
-            <div className="forum-hub__featured forum-featured-row forum-featured--hide-mobile">
-              <div className="forum-block__head">
-                <h3>🔥 {cd.home.topStoriesCaps}</h3>
-              </div>
-              <div className="forum-featured-row__grid">
-                {topStories.map((post) => (
-                  <CommunityPostCard
-                    key={post.id}
-                    post={post}
-                    locale={locale}
-                    headingLevel="h3"
-                    variant="compact"
-                    showExcerpt
-                    viewPath="history"
-                    showVotes={false}
-                  />
-                ))}
-              </div>
-            </div>
+          {categoryCounts.length > 0 && (
+            <HomeCategoriesPanel
+              locale={locale}
+              categoryCounts={categoryCounts}
+              className="forum-hub__categories forum-desktop-only"
+            />
           )}
 
           <div className="forum-hub__latest forum-block">

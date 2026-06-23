@@ -33,7 +33,13 @@ export default async function LocaleLayout({ children, params }: Props) {
     <>
       <SetHtmlLang locale={locale} />
       <AgeGate dict={cd.ageGate} />
-      <Header locale={locale} dict={dict} username={user?.username} />
+      <Header
+        locale={locale}
+        dict={dict}
+        username={user?.username}
+        greetingHello={cd.home.greetingHello}
+        greetingGuest={cd.home.greetingGuest}
+      />
       <PresenceHeartbeat />
       {children}
       <Footer locale={locale} dict={dict} username={user?.username} />

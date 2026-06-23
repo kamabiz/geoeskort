@@ -1,9 +1,10 @@
 import Link from 'next/link';
 import { JsonLd } from '@/components/JsonLd';
 import { BlogCard } from '@/components/BlogCard';
-import { HomeCategoriesPanel } from '@/components/community/HomeCategoriesPanel';
+import { HomeHeroStats } from '@/components/community/HomeHeroStats';
 import { HomeForumSection } from '@/components/community/HomeForumSection';
 import { HomeMobileHub } from '@/components/community/HomeMobileHub';
+import { HomeTopStoriesRow } from '@/components/community/HomeTopStoriesRow';
 import { getCurrentUser } from '@/lib/community/auth';
 import { getAllPosts } from '@/lib/blog';
 import {
@@ -84,6 +85,18 @@ export default async function HomePage({ params }: Props) {
 
       <div className="home-surface">
         <section className="hero hero--home">
+        <HomeHeroStats
+          storyCount={stats.storyCount}
+          onlineCount={presence.onlineCount}
+          memberCount={stats.memberCount}
+          commentCount={stats.commentCount}
+          labels={{
+            stories: cd.home.statsStories,
+            online: cd.home.statsOnline,
+            members: cd.home.statsMembers,
+            comments: cd.home.statsComments,
+          }}
+        />
         <div className="container">
           <HomeMobileHub
             locale={locale}
@@ -96,64 +109,12 @@ export default async function HomePage({ params }: Props) {
             memberCount={stats.memberCount}
           />
 
-          <div className="hero__shell hero__shell--desktop">
-            <div className="hero__greeting hero__greeting--desktop">
-              <h1 className="hero__headline">
-                {cd.home.greetingHello},{' '}
-                {user ? (
-                  <Link
-                    href={localePath(locale, `/u/${user.username}/`)}
-                    className="hero__headline-user"
-                  >
-                    @{user.username}
-                  </Link>
-                ) : (
-                  <span className="hero__headline-user hero__headline-user--guest">
-                    @{cd.home.greetingGuest}
-                  </span>
-                )}
-              </h1>
-              {!user && (
-                <p className="hero__headline-hint">
-                  {cd.home.greetingAuthHint}{' '}
-                  <Link href={localePath(locale, '/login/')}>{cd.home.greetingAuthLogin}</Link>
-                  {' / '}
-                  <Link href={localePath(locale, '/register/')}>{cd.home.greetingAuthRegister}</Link>
-                </p>
-              )}
-            </div>
-
-            <div className="hero__stats hero__stats--desktop" role="list">
-              <span className="hero__stat" role="listitem">
-                <strong className="hero__stat-value">{stats.storyCount}</strong>
-                <span className="hero__stat-label">{cd.home.statsStories}</span>
-              </span>
-              <span className="hero__stat hero__stat--live" role="listitem">
-                <strong className="hero__stat-value">{presence.onlineCount}</strong>
-                <span className="hero__stat-label">{cd.home.statsOnline}</span>
-              </span>
-              <span className="hero__stat" role="listitem">
-                <strong className="hero__stat-value">{stats.memberCount}</strong>
-                <span className="hero__stat-label">{cd.home.statsMembers}</span>
-              </span>
-              <span className="hero__stat" role="listitem">
-                <strong className="hero__stat-value">{stats.commentCount}</strong>
-                <span className="hero__stat-label">{cd.home.statsComments}</span>
-              </span>
-            </div>
-          </div>
-
-          <HomeCategoriesPanel
-            locale={locale}
-            categoryCounts={categoryCounts}
-            className="home-hero-categories"
-          />
+          <HomeTopStoriesRow locale={locale} topStories={topStories} />
         </div>
         </section>
 
         <HomeForumSection
         locale={locale}
-        topStories={topStories}
         latestPosts={latestPosts}
         randomPosts={randomPosts}
         categoryCounts={categoryCounts}
