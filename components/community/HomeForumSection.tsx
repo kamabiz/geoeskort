@@ -2,9 +2,9 @@ import Link from 'next/link';
 import { HomeCategoriesPanel } from '@/components/community/HomeCategoriesPanel';
 import { CommunityPostCard } from '@/components/community/CommunityPostCard';
 import { ForumScrollRow } from '@/components/community/ForumScrollRow';
-import { ForumSidebarExtras } from '@/components/community/ForumSidebarExtras';
 import { LatestCommentsSidebar } from '@/components/community/LatestCommentsSidebar';
 import { OnlineMembersSidebar } from '@/components/community/OnlineMembersSidebar';
+import { PointsLeaderboardSidebar } from '@/components/community/PointsLeaderboardSidebar';
 import type { PostWithAuthor } from '@/lib/community/posts';
 import { getCommunityDict } from '@/lib/i18n/community-dict';
 import { localePath } from '@/lib/i18n/paths';
@@ -36,6 +36,13 @@ type Props = {
     }[];
   };
   latestComments: CommentItem[];
+  topLeaders: {
+    id: string;
+    username: string;
+    avatar: string | null;
+    points: number;
+    isPremium: boolean;
+  }[];
 };
 
 export function HomeForumSection({
@@ -46,6 +53,7 @@ export function HomeForumSection({
   categoryCounts,
   presence,
   latestComments,
+  topLeaders,
 }: Props) {
   const cd = getCommunityDict(locale);
 
@@ -103,6 +111,10 @@ export function HomeForumSection({
                   </div>
                 </>
               )}
+              <div className="forum-mobile-only forum-sidebar-stack">
+                <LatestCommentsSidebar locale={locale} comments={latestComments} variant="modern" />
+                <PointsLeaderboardSidebar locale={locale} leaders={topLeaders} variant="modern" />
+              </div>
             </div>
 
             <aside className="forum-hub__aside">
@@ -111,8 +123,10 @@ export function HomeForumSection({
                 onlineMembers={presence.onlineMembers}
                 variant="modern"
               />
-              <LatestCommentsSidebar locale={locale} comments={latestComments} variant="modern" />
-              <ForumSidebarExtras locale={locale} />
+              <div className="forum-desktop-only forum-sidebar-stack">
+                <LatestCommentsSidebar locale={locale} comments={latestComments} variant="modern" />
+                <PointsLeaderboardSidebar locale={locale} leaders={topLeaders} variant="modern" />
+              </div>
             </aside>
           </div>
 

@@ -16,6 +16,7 @@ import {
 } from '@/lib/community/posts';
 import { STORY_CATEGORY_SLUGS } from '@/lib/community/categories';
 import { getPresenceStats } from '@/lib/community/presence';
+import { getLeaderboard } from '@/lib/community/points';
 import { safeCommunity } from '@/lib/community/safe';
 import { getCommunityDict } from '@/lib/i18n/community-dict';
 import { isLocale } from '@/lib/i18n/config';
@@ -53,7 +54,7 @@ export default async function HomePage({ params }: Props) {
   const cd = getCommunityDict(locale);
   const posts = (await getAllPosts()).slice(0, 4);
 
-  const [user, topStory, latestPosts, randomPosts, categoryCounts, presence, latestComments, stats] =
+  const [user, topStory, latestPosts, randomPosts, categoryCounts, presence, latestComments, stats, topLeaders] =
     await Promise.all([
       getCurrentUser(),
       safeCommunity(() => getTopStoryOfDay(STORY_CATEGORY_SLUGS), null),
@@ -63,6 +64,7 @@ export default async function HomePage({ params }: Props) {
       safeCommunity(() => getPresenceStats(), { totalMembers: 0, onlineCount: 0, onlineMembers: [] }),
       safeCommunity(() => getLatestComments(5), []),
       safeCommunity(() => getCommunityStats(), { storyCount: 0, memberCount: 0, commentCount: 0, lastUser: null }),
+      safeCommunity(() => getLeaderboard(10), []),
     ]);
 
   return (
@@ -157,6 +159,7 @@ export default async function HomePage({ params }: Props) {
         categoryCounts={categoryCounts}
         presence={presence}
         latestComments={latestComments}
+        topLeaders={topLeaders}
         />
 
         <section className="section section--home">

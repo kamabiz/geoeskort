@@ -66,6 +66,9 @@ export type CommunityDict = {
     premiumBannerBtn: string;
     sidebarQuickTitle: string;
     sidebarQuickTitleCaps: string;
+    pointsTopCaps: string;
+    viewLeaderboard: string;
+    leaderboardEmpty: string;
     actionSubmit: string;
     actionChat: string;
     actionConversation: string;
@@ -408,6 +411,9 @@ const ka: CommunityDict = {
     premiumBannerBtn: 'გამოწერის ნახვა',
     sidebarQuickTitle: 'სწრაფი ბმულები',
     sidebarQuickTitleCaps: 'ᲡᲬᲠᲐᲤᲘ ᲑᲛᲣᲚᲔᲑᲘ',
+    pointsTopCaps: 'ᲥᲣᲚᲔᲑᲘᲡ TOP 10',
+    viewLeaderboard: 'სრული რეიტინგი →',
+    leaderboardEmpty: 'ჯერ არავინ აქ სიაში.',
     actionSubmit: '✍️ ისტორიის დამატება',
     actionChat: '💬 LIVE ჩათი',
     actionConversation: '🗣️ სასაუბრო ოთახი',
