@@ -290,6 +290,10 @@ export type CommunityDict = {
     notFound: string;
     back: string;
     becomePremium: string;
+    upvote: string;
+    upvoted: string;
+    upvoteLogin: string;
+    commentsLabel: string;
   };
   comments: {
     title: string;
@@ -667,6 +671,10 @@ const ka: CommunityDict = {
     notFound: 'ისტორია ვერ მოიძებნა',
     back: '← უკან',
     becomePremium: 'Premium-ის გახსნა',
+    upvote: 'მოწონება',
+    upvoted: 'მოწონებულია',
+    upvoteLogin: 'შესვლა მოწონებისთვის',
+    commentsLabel: 'კომენტარი',
   },
   comments: {
     title: 'კომენტარები',

@@ -39,22 +39,33 @@ export default async function QuestionViewPage({ params }: Props) {
   const user = await getCurrentUser();
   const canView = canViewPremiumContent(user, post.isPremium);
 
-  const comments = await safeCommunity(
-    () =>
-      prisma.comment.findMany({
-        where: { postId: id, parentId: null, archivedAt: null },
-        orderBy: { createdAt: 'desc' },
-        include: {
-          author: { select: { username: true, avatar: true } },
-          replies: {
-            where: { archivedAt: null },
-            orderBy: { createdAt: 'asc' },
-            include: { author: { select: { username: true, avatar: true } } },
+  const [comments, hasUpvoted] = await Promise.all([
+    safeCommunity(
+      () =>
+        prisma.comment.findMany({
+          where: { postId: id, parentId: null, archivedAt: null },
+          orderBy: { createdAt: 'desc' },
+          include: {
+            author: { select: { username: true, avatar: true } },
+            replies: {
+              where: { archivedAt: null },
+              orderBy: { createdAt: 'asc' },
+              include: { author: { select: { username: true, avatar: true } } },
+            },
           },
-        },
-      }),
-    [],
-  );
+        }),
+      [],
+    ),
+    user
+      ? safeCommunity(
+          () =>
+            prisma.postUpvote.findUnique({
+              where: { userId_postId: { userId: user.id, postId: id } },
+            }),
+          null,
+        )
+      : Promise.resolve(null),
+  ]);
 
   return (
     <StoryDetail
@@ -63,6 +74,8 @@ export default async function QuestionViewPage({ params }: Props) {
       comments={comments}
       canView={canView}
       backHref={localePath(locale, '/questions/')}
+      isLoggedIn={!!user}
+      hasUpvoted={!!hasUpvoted}
     />
   );
 }

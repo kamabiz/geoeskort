@@ -65,7 +65,7 @@ export default async function QuestionsPage({ params, searchParams }: Props) {
         {posts.length === 0 ? (
           <p className="community-sidebar__empty">{cd.questions.noPosts}</p>
         ) : (
-          posts.map((post) => <CommunityPostCard key={post.id} post={post} locale={locale} viewPath="questions" />)
+          posts.map((post) => <CommunityPostCard key={post.id} post={post} locale={locale} viewPath="questions" isLoggedIn={!!user} />)
         )}
       </div>
 

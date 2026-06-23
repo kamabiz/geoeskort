@@ -134,7 +134,7 @@ export default async function HistoryPage({ params, searchParams }: Props) {
           <h2 className="forum-block__head">{cd.history.popular}</h2>
           <div className="forum-grid">
             {popular.map((post) => (
-              <CommunityPostCard key={post.id} post={post} locale={locale} viewPath="history" />
+              <CommunityPostCard key={post.id} post={post} locale={locale} viewPath="history" isLoggedIn={!!user} />
             ))}
           </div>
         </section>
@@ -145,7 +145,7 @@ export default async function HistoryPage({ params, searchParams }: Props) {
           <p className="community-sidebar__empty">{cd.history.noStories}</p>
         ) : (
           posts.map((post) => (
-            <CommunityPostCard key={post.id} post={post} locale={locale} viewPath="history" />
+            <CommunityPostCard key={post.id} post={post} locale={locale} viewPath="history" isLoggedIn={!!user} />
           ))
         )}
       </div>

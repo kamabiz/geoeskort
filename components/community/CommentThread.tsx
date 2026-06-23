@@ -20,6 +20,7 @@ type Props = {
   locale: Locale;
   postId: string;
   comments: CommentNode[];
+  commentCount?: number;
 };
 
 function displayName(
@@ -30,72 +31,118 @@ function displayName(
   return comment.author.username;
 }
 
-export function CommentThread({ locale, postId, comments }: Props) {
-  const cd = getCommunityDict(locale);
-  const renderAuthor = (item: { isAnonymous: boolean; author: { username: string; avatar: string | null } | null }) => {
-    const isPublicAuthor = !!item.author && !item.isAnonymous;
-    const name = displayName(item, cd.post.anonymous);
-    return (
-      <span className="community-comments__author">
-        <CommunityAvatar
-          username={isPublicAuthor ? item.author?.username : cd.post.anonymous}
-          avatar={isPublicAuthor ? item.author?.avatar : null}
-          size="sm"
-        />
-        {isPublicAuthor ? (
-          <Link href={localePath(locale, `/u/${item.author!.username}/`)}>{name}</Link>
-        ) : (
-          <span>{name}</span>
-        )}
-      </span>
-    );
-  };
+function CommentBody({
+  locale,
+  postId,
+  comment,
+  cd,
+  nested = false,
+}: {
+  locale: Locale;
+  postId: string;
+  comment: CommentNode;
+  cd: ReturnType<typeof getCommunityDict>;
+  nested?: boolean;
+}) {
+  const isPublicAuthor = !!comment.author && !comment.isAnonymous;
+  const name = displayName(comment, cd.post.anonymous);
 
   return (
-    <section className="community-comments">
-      <h2>{cd.comments.title}</h2>
-      <form action={createComment} className="community-form community-form--compact">
+    <div className={`reddit-comment${nested ? ' reddit-comment--nested' : ''}`}>
+      <div className="reddit-comment__vote" aria-hidden>
+        <span className="vote-col__btn vote-col__btn--up vote-col__btn--ghost">▲</span>
+        <span className="vote-col__score vote-col__score--ghost">·</span>
+        <span className="vote-col__btn vote-col__btn--down vote-col__btn--ghost">▼</span>
+      </div>
+      <div className="reddit-comment__main">
+        <div className="reddit-meta reddit-meta--comment">
+          <span className="reddit-meta__author reddit-meta__author--comment">
+            <CommunityAvatar
+              username={isPublicAuthor ? comment.author?.username : cd.post.anonymous}
+              avatar={isPublicAuthor ? comment.author?.avatar : null}
+              size="xs"
+            />
+            {isPublicAuthor ? (
+              <Link href={localePath(locale, `/u/${comment.author!.username}/`)}>u/{name}</Link>
+            ) : (
+              <span>u/{name}</span>
+            )}
+          </span>
+          <span className="reddit-meta__sep" aria-hidden>
+            ·
+          </span>
+          <time dateTime={comment.createdAt.toISOString()}>{formatDateKa(comment.createdAt.toISOString())}</time>
+        </div>
+        <p className="reddit-comment__body">{comment.body}</p>
+        <details className="reddit-reply">
+          <summary className="reddit-reply__toggle">{cd.comments.reply}</summary>
+          <form action={createComment} className="community-form community-form--compact reddit-reply__form">
+            <input type="hidden" name="postId" value={postId} />
+            <input type="hidden" name="parentId" value={comment.id} />
+            <label>
+              <span className="visually-hidden">{cd.comments.reply}</span>
+              <textarea name="body" required rows={2} placeholder={cd.comments.placeholder} />
+            </label>
+            <button type="submit" className="btn btn--ghost btn--sm">{cd.comments.reply}</button>
+          </form>
+        </details>
+      </div>
+    </div>
+  );
+}
+
+export function CommentThread({ locale, postId, comments, commentCount }: Props) {
+  const cd = getCommunityDict(locale);
+  const total = commentCount ?? comments.length;
+
+  return (
+    <section className="community-comments reddit-comments">
+      <div className="reddit-comments__head">
+        <h2>
+          {total} {cd.post.commentsLabel}
+        </h2>
+      </div>
+
+      <form action={createComment} className="community-form community-form--compact reddit-comment-form">
         <input type="hidden" name="postId" value={postId} />
         <label>
           {cd.comments.add}
           <textarea name="body" required rows={3} placeholder={cd.comments.placeholder} />
         </label>
-        <label className="community-form__check">
-          <input type="checkbox" name="anonymous" />
-          {cd.comments.anonymous}
-        </label>
-        <button type="submit" className="btn btn--primary">{cd.comments.post}</button>
+        <div className="reddit-comment-form__actions">
+          <label className="community-form__check">
+            <input type="checkbox" name="anonymous" />
+            {cd.comments.anonymous}
+          </label>
+          <button type="submit" className="btn btn--primary btn--sm">{cd.comments.post}</button>
+        </div>
       </form>
 
-      <ul className="community-comments__list">
-        {comments.map((comment) => (
-          <li key={comment.id} className="community-comments__item">
-            <div className="community-comments__head">
-              <strong>{renderAuthor(comment)}</strong>
-              <time>{formatDateKa(comment.createdAt.toISOString())}</time>
-            </div>
-            <p>{comment.body}</p>
-            {(comment.replies ?? []).map((reply) => (
-              <div key={reply.id} className="community-comments__reply">
-                <div className="community-comments__head">
-                  <strong>{renderAuthor(reply)}</strong>
-                  <time>{formatDateKa(reply.createdAt.toISOString())}</time>
+      {comments.length === 0 ? (
+        <p className="reddit-comments__empty">{cd.comments.empty}</p>
+      ) : (
+        <div className="reddit-comments__list">
+          {comments.map((comment) => (
+            <article key={comment.id} className="reddit-comments__thread">
+              <CommentBody locale={locale} postId={postId} comment={comment} cd={cd} />
+              {(comment.replies ?? []).length > 0 && (
+                <div className="reddit-comments__children">
+                  {(comment.replies ?? []).map((reply) => (
+                    <CommentBody
+                      key={reply.id}
+                      locale={locale}
+                      postId={postId}
+                      comment={reply}
+                      cd={cd}
+                      nested
+                    />
+                  ))}
                 </div>
-                <p>{reply.body}</p>
-              </div>
-            ))}
-            <form action={createComment} className="community-form community-form--compact">
-              <input type="hidden" name="postId" value={postId} />
-              <input type="hidden" name="parentId" value={comment.id} />
-              <label>
-                {cd.comments.reply}
-                <textarea name="body" required rows={2} />
-              </label>
-              <button type="submit" className="btn btn--ghost">{cd.comments.reply}</button>
-            </form>
-          </li>
-        ))}
-      </ul>
+              )}
+            </article>
+          ))}
+        </div>
+      )}
     </section>
   );
 }

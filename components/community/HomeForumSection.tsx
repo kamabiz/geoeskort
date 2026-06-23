@@ -56,7 +56,7 @@ export function HomeForumSection({
           {topStory && (
             <div className="forum-hub__featured forum-featured forum-featured--hide-mobile">
               <div className="forum-featured__badge">🔥 {cd.home.topStory}</div>
-              <CommunityPostCard post={topStory} locale={locale} headingLevel="h2" variant="featured" viewPath="history" />
+              <CommunityPostCard post={topStory} locale={locale} headingLevel="h2" variant="featured" viewPath="history" showVotes={false} />
             </div>
           )}
 
@@ -73,7 +73,7 @@ export function HomeForumSection({
             ) : (
               <ForumScrollRow itemCount={latestPosts.length}>
                 {latestPosts.map((post) => (
-                  <CommunityPostCard key={post.id} post={post} locale={locale} variant="compact" viewPath="history" />
+                  <CommunityPostCard key={post.id} post={post} locale={locale} variant="compact" viewPath="history" showVotes={false} />
                 ))}
               </ForumScrollRow>
             )}
@@ -91,13 +91,13 @@ export function HomeForumSection({
                 <>
                   <div className="forum-grid forum-desktop-only">
                     {randomPosts.map((post) => (
-                      <CommunityPostCard key={post.id} post={post} locale={locale} viewPath="history" />
+                      <CommunityPostCard key={post.id} post={post} locale={locale} viewPath="history" showVotes={false} />
                     ))}
                   </div>
                   <div className="forum-mobile-only">
                     <ForumScrollRow itemCount={randomPosts.length}>
                       {randomPosts.map((post) => (
-                        <CommunityPostCard key={post.id} post={post} locale={locale} viewPath="history" />
+                        <CommunityPostCard key={post.id} post={post} locale={locale} viewPath="history" showVotes={false} />
                       ))}
                     </ForumScrollRow>
                   </div>

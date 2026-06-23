@@ -5,11 +5,15 @@ import { prisma } from '@/lib/prisma';
 
 export type PostWithAuthor = Post & {
   author: Pick<User, 'id' | 'username' | 'avatar' | 'isPremium'> | null;
+  _count?: { upvotes: number; comments: number };
 };
 
 const postInclude = {
   author: {
     select: { id: true, username: true, avatar: true, isPremium: true },
+  },
+  _count: {
+    select: { upvotes: true, comments: true },
   },
 } as const;
 

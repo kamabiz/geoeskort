@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import { CommunityAvatar } from '@/components/community/CommunityAvatar';
 import { CommentThread } from '@/components/community/CommentThread';
 import { PremiumLockedBody } from '@/components/community/PremiumLockedBody';
+import { VoteColumn } from '@/components/community/VoteColumn';
 import {
   getCommunityCategoryEmoji,
   getCommunityCategoryLabel,
@@ -9,7 +9,6 @@ import {
   getStoryViewPath,
 } from '@/lib/community/categories';
 import { getCommunityDict } from '@/lib/i18n/community-dict';
-import { canViewPremiumContent } from '@/lib/community/premium';
 import { displayAuthor, type PostWithAuthor } from '@/lib/community/posts';
 import { markdownToHtml } from '@/lib/community/text';
 import { formatDateKa } from '@/lib/format-date';
@@ -32,61 +31,113 @@ type Props = {
   comments: CommentNode[];
   canView: boolean;
   backHref?: string;
+  isLoggedIn: boolean;
+  hasUpvoted?: boolean;
 };
 
-export function StoryDetail({ locale, post, comments, canView, backHref }: Props) {
+export function StoryDetail({
+  locale,
+  post,
+  comments,
+  canView,
+  backHref,
+  isLoggedIn,
+  hasUpvoted = false,
+}: Props) {
   const cd = getCommunityDict(locale);
   const back = backHref ?? localePath(locale, getCommunityPostListPath(post.category));
   const categoryEmoji = getCommunityCategoryEmoji(post.category);
-  const showAuthorAvatar = !post.isAnonymous && !!post.author;
+  const authorName = displayAuthor(post, cd.post.anonymous);
+  const showAuthorLink = !post.isAnonymous && !!post.author;
+  const upvoteCount = post._count?.upvotes ?? 0;
+  const commentCount = post._count?.comments ?? comments.length;
 
   return (
     <main className="container community-page">
-      <article className="post-wrap">
+      <article className="post-wrap reddit-post">
         <Link href={back} className="post-back">
           {cd.post.back} {categoryEmoji} {getCommunityCategoryLabel(post.category)}
         </Link>
-        <header className="post-header">
-          <div className="post-meta">
-            <span className="post-cat">
-              <span className="post-cat__emoji" aria-hidden>{categoryEmoji}</span>
-              {getCommunityCategoryLabel(post.category)}
-            </span>
-            {post.isPremium && <span className="community-card__premium">{cd.post.premium}</span>}
-            <time dateTime={post.createdAt.toISOString()}>{formatDateKa(post.createdAt.toISOString())}</time>
-            <span>{post.viewCount} {cd.post.views}</span>
-            <span>{post.readingTimeMinutes} {cd.post.minRead}</span>
-          </div>
-          <h1 className="post-title">{post.title}</h1>
-          <p className="post-excerpt post-excerpt--author">
-            <CommunityAvatar
-              username={showAuthorAvatar ? post.author?.username : cd.post.anonymous}
-              avatar={showAuthorAvatar ? post.author?.avatar : null}
-              size="sm"
-            />
-            <span>{cd.post.by} </span>
-            {showAuthorAvatar ? (
-              <Link href={localePath(locale, `/u/${post.author!.username}/`)}>
-                {displayAuthor(post, cd.post.anonymous)}
+
+        <div className="reddit-post__row">
+          <VoteColumn
+            postId={post.id}
+            score={upvoteCount}
+            hasUpvoted={hasUpvoted}
+            isLoggedIn={isLoggedIn}
+            locale={locale}
+          />
+          <div className="reddit-post__main">
+            <div className="reddit-meta">
+              <Link href={back} className="reddit-meta__sub">
+                <span aria-hidden>{categoryEmoji}</span>
+                {getCommunityCategoryLabel(post.category)}
               </Link>
-            ) : (
-              <span>{displayAuthor(post, cd.post.anonymous)}</span>
-            )}
-          </p>
-          {post.tags.length > 0 && (
-            <div className="post-tags">
-              {post.tags.map((tag) => (
-                <span key={tag} className="post-tag">{tag}</span>
-              ))}
+              <span className="reddit-meta__sep" aria-hidden>
+                ·
+              </span>
+              <span className="reddit-meta__author">
+                {showAuthorLink ? (
+                  <Link href={localePath(locale, `/u/${post.author!.username}/`)}>u/{authorName}</Link>
+                ) : (
+                  <span>u/{authorName}</span>
+                )}
+              </span>
+              <span className="reddit-meta__sep" aria-hidden>
+                ·
+              </span>
+              <time dateTime={post.createdAt.toISOString()}>{formatDateKa(post.createdAt.toISOString())}</time>
+              {post.isPremium && (
+                <>
+                  <span className="reddit-meta__sep" aria-hidden>
+                    ·
+                  </span>
+                  <span className="reddit-flair reddit-flair--premium">{cd.post.premium}</span>
+                </>
+              )}
             </div>
-          )}
-        </header>
-        {canView ? (
-          <div className="post-content" dangerouslySetInnerHTML={{ __html: markdownToHtml(post.body) }} />
-        ) : (
-          <PremiumLockedBody locale={locale} />
-        )}
-        <CommentThread locale={locale} postId={post.id} comments={comments} />
+
+            <h1 className="post-title post-title--reddit">{post.title}</h1>
+
+            {post.tags.length > 0 && (
+              <div className="post-tags">
+                {post.tags.map((tag) => (
+                  <span key={tag} className="post-tag reddit-flair">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {canView ? (
+              <div
+                className="post-content post-content--reddit"
+                dangerouslySetInnerHTML={{ __html: markdownToHtml(post.body) }}
+              />
+            ) : (
+              <PremiumLockedBody locale={locale} />
+            )}
+
+            <div className="reddit-actions">
+              <span className="reddit-actions__item">
+                💬 {commentCount} {cd.post.commentsLabel}
+              </span>
+              <span className="reddit-actions__item">
+                👁 {post.viewCount} {cd.post.views}
+              </span>
+              <span className="reddit-actions__item">
+                {post.readingTimeMinutes} {cd.post.minRead}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <CommentThread
+          locale={locale}
+          postId={post.id}
+          comments={comments}
+          commentCount={commentCount}
+        />
       </article>
     </main>
   );

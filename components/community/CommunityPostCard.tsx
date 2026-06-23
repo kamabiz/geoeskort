@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { CommunityAvatar } from '@/components/community/CommunityAvatar';
+import { VoteColumn } from '@/components/community/VoteColumn';
 import {
   getCommunityCategoryEmoji,
   getCommunityCategoryLabel,
@@ -19,6 +19,8 @@ type Props = {
   headingLevel?: 'h2' | 'h3';
   variant?: 'default' | 'featured' | 'compact';
   viewPath?: 'history' | 'questions' | 'default';
+  isLoggedIn?: boolean;
+  showVotes?: boolean;
 };
 
 export function CommunityPostCard({
@@ -27,6 +29,8 @@ export function CommunityPostCard({
   headingLevel = 'h3',
   variant = 'default',
   viewPath = 'default',
+  isLoggedIn = false,
+  showVotes = true,
 }: Props) {
   const cd = getCommunityDict(locale);
   const href =
@@ -40,42 +44,74 @@ export function CommunityPostCard({
   const excerpt = makeExcerpt(post.body, variant === 'compact' ? 90 : 160);
   const TitleTag = headingLevel;
   const categoryEmoji = getCommunityCategoryEmoji(post.category);
+  const upvoteCount = post._count?.upvotes ?? 0;
+  const commentCount = post._count?.comments ?? 0;
+  const isFeatured = variant === 'featured';
 
   return (
-    <article className={`community-card community-card--${variant}`}>
-      <div className="community-card__meta">
-        <span className="community-card__cat">
-          <span className="community-card__cat-emoji" aria-hidden>{categoryEmoji}</span>
-          {getCommunityCategoryLabel(post.category)}
-        </span>
-        {post.isPremium && <span className="community-card__premium">{cd.post.premium}</span>}
-        <time dateTime={post.createdAt.toISOString()}>{formatDateKa(post.createdAt.toISOString())}</time>
-      </div>
-      <TitleTag className="community-card__title">
-        <Link href={href}>{post.title}</Link>
-      </TitleTag>
-      {variant !== 'compact' && (
-        <p className="community-card__excerpt">
-          {post.isPremium ? cd.post.premiumPreview : excerpt}
-        </p>
+    <article className={`community-card community-card--reddit community-card--${variant}${showVotes ? '' : ' community-card--no-votes'}`}>
+      {showVotes && (
+        <VoteColumn
+          postId={post.id}
+          score={upvoteCount}
+          isLoggedIn={isLoggedIn}
+          locale={locale}
+          size={variant === 'compact' ? 'sm' : 'md'}
+        />
       )}
-      <div className="community-card__footer">
-        <span className="community-card__author">
-          <CommunityAvatar
-            username={showAuthorAvatar ? post.author?.username : cd.post.anonymous}
-            avatar={showAuthorAvatar ? post.author?.avatar : null}
-            size="xs"
-          />
-          {showAuthorAvatar ? (
-            <Link href={localePath(locale, `/u/${post.author!.username}/`)} className="community-card__author-link">
-              {author}
-            </Link>
-          ) : (
-            <span className="community-card__author-name">{author}</span>
+      <div className="community-card__body">
+        <div className="reddit-meta reddit-meta--card">
+          <span className="reddit-meta__sub reddit-meta__sub--static">
+            <span aria-hidden>{categoryEmoji}</span>
+            {getCommunityCategoryLabel(post.category)}
+          </span>
+          <span className="reddit-meta__sep" aria-hidden>
+            ·
+          </span>
+          <span className="reddit-meta__author">
+            {showAuthorAvatar ? (
+              <Link href={localePath(locale, `/u/${post.author!.username}/`)} className="community-card__author-link">
+                u/{author}
+              </Link>
+            ) : (
+              <span>u/{author}</span>
+            )}
+          </span>
+          <span className="reddit-meta__sep" aria-hidden>
+            ·
+          </span>
+          <time dateTime={post.createdAt.toISOString()}>{formatDateKa(post.createdAt.toISOString())}</time>
+          {post.isPremium && (
+            <>
+              <span className="reddit-meta__sep" aria-hidden>
+                ·
+              </span>
+              <span className="reddit-flair reddit-flair--premium">{cd.post.premium}</span>
+            </>
           )}
-        </span>
-        <span>{post.viewCount} {cd.post.views}</span>
-        <span>{post.readingTimeMinutes} {cd.post.minRead}</span>
+        </div>
+
+        <TitleTag className={`community-card__title${isFeatured ? ' community-card__title--featured' : ''}`}>
+          <Link href={href}>{post.title}</Link>
+        </TitleTag>
+
+        {variant !== 'compact' && (
+          <p className="community-card__excerpt">
+            {post.isPremium ? cd.post.premiumPreview : excerpt}
+          </p>
+        )}
+
+        <div className="reddit-actions reddit-actions--card">
+          <Link href={href} className="reddit-actions__item reddit-actions__link">
+            💬 {commentCount} {cd.post.commentsLabel}
+          </Link>
+          <span className="reddit-actions__item">
+            👁 {post.viewCount} {cd.post.views}
+          </span>
+          <span className="reddit-actions__item">
+            {post.readingTimeMinutes} {cd.post.minRead}
+          </span>
+        </div>
       </div>
     </article>
   );

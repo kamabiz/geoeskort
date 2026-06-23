@@ -228,6 +228,8 @@ export async function createComment(formData: FormData) {
   if (user) await touchUserActivity(user.id);
 
   revalidatePath('/p/' + postId + '/');
+  revalidatePath('/history/view/' + postId + '/', 'page');
+  revalidatePath('/questions/view/' + postId + '/', 'page');
 }
 
 export async function upvotePost(postId: string) {
@@ -246,6 +248,11 @@ export async function upvotePost(postId: string) {
   if (post.authorId) await awardPoints(post.authorId, 'POST_UPVOTED', postId);
   await touchUserActivity(user.id);
   revalidatePath('/p/' + postId + '/');
+  revalidatePath('/history/view/' + postId + '/', 'page');
+  revalidatePath('/questions/view/' + postId + '/', 'page');
+  revalidatePath('/history/', 'page');
+  revalidatePath('/questions/', 'page');
+  revalidatePath('/', 'page');
 }
 
 export async function redeemPremiumWithPoints() {
