@@ -255,6 +255,29 @@ export async function upvotePost(postId: string) {
   revalidatePath('/', 'page');
 }
 
+export async function upvoteComment(commentId: string, postId: string) {
+  const user = await getCurrentUser();
+  if (!user) throw new Error('Login required');
+
+  const comment = await prisma.comment.findUnique({
+    where: { id: commentId },
+    select: { id: true, authorId: true },
+  });
+  if (!comment) throw new Error('Comment not found');
+
+  const existing = await prisma.commentUpvote.findUnique({
+    where: { userId_commentId: { userId: user.id, commentId } },
+  });
+  if (existing) return;
+
+  await prisma.commentUpvote.create({ data: { userId: user.id, commentId } });
+  if (comment.authorId) await awardPoints(comment.authorId, 'COMMENT_UPVOTED', commentId);
+  await touchUserActivity(user.id);
+  revalidatePath('/p/' + postId + '/');
+  revalidatePath('/history/view/' + postId + '/', 'page');
+  revalidatePath('/questions/view/' + postId + '/', 'page');
+}
+
 export async function redeemPremiumWithPoints() {
   if (!isPremiumEnabled()) throw new Error('Premium is disabled');
   const user = await getCurrentUser();

@@ -1,11 +1,12 @@
 import Link from 'next/link';
-import { upvotePost } from '@/lib/community/actions';
+import { upvoteComment, upvotePost } from '@/lib/community/actions';
 import { getCommunityDict } from '@/lib/i18n/community-dict';
 import { localePath } from '@/lib/i18n/paths';
 import type { Locale } from '@/lib/i18n/types';
 
 type Props = {
   postId: string;
+  commentId?: string;
   score: number;
   hasUpvoted?: boolean;
   isLoggedIn: boolean;
@@ -15,6 +16,7 @@ type Props = {
 
 export function VoteColumn({
   postId,
+  commentId,
   score,
   hasUpvoted = false,
   isLoggedIn,
@@ -23,6 +25,9 @@ export function VoteColumn({
 }: Props) {
   const cd = getCommunityDict(locale);
   const upClass = `vote-col__btn vote-col__btn--up${hasUpvoted ? ' vote-col__btn--active' : ''}`;
+  const upvoteAction = commentId
+    ? upvoteComment.bind(null, commentId, postId)
+    : upvotePost.bind(null, postId);
 
   return (
     <div className={`vote-col vote-col--${size}`} aria-label={cd.post.upvote}>
@@ -32,7 +37,7 @@ export function VoteColumn({
             ▲
           </span>
         ) : (
-          <form action={upvotePost.bind(null, postId)}>
+          <form action={upvoteAction}>
             <button type="submit" className={upClass} aria-label={cd.post.upvote}>
               ▲
             </button>

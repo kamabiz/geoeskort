@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { StoryDetail } from '@/components/community/StoryDetail';
 import { getCurrentUser } from '@/lib/community/auth';
+import { collectCommentIds, getPostCommentTree, getUpvotedCommentIds } from '@/lib/community/comments';
 import { canViewPremiumContent } from '@/lib/community/premium';
 import { getPostById, incrementPostViews } from '@/lib/community/posts';
 import { safeCommunity } from '@/lib/community/safe';
@@ -43,23 +44,9 @@ export default async function HistoryViewPage({ params }: Props) {
   const user = await getCurrentUser();
   const canView = canViewPremiumContent(user, post.isPremium);
 
-  const [comments, hasUpvoted] = await Promise.all([
-    safeCommunity(
-      () =>
-        prisma.comment.findMany({
-          where: { postId: id, parentId: null, archivedAt: null },
-          orderBy: { createdAt: 'desc' },
-          include: {
-            author: { select: { username: true, avatar: true } },
-            replies: {
-              where: { archivedAt: null },
-              orderBy: { createdAt: 'asc' },
-              include: { author: { select: { username: true, avatar: true } } },
-            },
-          },
-        }),
-      [],
-    ),
+  const comments = await safeCommunity(() => getPostCommentTree(id), []);
+
+  const [hasUpvoted, upvotedCommentIds] = await Promise.all([
     user
       ? safeCommunity(
           () =>
@@ -69,6 +56,12 @@ export default async function HistoryViewPage({ params }: Props) {
           null,
         )
       : Promise.resolve(null),
+    user
+      ? safeCommunity(
+          () => getUpvotedCommentIds(user.id, collectCommentIds(comments)),
+          new Set<string>(),
+        )
+      : Promise.resolve(new Set<string>()),
   ]);
 
   return (
@@ -79,6 +72,7 @@ export default async function HistoryViewPage({ params }: Props) {
       canView={canView}
       isLoggedIn={!!user}
       hasUpvoted={!!hasUpvoted}
+      upvotedCommentIds={upvotedCommentIds}
     />
   );
 }

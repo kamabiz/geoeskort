@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { CommunityAvatar } from '@/components/community/CommunityAvatar';
+import { VoteColumn } from '@/components/community/VoteColumn';
 import { createComment } from '@/lib/community/actions';
 import { getCommunityDict } from '@/lib/i18n/community-dict';
 import { formatDateKa } from '@/lib/format-date';
@@ -14,6 +15,7 @@ type CommentNode = {
   parentId: string | null;
   author: { username: string; avatar: string | null } | null;
   replies?: CommentNode[];
+  _count?: { upvotes: number };
 };
 
 type Props = {
@@ -21,6 +23,8 @@ type Props = {
   postId: string;
   comments: CommentNode[];
   commentCount?: number;
+  isLoggedIn: boolean;
+  upvotedCommentIds: Set<string>;
 };
 
 function displayName(
@@ -36,12 +40,16 @@ function CommentBody({
   postId,
   comment,
   cd,
+  isLoggedIn,
+  upvotedCommentIds,
   nested = false,
 }: {
   locale: Locale;
   postId: string;
   comment: CommentNode;
   cd: ReturnType<typeof getCommunityDict>;
+  isLoggedIn: boolean;
+  upvotedCommentIds: Set<string>;
   nested?: boolean;
 }) {
   const isPublicAuthor = !!comment.author && !comment.isAnonymous;
@@ -49,10 +57,16 @@ function CommentBody({
 
   return (
     <div className={`reddit-comment${nested ? ' reddit-comment--nested' : ''}`}>
-      <div className="reddit-comment__vote" aria-hidden>
-        <span className="vote-col__btn vote-col__btn--up vote-col__btn--ghost">▲</span>
-        <span className="vote-col__score vote-col__score--ghost">·</span>
-        <span className="vote-col__btn vote-col__btn--down vote-col__btn--ghost">▼</span>
+      <div className="reddit-comment__vote">
+        <VoteColumn
+          postId={postId}
+          commentId={comment.id}
+          score={comment._count?.upvotes ?? 0}
+          hasUpvoted={upvotedCommentIds.has(comment.id)}
+          isLoggedIn={isLoggedIn}
+          locale={locale}
+          size="sm"
+        />
       </div>
       <div className="reddit-comment__main">
         <div className="reddit-meta reddit-meta--comment">
@@ -91,7 +105,14 @@ function CommentBody({
   );
 }
 
-export function CommentThread({ locale, postId, comments, commentCount }: Props) {
+export function CommentThread({
+  locale,
+  postId,
+  comments,
+  commentCount,
+  isLoggedIn,
+  upvotedCommentIds,
+}: Props) {
   const cd = getCommunityDict(locale);
   const total = commentCount ?? comments.length;
 
@@ -109,7 +130,14 @@ export function CommentThread({ locale, postId, comments, commentCount }: Props)
         <div className="reddit-comments__list">
           {comments.map((comment) => (
             <article key={comment.id} className="reddit-comments__thread">
-              <CommentBody locale={locale} postId={postId} comment={comment} cd={cd} />
+              <CommentBody
+                locale={locale}
+                postId={postId}
+                comment={comment}
+                cd={cd}
+                isLoggedIn={isLoggedIn}
+                upvotedCommentIds={upvotedCommentIds}
+              />
               {(comment.replies ?? []).length > 0 && (
                 <div className="reddit-comments__children">
                   {(comment.replies ?? []).map((reply) => (
@@ -119,6 +147,8 @@ export function CommentThread({ locale, postId, comments, commentCount }: Props)
                       postId={postId}
                       comment={reply}
                       cd={cd}
+                      isLoggedIn={isLoggedIn}
+                      upvotedCommentIds={upvotedCommentIds}
                       nested
                     />
                   ))}

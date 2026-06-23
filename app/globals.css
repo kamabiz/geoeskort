@@ -15,6 +15,10 @@
   --logo-pink-light: #ff6b9d;
   --logo-pink-dim: rgba(238, 42, 123, 0.14);
   --logo-pink-border: rgba(255, 107, 157, 0.28);
+  --accent-purple: #8b5cf6;
+  --accent-purple-light: #a78bfa;
+  --accent-purple-dim: rgba(139, 92, 246, 0.14);
+  --accent-purple-border: rgba(167, 139, 250, 0.32);
   --red: #c41e3a;
   --red-dim: rgba(196, 30, 58, 0.2);
   --gradient-hero: linear-gradient(135deg, #0a0a0c 0%, #0c0c10 45%, #08080c 100%);
@@ -3233,21 +3237,16 @@ button, .btn, .nav-toggle {
 }
 
 .forum-panel--points {
-  border-color: var(--logo-pink-border);
-  background: linear-gradient(160deg, rgba(255, 107, 157, 0.08), rgba(238, 42, 123, 0.04), rgba(255, 255, 255, 0.02));
-}
-
-.forum-panel--points .forum-panel__title {
-  color: var(--logo-pink-light);
-  text-shadow: 0 0 16px rgba(238, 42, 123, 0.18);
+  border-color: var(--accent-purple-border);
+  background: linear-gradient(160deg, rgba(167, 139, 250, 0.1), rgba(139, 92, 246, 0.05), rgba(255, 255, 255, 0.02));
 }
 
 .forum-panel--points .forum-panel__points {
-  color: var(--logo-pink-light);
+  color: var(--accent-purple-light);
 }
 
 .forum-panel--points .forum-panel__link-more:hover {
-  color: var(--logo-pink-light);
+  color: var(--accent-purple-light);
 }
 
 .forum-sidebar-stack {
@@ -3461,6 +3460,7 @@ button, .btn, .nav-toggle {
   font-size: 0.9rem;
   font-weight: 700;
   letter-spacing: 0.08em;
+  color: var(--text);
 }
 
 .forum-panel__live-dot {
@@ -3679,12 +3679,12 @@ button, .btn, .nav-toggle {
   padding: 0.15rem 0.45rem 0.15rem 0.35rem;
   font-size: 0.62rem;
   font-weight: 600;
-  color: var(--logo-pink-light);
-  background: linear-gradient(135deg, rgba(255, 107, 157, 0.16), rgba(238, 42, 123, 0.1));
-  border: 1px solid var(--logo-pink-border);
+  color: var(--accent-purple-light);
+  background: linear-gradient(135deg, rgba(167, 139, 250, 0.18), rgba(139, 92, 246, 0.1));
+  border: 1px solid var(--accent-purple-border);
   border-radius: 999px;
   line-height: 1.2;
-  box-shadow: 0 0 12px rgba(238, 42, 123, 0.08);
+  box-shadow: 0 0 12px rgba(139, 92, 246, 0.1);
 }
 
 .community-card__cat-pill-emoji {
@@ -4168,9 +4168,13 @@ a.community-card__stat:hover .community-card__stat-icon {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 1.75rem;
+  width: 2rem;
   flex-shrink: 0;
   padding-top: 0.1rem;
+}
+
+.reddit-comment__vote .vote-col {
+  width: 100%;
 }
 
 .reddit-comment__main {

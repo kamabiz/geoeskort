@@ -23,6 +23,7 @@ type CommentNode = {
   parentId: string | null;
   author: { username: string; avatar: string | null } | null;
   replies?: CommentNode[];
+  _count?: { upvotes: number };
 };
 
 type Props = {
@@ -33,6 +34,7 @@ type Props = {
   backHref?: string;
   isLoggedIn: boolean;
   hasUpvoted?: boolean;
+  upvotedCommentIds?: Set<string>;
 };
 
 export function StoryDetail({
@@ -43,6 +45,7 @@ export function StoryDetail({
   backHref,
   isLoggedIn,
   hasUpvoted = false,
+  upvotedCommentIds = new Set(),
 }: Props) {
   const cd = getCommunityDict(locale);
   const back = backHref ?? localePath(locale, getCommunityPostListPath(post.category));
@@ -56,7 +59,7 @@ export function StoryDetail({
     <main className="container community-page">
       <article className="post-wrap reddit-post">
         <Link href={back} className="post-back">
-          {cd.post.back} {categoryEmoji} {getCommunityCategoryLabel(post.category)}
+          {cd.post.back} {getCommunityCategoryLabel(post.category)}
         </Link>
 
         <div className="reddit-post__row">
@@ -135,6 +138,8 @@ export function StoryDetail({
               postId={post.id}
               comments={comments}
               commentCount={commentCount}
+              isLoggedIn={isLoggedIn}
+              upvotedCommentIds={upvotedCommentIds}
             />
           </div>
         </div>
