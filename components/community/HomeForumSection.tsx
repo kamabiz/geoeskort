@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { HomeCategoriesPanel } from '@/components/community/HomeCategoriesPanel';
 import { CommunityPostCard } from '@/components/community/CommunityPostCard';
 import { ForumScrollRow } from '@/components/community/ForumScrollRow';
 import { LatestCommentsSidebar } from '@/components/community/LatestCommentsSidebar';
@@ -120,12 +119,6 @@ export function HomeForumSection({
             </div>
           </div>
 
-          <HomeCategoriesPanel
-            locale={locale}
-            categoryCounts={categoryCounts}
-            className="forum-mobile-only"
-            mobileCollapsedCount={6}
-          />
         </div>
       </div>
     </section>
