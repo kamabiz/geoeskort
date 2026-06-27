@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { STORY_CATEGORY_SLUGS, getStoryViewPath } from '@/lib/community/categories';
 import type { PostWithAuthor } from '@/lib/community/posts';
+import { makeBodyPreview } from '@/lib/community/text';
 import { getCommunityDict } from '@/lib/i18n/community-dict';
 import { localePath } from '@/lib/i18n/paths';
 import type { Locale } from '@/lib/i18n/types';
@@ -19,7 +20,7 @@ type Props = {
 
 const HUB_MODULES = [
   { key: 'history', href: '/history/', icon: '📚', labelKey: 'history' as const, countFrom: 'stories' as const },
-  { key: 'conversation', href: '/conversationRoom/', icon: '🗣️', labelKey: 'conversation' as const, countFrom: 'online' as const },
+  { key: 'conversation', href: '/conversationRoom/', icon: '💬', labelKey: 'chat' as const, countFrom: 'online' as const },
   { key: 'questions', href: '/questions/', icon: '❓', labelKey: 'questions' as const, slug: 'questions-advice' as const },
   { key: 'crush', href: '/crush/', icon: '💕', labelKey: 'crush' as const, slug: 'dating-crush' as const },
 ];
@@ -51,6 +52,9 @@ export function HomeMobileHub({
 
   const moduleLabel = (key: (typeof HUB_MODULES)[number]['labelKey']) => cd.nav[key];
 
+  const spotlightExcerpt = (post: PostWithAuthor) =>
+    post.isPremium ? cd.post.premiumPreview : makeBodyPreview(post.body, post.title, 240);
+
   return (
     <div className="home-mobile-hub">
       <div className="home-spotlight">
@@ -62,7 +66,8 @@ export function HomeMobileHub({
             <span className="home-spotlight__icon" aria-hidden>🔥</span>
             <span className="home-spotlight__body">
               <strong>{cd.home.topStory}</strong>
-              <span>{topStory.title}</span>
+              <span className="home-spotlight__title">{topStory.title}</span>
+              <p className="home-spotlight__excerpt">{spotlightExcerpt(topStory)}</p>
             </span>
             <span className="home-spotlight__arrow" aria-hidden>›</span>
           </Link>
@@ -85,7 +90,8 @@ export function HomeMobileHub({
             <span className="home-spotlight__icon home-spotlight__icon--new" aria-hidden>✨</span>
             <span className="home-spotlight__body">
               <strong>{cd.home.newPost}</strong>
-              <span>{latestPost.title}</span>
+              <span className="home-spotlight__title">{latestPost.title}</span>
+              <p className="home-spotlight__excerpt">{spotlightExcerpt(latestPost)}</p>
             </span>
             <span className="home-spotlight__arrow" aria-hidden>›</span>
           </Link>
@@ -100,6 +106,7 @@ export function HomeMobileHub({
               key={mod.key}
               href={localePath(locale, mod.href)}
               className="home-module-grid__item"
+              data-module={mod.key}
             >
               {count > 0 && (
                 <span className="home-module-grid__badge">{count > 99 ? '99+' : count}</span>
