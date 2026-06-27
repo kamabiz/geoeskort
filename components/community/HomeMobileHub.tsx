@@ -18,12 +18,6 @@ type Props = {
   memberCount: number;
 };
 
-const HUB_MODULES = [
-  { key: 'history', href: '/history/', icon: '📚', labelKey: 'history' as const, countFrom: 'stories' as const },
-  { key: 'conversation', href: '/conversationRoom/', icon: '💬', labelKey: 'chat' as const, countFrom: 'online' as const },
-  { key: 'questions', href: '/questions/', icon: '❓', labelKey: 'questions' as const, slug: 'questions-advice' as const },
-  { key: 'crush', href: '/crush/', icon: '💕', labelKey: 'crush' as const, slug: 'dating-crush' as const },
-];
 
 export function HomeMobileHub({
   locale,
@@ -43,14 +37,24 @@ export function HomeMobileHub({
     0,
   );
 
-  const moduleCount = (mod: (typeof HUB_MODULES)[number]) => {
-    if (mod.countFrom === 'stories') return storyTotal;
-    if (mod.countFrom === 'online') return onlineCount;
-    if (mod.slug) return countMap.get(mod.slug) ?? 0;
-    return 0;
+  type HubModule = {
+    key: string;
+    href: string;
+    icon: string;
+    label: string;
+    count: number;
   };
 
-  const moduleLabel = (key: (typeof HUB_MODULES)[number]['labelKey']) => cd.nav[key];
+  const HUB_MODULES: HubModule[] = [
+    { key: 'history',        href: '/history/',                         icon: '📚', label: cd.nav.history,      count: storyTotal },
+    { key: 'conversation',   href: '/conversationRoom/',                icon: '💬', label: cd.nav.chat,         count: onlineCount },
+    { key: 'questions',      href: '/questions/',                       icon: '❓', label: cd.nav.questions,    count: countMap.get('questions-advice') ?? 0 },
+    { key: 'crush',          href: '/crush/',                           icon: '💕', label: cd.nav.crush,        count: countMap.get('dating-crush') ?? 0 },
+    { key: 'sexology',       href: '/medical/',                         icon: '🩺', label: cd.nav.medical,      count: countMap.get('sexology') ?? 0 },
+    { key: 'talk',           href: '/conversationRoom/',                icon: '🗣️', label: cd.nav.conversation, count: onlineCount },
+    { key: 'womens-stories', href: '/history/?category=womens-stories', icon: '👩', label: 'ქალები',            count: countMap.get('womens-stories') ?? 0 },
+    { key: 'mens-stories',   href: '/history/?category=mens-stories',   icon: '👨', label: 'კაცები',            count: countMap.get('mens-stories') ?? 0 },
+  ];
 
   const spotlightExcerpt = (post: PostWithAuthor) =>
     post.isPremium ? cd.post.premiumPreview : makeBodyPreview(post.body, post.title, 240);
@@ -99,25 +103,22 @@ export function HomeMobileHub({
       </div>
 
       <nav className="home-module-grid" aria-label={cd.home.sidebarQuickTitle}>
-        {HUB_MODULES.map((mod) => {
-          const count = moduleCount(mod);
-          return (
-            <Link
-              key={mod.key}
-              href={localePath(locale, mod.href)}
-              className="home-module-grid__item"
-              data-module={mod.key}
-            >
-              {count > 0 && (
-                <span className="home-module-grid__badge">{count > 99 ? '99+' : count}</span>
-              )}
-              <span className="home-module-grid__icon-wrap">
-                <span className="home-module-grid__icon" aria-hidden>{mod.icon}</span>
-              </span>
-              <span className="home-module-grid__label">{moduleLabel(mod.labelKey)}</span>
-            </Link>
-          );
-        })}
+        {HUB_MODULES.map((mod) => (
+          <Link
+            key={mod.key}
+            href={localePath(locale, mod.href)}
+            className="home-module-grid__item"
+            data-module={mod.key}
+          >
+            {mod.count > 0 && (
+              <span className="home-module-grid__badge">{mod.count > 99 ? '99+' : mod.count}</span>
+            )}
+            <span className="home-module-grid__icon-wrap">
+              <span className="home-module-grid__icon" aria-hidden>{mod.icon}</span>
+            </span>
+            <span className="home-module-grid__label">{mod.label}</span>
+          </Link>
+        ))}
       </nav>
     </div>
   );
