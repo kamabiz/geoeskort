@@ -59,41 +59,31 @@ export function HomeForumSection({
     <section className="forum-hub forum-hub--compact">
       <div className="container">
         <div className="forum-hub__layout">
-          {categoryCounts.length > 0 && (
-            <HomeCategoriesPanel
-              locale={locale}
-              categoryCounts={categoryCounts}
-              className="forum-hub__categories forum-desktop-only"
-            />
-          )}
-
-          <div className="forum-hub__latest forum-block">
+          <div className="forum-hub__latest forum-block forum-hub__latest--full">
             <div className="forum-block__head">
               <h3>{cd.home.latestStoriesCaps}</h3>
               <Link href={localePath(locale, '/submit/')}>{cd.home.writeYours}</Link>
             </div>
-            <div className="forum-desktop-only">
-              {latestPosts.length === 0 ? (
-                <p className="forum-empty">
-                  {cd.home.noStories}{' '}
-                  <Link href={localePath(locale, '/submit/')}>{cd.home.beFirst}</Link>
-                </p>
-              ) : (
-                <ForumScrollRow itemCount={latestPosts.length}>
-                  {latestPosts.map((post) => (
-                    <CommunityPostCard
-                      key={post.id}
-                      post={post}
-                      locale={locale}
-                      viewPath="history"
-                      showVotes={false}
-                      excerptLength={240}
-                      bodyPreview
-                    />
-                  ))}
-                </ForumScrollRow>
-              )}
-            </div>
+            {latestPosts.length === 0 ? (
+              <p className="forum-empty">
+                {cd.home.noStories}{' '}
+                <Link href={localePath(locale, '/submit/')}>{cd.home.beFirst}</Link>
+              </p>
+            ) : (
+              <ForumScrollRow itemCount={latestPosts.length}>
+                {latestPosts.map((post) => (
+                  <CommunityPostCard
+                    key={post.id}
+                    post={post}
+                    locale={locale}
+                    viewPath="history"
+                    showVotes={false}
+                    excerptLength={240}
+                    bodyPreview
+                  />
+                ))}
+              </ForumScrollRow>
+            )}
           </div>
 
           <div className="forum-hub__lower">
@@ -112,9 +102,6 @@ export function HomeForumSection({
                     ))}
                   </div>
                 )}
-                <div className="forum-mobile-only">
-                  <LatestCommentsSidebar locale={locale} comments={latestComments} variant="modern" />
-                </div>
               </div>
 
               <div className="forum-hub__aside-track">
@@ -124,7 +111,7 @@ export function HomeForumSection({
                     onlineMembers={presence.onlineMembers}
                     variant="modern"
                   />
-                  <div className="forum-desktop-only forum-sidebar-stack">
+                  <div className="forum-sidebar-stack">
                     <LatestCommentsSidebar locale={locale} comments={latestComments} variant="modern" />
                     <PointsLeaderboardSidebar locale={locale} leaders={topLeaders} variant="modern" limit={5} />
                   </div>
