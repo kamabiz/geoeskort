@@ -1038,6 +1038,56 @@ button, .btn, .nav-toggle {
   padding-top: clamp(1rem, 2.5vw, 1.5rem);
 }
 
+/* ── Bottom stats dashboard bar ── */
+.home-stats-bar {
+  padding: 2rem 0 2.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Always show the stats deck in this context, on all screen sizes */
+.home-stats-bar .hero__stats-deck--desktop {
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+}
+
+.home-stats-bar .hero__stats--deck {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.7rem;
+  width: 100%;
+  max-width: none;
+  margin-inline: auto;
+  padding: 0;
+  background: none;
+  border: none;
+  overflow: visible;
+}
+
+@media (min-width: 600px) {
+  .home-stats-bar .hero__stats--deck {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Ensure stat-card styles apply at all widths inside the bar */
+.home-stats-bar .hero__stat-card {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  min-height: 4.75rem;
+  height: 100%;
+  padding: 1rem 1.15rem;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.055) 0%, rgba(255, 255, 255, 0.016) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: var(--radius);
+  overflow: hidden;
+  backdrop-filter: blur(16px);
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.25s, box-shadow 0.25s, background 0.25s;
+}
+
 /* ── Mobile home hub (competitor-style) ── */
 .home-mobile-hub {
   display: flex;

@@ -85,18 +85,6 @@ export default async function HomePage({ params }: Props) {
 
       <div className="home-surface">
         <section className="hero hero--home">
-        <HomeHeroStats
-          storyCount={stats.storyCount}
-          onlineCount={presence.onlineCount}
-          memberCount={stats.memberCount}
-          commentCount={stats.commentCount}
-          labels={{
-            stories: cd.home.statsStories,
-            online: cd.home.statsOnline,
-            members: cd.home.statsMembers,
-            comments: cd.home.statsComments,
-          }}
-        />
         <div className="container">
           <HomeMobileHub
             locale={locale}
@@ -144,6 +132,23 @@ export default async function HomePage({ params }: Props) {
             </Link>
           </p>
         </div>
+        </section>
+
+        <section className="home-stats-bar">
+          <div className="container">
+            <HomeHeroStats
+              storyCount={stats.storyCount}
+              onlineCount={presence.onlineCount}
+              memberCount={stats.memberCount}
+              commentCount={stats.commentCount}
+              labels={{
+                stories: cd.home.statsStories,
+                online: cd.home.statsOnline,
+                members: cd.home.statsMembers,
+                comments: cd.home.statsComments,
+              }}
+            />
+          </div>
         </section>
       </div>
     </>
