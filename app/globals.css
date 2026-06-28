@@ -1040,7 +1040,7 @@ button, .btn, .nav-toggle {
 
 /* ── Bottom stats dashboard bar ── */
 .home-stats-bar {
-  padding: 2rem 0 2.5rem;
+  padding: 1.5rem 0 2rem;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
@@ -1053,10 +1053,11 @@ button, .btn, .nav-toggle {
   overflow: visible;
 }
 
+/* Phone: 2 columns → 2 rows of stats */
 .home-stats-bar .hero__stats--deck {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.7rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem;
   width: 100%;
   max-width: none;
   margin-inline: auto;
@@ -1066,26 +1067,187 @@ button, .btn, .nav-toggle {
   overflow: visible;
 }
 
-@media (min-width: 600px) {
-  .home-stats-bar .hero__stats--deck {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-/* Ensure stat-card styles apply at all widths inside the bar */
+/* Stat cards — full dashboard styling at all widths */
 .home-stats-bar .hero__stat-card {
+  position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.9rem;
-  min-height: 4.75rem;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 5.5rem;
   height: 100%;
-  padding: 1rem 1.15rem;
+  padding: 0.75rem 0.5rem;
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.055) 0%, rgba(255, 255, 255, 0.016) 100%);
   border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: var(--radius);
   overflow: hidden;
   backdrop-filter: blur(16px);
   transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.25s, box-shadow 0.25s, background 0.25s;
+}
+
+.home-stats-bar .hero__stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 14%;
+  right: 14%;
+  height: 2px;
+  border-radius: 0 0 3px 3px;
+  opacity: 0.8;
+  transition: opacity 0.25s, left 0.25s, right 0.25s;
+}
+
+.home-stats-bar [data-stat="stories"]::before  { background: linear-gradient(90deg, transparent, var(--logo-pink), transparent); }
+.home-stats-bar [data-stat="online"]::before   { background: linear-gradient(90deg, transparent, #7dffb2, transparent); }
+.home-stats-bar [data-stat="members"]::before  { background: linear-gradient(90deg, transparent, var(--accent-purple-light), transparent); }
+.home-stats-bar [data-stat="comments"]::before { background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+
+.home-stats-bar .hero__stat-card-icon {
+  flex-shrink: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s;
+}
+
+.home-stats-bar [data-stat="stories"] .hero__stat-card-icon {
+  background: rgba(238, 42, 123, 0.13);
+  border-color: rgba(238, 42, 123, 0.26);
+  box-shadow: 0 0 12px rgba(238, 42, 123, 0.12);
+}
+.home-stats-bar [data-stat="online"] .hero__stat-card-icon {
+  background: rgba(125, 255, 178, 0.12);
+  border-color: rgba(125, 255, 178, 0.22);
+  box-shadow: 0 0 12px rgba(125, 255, 178, 0.12);
+  color: #7dffb2;
+  font-size: 0.55rem;
+  animation: forum-pulse 2s ease-in-out infinite;
+}
+.home-stats-bar [data-stat="members"] .hero__stat-card-icon {
+  background: rgba(139, 92, 246, 0.13);
+  border-color: rgba(139, 92, 246, 0.26);
+  box-shadow: 0 0 12px rgba(139, 92, 246, 0.12);
+}
+.home-stats-bar [data-stat="comments"] .hero__stat-card-icon {
+  background: rgba(232, 168, 56, 0.13);
+  border-color: rgba(232, 168, 56, 0.26);
+  box-shadow: 0 0 12px rgba(232, 168, 56, 0.12);
+}
+
+.home-stats-bar .hero__stat-card-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.08rem;
+  min-width: 0;
+  text-align: center;
+}
+
+.home-stats-bar .hero__stat-card .hero__stat-value {
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.home-stats-bar .hero__stat-card .hero__stat-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  line-height: 1.1;
+}
+
+.home-stats-bar [data-stat="online"] .hero__stat-value { color: #7dffb2; }
+.home-stats-bar [data-stat="online"] .hero__stat-label { color: rgba(125, 255, 178, 0.72); }
+
+.home-stats-bar .hero__stat-card--live {
+  border-color: rgba(125, 255, 178, 0.16);
+}
+
+@media (min-width: 900px) {
+  .home-stats-bar {
+    padding: 2rem 0 2.5rem;
+  }
+
+  .home-stats-bar .hero__stats--deck {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.85rem;
+  }
+
+  .home-stats-bar .hero__stat-card {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.9rem;
+    min-height: 4.75rem;
+    padding: 1rem 1.15rem;
+  }
+
+  .home-stats-bar .hero__stat-card-icon {
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 12px;
+    font-size: 1.05rem;
+  }
+
+  .home-stats-bar .hero__stat-card-body {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .home-stats-bar .hero__stat-card .hero__stat-value {
+    font-size: 1.5rem;
+  }
+
+  .home-stats-bar .hero__stat-card .hero__stat-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.06em;
+  }
+
+  .home-stats-bar .hero__stat-card:hover {
+    transform: translateY(-4px) scale(1.025);
+  }
+
+  .home-stats-bar .hero__stat-card:hover::before {
+    opacity: 1;
+    left: 8%;
+    right: 8%;
+  }
+
+  .home-stats-bar [data-stat="stories"]:hover {
+    background: linear-gradient(145deg, rgba(238, 42, 123, 0.1) 0%, rgba(255, 255, 255, 0.018) 100%);
+    border-color: rgba(238, 42, 123, 0.28);
+    box-shadow: 0 10px 36px rgba(238, 42, 123, 0.18), 0 2px 10px rgba(0, 0, 0, 0.35);
+  }
+  .home-stats-bar [data-stat="online"]:hover {
+    background: linear-gradient(145deg, rgba(125, 255, 178, 0.09) 0%, rgba(255, 255, 255, 0.018) 100%);
+    border-color: rgba(125, 255, 178, 0.28);
+    box-shadow: 0 10px 36px rgba(125, 255, 178, 0.16), 0 2px 10px rgba(0, 0, 0, 0.35);
+  }
+  .home-stats-bar [data-stat="members"]:hover {
+    background: linear-gradient(145deg, rgba(139, 92, 246, 0.1) 0%, rgba(255, 255, 255, 0.018) 100%);
+    border-color: rgba(139, 92, 246, 0.28);
+    box-shadow: 0 10px 36px rgba(139, 92, 246, 0.18), 0 2px 10px rgba(0, 0, 0, 0.35);
+  }
+  .home-stats-bar [data-stat="comments"]:hover {
+    background: linear-gradient(145deg, rgba(232, 168, 56, 0.1) 0%, rgba(255, 255, 255, 0.018) 100%);
+    border-color: rgba(232, 168, 56, 0.28);
+    box-shadow: 0 10px 36px rgba(232, 168, 56, 0.16), 0 2px 10px rgba(0, 0, 0, 0.35);
+  }
+
+  .home-stats-bar .hero__stat-card:hover .hero__stat-card-icon {
+    transform: scale(1.12) translateY(-1px);
+  }
 }
 
 /* ── Mobile home hub (competitor-style) ── */
