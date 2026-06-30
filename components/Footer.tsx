@@ -34,6 +34,7 @@ export function Footer({ locale, dict, username }: Props) {
                 <li><Link href={localePath(locale, '/questions/')}>{cd.nav.questions}</Link></li>
                 <li><Link href={localePath(locale, '/medical/')}>{cd.nav.medical}</Link></li>
                 <li><Link href={localePath(locale, '/crush/')}>{cd.nav.crush}</Link></li>
+                <li><Link href={localePath(locale, '/dating/')}>{cd.nav.dating}</Link></li>
                 <li><Link href={localePath(locale, '/positionVariants/')}>{cd.nav.positions}</Link></li>
                 <li><Link href={localePath(locale, '/zodiac/')}>{cd.nav.zodiac}</Link></li>
               </ul>

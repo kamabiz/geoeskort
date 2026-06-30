@@ -54,6 +54,7 @@ export function Header({ locale, dict, username, greetingHello, greetingGuest }:
   const navMore = [
     { href: localePath(locale, '/medical/'), label: cd.nav.medical },
     { href: localePath(locale, '/crush/'), label: cd.nav.crush },
+    { href: localePath(locale, '/dating/'), label: cd.nav.dating },
   ];
 
   const navDesktop = [...navPrimary, ...navMore];
@@ -181,6 +182,7 @@ export function Header({ locale, dict, username, greetingHello, greetingGuest }:
               username={username ?? null}
               profileLabel={cd.nav.profile}
               settingsLabel={cd.user.settings}
+              datingLabel={cd.user.dating}
               logoutLabel={cd.auth.logout}
               isProfileActive={isActive(profileHref)}
               variant="desktop"
@@ -223,6 +225,7 @@ export function Header({ locale, dict, username, greetingHello, greetingGuest }:
               username={username ?? null}
               profileLabel={cd.nav.profile}
               settingsLabel={cd.user.settings}
+              datingLabel={cd.user.dating}
               logoutLabel={cd.auth.logout}
               isProfileActive={isActive(profileHref)}
               variant="mobile"

@@ -1,6 +1,5 @@
 'use server';
 
-import { put } from '@vercel/blob';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
@@ -13,17 +12,11 @@ import {
   verifyPassword,
 } from '@/lib/community/auth';
 import { buildDefaultAvatarDataUri, parseAvatarGender } from '@/lib/community/avatar';
+import { storeImageFile } from '@/lib/community/media';
 
 export type SettingsActionState = { error?: string; success?: string } | null;
 
 const AVATAR_MAX_BYTES = 512 * 1024;
-const ALLOWED_AVATAR_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
-
-function hasBlobStorage(): boolean {
-  if (process.env.BLOB_READ_WRITE_TOKEN?.trim()) return true;
-  if (process.env.VERCEL && process.env.BLOB_STORE_ID?.trim()) return true;
-  return false;
-}
 
 function parseEmail(raw: string): string | null {
   const email = raw.trim().toLowerCase();
@@ -33,28 +26,16 @@ function parseEmail(raw: string): string | null {
 }
 
 async function storeAvatarFile(userId: string, file: File): Promise<string | { error: string }> {
-  if (!ALLOWED_AVATAR_TYPES.has(file.type)) return { error: 'invalidAvatarType' };
-  if (file.size > AVATAR_MAX_BYTES) return { error: 'avatarTooLarge' };
-
-  const ext =
-    file.type === 'image/png'
-      ? 'png'
-      : file.type === 'image/webp'
-        ? 'webp'
-        : file.type === 'image/gif'
-          ? 'gif'
-          : 'jpg';
-  const buffer = Buffer.from(await file.arrayBuffer());
-
-  if (hasBlobStorage()) {
-    const blob = await put(`avatars/${userId}-${Date.now()}.${ext}`, buffer, {
-      access: 'public',
-      contentType: file.type,
-    });
-    return blob.url;
+  const stored = await storeImageFile(`avatars/${userId}`, file, {
+    maxInputBytes: AVATAR_MAX_BYTES,
+    compress: false,
+  });
+  if (typeof stored === 'object') {
+    if (stored.error === 'invalidImageType') return { error: 'invalidAvatarType' };
+    if (stored.error === 'imageTooLarge') return { error: 'avatarTooLarge' };
+    return stored;
   }
-
-  return `data:${file.type};base64,${buffer.toString('base64')}`;
+  return stored;
 }
 
 function revalidateUserPaths(username: string, oldUsername?: string): void {

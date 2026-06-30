@@ -54,6 +54,7 @@ export default async function UserProfilePage({ params }: Props) {
           <p style={{ marginTop: '0.75rem', display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
             {isOwnProfile && (
               <>
+                <Link href={localePath(locale, '/user/dating/')} className="btn btn--ghost">{cd.user.dating}</Link>
                 <Link href={localePath(locale, '/user/settings/')} className="btn btn--ghost">{cd.user.settings}</Link>
                 <Link href={localePath(locale, '/user/subscription/')} className="btn btn--ghost">{cd.user.subscription}</Link>
                 <CommunityLogoutButton locale={locale} label={cd.auth.logout} className="btn btn--ghost community-logout-btn" />

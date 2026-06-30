@@ -69,9 +69,38 @@ model User {
   pointEvents   PointEvent[]
   postUpvotes   PostUpvote[]
   commentUpvotes CommentUpvote[]
+  datingProfile DatingProfile?
 
   @@index([lastActiveAt])
   @@index([points(sort: Desc)])
+}
+
+model DatingProfile {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  genderBucket String
+  presetCase   String
+  bio          String   @default("") @db.Text
+  isVisible    Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user   User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  photos DatingPhoto[]
+
+  @@index([genderBucket, isVisible, updatedAt(sort: Desc)])
+}
+
+model DatingPhoto {
+  id        String   @id @default(cuid())
+  profileId String
+  url       String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  profile DatingProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId, sortOrder])
 }
 
 model Post {

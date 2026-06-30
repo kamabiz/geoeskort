@@ -12,6 +12,7 @@ export type CommunityDict = {
     questions: string;
     medical: string;
     crush: string;
+    dating: string;
     positions: string;
     conversation: string;
     chat: string;
@@ -78,6 +79,7 @@ export type CommunityDict = {
     actionQuestions: string;
     actionMedical: string;
     actionCrush: string;
+    actionDating: string;
     actionPositions: string;
     actionZodiac: string;
     modules: { href: string; icon: string; label: string }[];
@@ -118,6 +120,63 @@ export type CommunityDict = {
     loginToAdd: string;
     connectVia: string;
     noEntries: string;
+  };
+  dating: {
+    title: string;
+    lead: string;
+    introTitle: string;
+    introBody: string;
+    stepPhotos: string;
+    stepDetails: string;
+    stepBrowse: string;
+    editorTitle: string;
+    editorLead: string;
+    editProfile: string;
+    loginToCreate: string;
+    backToBrowse: string;
+    backToBrowseFromProfile: string;
+    filterMale: string;
+    filterFemale: string;
+    filterTrans: string;
+    noProfiles: string;
+    noProfilesHint: string;
+    viewProfile: string;
+    save: string;
+    presetCase: string;
+    presetCaseHint: string;
+    bio: string;
+    bioPlaceholder: string;
+    bioHint: string;
+    isVisible: string;
+    photosTitle: string;
+    photosLead: string;
+    photoUpload: string;
+    photoUploadHint: string;
+    photoRemove: string;
+    presetLabels: {
+      straight_male: string;
+      straight_female: string;
+      gay_male: string;
+      lesbian_female: string;
+      bi_male: string;
+      bi_female: string;
+      trans_straight: string;
+      trans_gay: string;
+      trans_bi: string;
+      open_to_all: string;
+    };
+    errorLoginRequired: string;
+    errorInvalidPreset: string;
+    errorBioTooShort: string;
+    errorPhotoRequired: string;
+    errorInvalidPhotoType: string;
+    errorPhotoTooLarge: string;
+    errorPhotoLimitReached: string;
+    errorPhotoNotFound: string;
+    errorProfileNotFound: string;
+    successProfileSaved: string;
+    successPhotoAdded: string;
+    successPhotoRemoved: string;
   };
   positions: {
     title: string;
@@ -190,9 +249,10 @@ export type CommunityDict = {
     filterMale: string;
     filterNonBinary: string;
   };
-  user: {
+    user: {
     subscription: string;
     settings: string;
+    dating: string;
     points: string;
     stories: string;
     comments: string;
@@ -384,6 +444,7 @@ const ka: CommunityDict = {
     questions: 'კითხვები',
     medical: 'სექსოლოგია',
     crush: 'ქრაში',
+    dating: 'გაცნობა',
     positions: 'პოზები',
     conversation: 'საუბარი',
     chat: 'ჩათი',
@@ -450,6 +511,7 @@ const ka: CommunityDict = {
     actionQuestions: '❓ კითხვები & რჩევები',
     actionMedical: '🩺 სამედიცინო სექსოლოგია',
     actionCrush: '💕 იპოვე შენი ქრაში',
+    actionDating: '💘 გაცნობის პროფილი',
     actionPositions: '📖 ინტიმური პოზები',
     actionZodiac: '♈ ზოდიაქოს თავსებადობა',
     modules: [
@@ -457,6 +519,7 @@ const ka: CommunityDict = {
       { href: '/questions/', icon: '❓', label: 'კითხვები' },
       { href: '/medical/', icon: '🩺', label: 'სექსოლოგია' },
       { href: '/crush/', icon: '💕', label: 'ქრაში' },
+      { href: '/dating/', icon: '💘', label: 'გაცნობა' },
       { href: '/conversationRoom/', icon: '🗣️', label: 'საუბარი' },
       { href: '/positionVariants/', icon: '📖', label: 'პოზები' },
       { href: '/zodiac/', icon: '♈', label: 'ზოდიაქო' },
@@ -499,6 +562,63 @@ const ka: CommunityDict = {
     loginToAdd: 'ჩანაწერის დასამატებლად შესვლა საჭიროა.',
     connectVia: 'დაკავშირება პირადი შეტყობინებით',
     noEntries: 'ამ რეგიონში ჯერ ჩანაწერი არ არის.',
+  },
+  dating: {
+    title: 'გაცნობა',
+    lead: 'შექმენი გაცნობის პროფილი, დაამატე ფოტოები და მოძებნე ადამიანები კატეგორიების მიხედვით: კაცი, ქალი და Trans.',
+    introTitle: 'როგორ მუშაობს გაცნობის გვერდი',
+    introBody: 'პროფილი გამოჩნდება მხოლოდ მაშინ, როცა დაამატებ მინიმუმ ერთ ფოტოს, მოკლე აღწერას და ჩართული გექნება ხილვადობა.',
+    stepPhotos: 'ატვირთე 1-6 ფოტო. ფოტოები ავტომატურად იკუმშება, რომ საიტი სწრაფად ჩაიტვირთოს.',
+    stepDetails: 'აირჩიე შენთვის შესაფერისი კატეგორია და დაწერე მოკლე, ბუნებრივი აღწერა.',
+    stepBrowse: 'გაფილტრე პროფილები კატეგორიით და გახსენი მომხმარებლის გვერდი დამატებითი ინფორმაციისთვის.',
+    editorTitle: 'გაცნობის პროფილი',
+    editorLead: 'აქ შეგიძლია მართო შენი გაცნობის პროფილი: ატვირთო ფოტოები, დაწერო მოკლე აღწერა და აირჩიო კატეგორია.',
+    editProfile: 'ჩემი გაცნობის პროფილი',
+    loginToCreate: 'შედი პროფილის შესაქმნელად',
+    backToBrowse: 'გაცნობის გვერდზე დაბრუნება',
+    backToBrowseFromProfile: 'გაცნობის გვერდი',
+    filterMale: 'კაცი',
+    filterFemale: 'ქალი',
+    filterTrans: 'Trans',
+    noProfiles: 'ამ კატეგორიაში ჯერ პროფილი არ არის.',
+    noProfilesHint: 'შენ შეგიძლია იყო პირველი — შექმენი პროფილი და დაამატე ფოტო.',
+    viewProfile: 'პროფილის ნახვა',
+    save: 'შენახვა',
+    presetCase: 'ვის ეძებ',
+    presetCaseHint: 'აირჩიე ის ვარიანტი, რომელიც ყველაზე ახლოსაა შენს ინტერესთან.',
+    bio: 'მოკლე აღწერა',
+    bioPlaceholder: 'მაგალითად: მიყვარს მშვიდი საუბარი, გასეირნება და ახალი ადამიანების გაცნობა.',
+    bioHint: 'დაწერე 1-2 წინადადება შენზე. მინიმუმ 10 და მაქსიმუმ 300 სიმბოლო.',
+    isVisible: 'ჩემი პროფილი გამოჩნდეს გაცნობის გვერდზე',
+    photosTitle: 'ფოტოები',
+    photosLead: 'პირველი ფოტო მთავარ სურათად გამოჩნდება პროფილის ბარათზე.',
+    photoUpload: 'ფოტოს ატვირთვა',
+    photoUploadHint: 'შეგიძლია ატვირთო მაქსიმუმ 6 ფოტო, თითოეული 5MB-მდე. ფოტო ავტომატურად იკუმშება WebP ფორმატში.',
+    photoRemove: 'წაშლა',
+    presetLabels: {
+      straight_male: 'სტრეით მამაკაცი',
+      straight_female: 'სტრეით ქალი',
+      gay_male: 'გეი მამაკაცი',
+      lesbian_female: 'ლესბოსელი ქალი',
+      bi_male: 'ბისექსუალი მამაკაცი',
+      bi_female: 'ბისექსუალი ქალი',
+      trans_straight: 'Trans — სტრეით',
+      trans_gay: 'Trans — გეი',
+      trans_bi: 'Trans — ბისექსუალი',
+      open_to_all: 'ღია ვარ სხვადასხვა გაცნობისთვის',
+    },
+    errorLoginRequired: 'შესვლა საჭიროა.',
+    errorInvalidPreset: 'აირჩიეთ სწორი პრეფერენცია.',
+    errorBioTooShort: 'აღწერა უნდა იყოს მინიმუმ 10 სიმბოლო.',
+    errorPhotoRequired: 'აირჩიეთ ფოტო.',
+    errorInvalidPhotoType: 'დაშვებულია მხოლოდ JPG, PNG, WebP ან GIF.',
+    errorPhotoTooLarge: 'ფოტო ძალიან დიდია (მაქს. 5MB).',
+    errorPhotoLimitReached: 'მაქსიმუმ 6 ფოტო შეიძლება.',
+    errorPhotoNotFound: 'ფოტო ვერ მოიძებნა.',
+    errorProfileNotFound: 'პროფილი ვერ მოიძებნა.',
+    successProfileSaved: 'პროფილი შენახულია.',
+    successPhotoAdded: 'ფოტო დაემატა.',
+    successPhotoRemoved: 'ფოტო წაიშალა.',
   },
   positions: {
     title: 'ინტიმური პოზები',
@@ -577,6 +697,7 @@ const ka: CommunityDict = {
   user: {
     subscription: 'გამოწერა',
     settings: 'პარამეტრები',
+    dating: 'გაცნობის პროფილი',
     points: 'ქულები',
     stories: 'ისტორია',
     comments: 'კომენტარი',
