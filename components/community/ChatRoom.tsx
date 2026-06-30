@@ -26,6 +26,7 @@ type Props = {
   guestLabels?: GuestLabels;
   registerHref?: string;
   loginHref?: string;
+  tabs?: React.ReactNode;
 };
 
 type GuestStatus = {
@@ -71,6 +72,7 @@ export function ChatRoom({
   guestLabels,
   registerHref = '/register/',
   loginHref = '/login/',
+  tabs,
 }: Props) {
   const [messages, setMessages] = useState<ChatMessagePayload[]>([]);
   const [body, setBody] = useState('');
@@ -82,7 +84,6 @@ export function ChatRoom({
   const [isAtBottom, setIsAtBottom] = useState(true);
   const [newCount, setNewCount] = useState(0);
 
-  const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLUListElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const seenIdsRef = useRef<Set<string>>(new Set());
@@ -93,7 +94,10 @@ export function ChatRoom({
     guestMode && guestStatus !== null && guestStatus.messagesRemaining <= 0;
 
   const scrollToBottom = useCallback((smooth = true) => {
-    messagesEndRef.current?.scrollIntoView({ behavior: smooth ? 'smooth' : 'instant' });
+    const el = messagesContainerRef.current;
+    if (el) {
+      el.scrollTo({ top: el.scrollHeight, behavior: smooth ? 'smooth' : 'auto' });
+    }
     setNewCount(0);
     setIsAtBottom(true);
   }, []);
@@ -156,10 +160,11 @@ export function ChatRoom({
     return () => window.clearInterval(id);
   }, [fetchMessages]);
 
-  // Scroll to bottom on initial load and when user's own messages arrive
+  // Scroll to bottom when new messages arrive while user is at bottom
   useEffect(() => {
     if (isAtBottom) {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'instant' });
+      const el = messagesContainerRef.current;
+      if (el) el.scrollTop = el.scrollHeight;
     }
   }, [messages, isAtBottom]);
 
@@ -267,12 +272,17 @@ export function ChatRoom({
       <div className="chat-room">
         {/* Header */}
         <div className="chat-room__header">
-          <div className="chat-room__header-inner">
-            <div className="chat-room__title-wrap">
-              <span className="chat-room__title-icon">💬</span>
-              <h1 className="chat-room__title">{title}</h1>
+          {tabs ? (
+            <h1 className="visually-hidden">{title}</h1>
+          ) : (
+            <div className="chat-room__header-inner">
+              <div className="chat-room__title-wrap">
+                <span className="chat-room__title-icon">💬</span>
+                <h1 className="chat-room__title">{title}</h1>
+              </div>
             </div>
-          </div>
+          )}
+          {tabs}
         </div>
 
         {/* Guest banner */}
@@ -337,7 +347,6 @@ export function ChatRoom({
               </li>
             ))
           )}
-          <div ref={messagesEndRef} aria-hidden="true" />
         </ul>
 
         {/* Scroll-to-bottom button */}

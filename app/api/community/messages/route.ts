@@ -8,6 +8,7 @@ import {
   GUEST_MESSAGE_LIMIT,
   setGuestChatCookie,
 } from '@/lib/community/guest-chat';
+import { PUBLIC_CHAT_ROOM_IDS } from '@/lib/community/chat-rooms';
 import { isPremiumEnabled } from '@/lib/community/premium-config';
 import { touchUserActivity } from '@/lib/community/presence';
 import { prisma } from '@/lib/prisma';
@@ -33,7 +34,7 @@ function serializeMessage(m: {
   };
 }
 
-const GUEST_ALLOWED_ROOMS = [SOCKET_CONFIG.liveRoomId, SOCKET_CONFIG.generalRoomId];
+const GUEST_ALLOWED_ROOMS = [SOCKET_CONFIG.liveRoomId, ...PUBLIC_CHAT_ROOM_IDS];
 
 function guestStatusResponse(roomId: string, recipientId: string | null) {
   if (!GUEST_ALLOWED_ROOMS.includes(roomId) || recipientId) return null;

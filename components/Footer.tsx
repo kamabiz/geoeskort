@@ -43,6 +43,7 @@ export function Footer({ locale, dict, username }: Props) {
               <h4>{cd.footer.chatCaps}</h4>
               <ul>
                 <li><Link href={localePath(locale, '/conversationRoom/')}>{cd.nav.conversation}</Link></li>
+                <li><Link href={localePath(locale, '/gayChat/')}>{cd.gayChat.title}</Link></li>
                 <li><Link href={localePath(locale, '/messages/')}>{cd.nav.messages}</Link></li>
               </ul>
             </div>
@@ -77,7 +78,7 @@ export function Footer({ locale, dict, username }: Props) {
             <TopGeCounter />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <a href="https://kama.biz" className="footer-kama-banner" target="_blank">
-              <img src="/banner-kama.png" alt="Escorts in Georgia — kama.biz" width={88} height={31} />
+              <img src="/banner-kama.png" alt="Escorts in Georgia — kama.biz" height={31} />
             </a>
           </div>
           <span>{dict.footer.legal}</span>

@@ -5,6 +5,7 @@ export const SOCKET_CONFIG = {
   pollingIntervalMs: 4000,
   generalRoomId: 'general',
   liveRoomId: 'live',
+  gayRoomId: 'gay',
 };
 
 export type ChatMessagePayload = {

@@ -20,6 +20,7 @@ const STATIC_PAGES: SitemapPage[] = [
   { path: '/medical/', changeFrequency: 'weekly', priority: 0.9 },
   { path: '/crush/', changeFrequency: 'daily', priority: 0.9 },
   { path: '/conversationRoom/', changeFrequency: 'daily', priority: 0.85 },
+  { path: '/gayChat/', changeFrequency: 'daily', priority: 0.88 },
   { path: '/chat/', changeFrequency: 'daily', priority: 0.85 },
   { path: '/blog/', changeFrequency: 'weekly', priority: 0.9 },
   { path: '/positionVariants/', changeFrequency: 'monthly', priority: 0.8 },

@@ -47,6 +47,7 @@ export async function revalidateCommunityComment(postId: string, category?: stri
 export async function revalidateCommunityMessages(): Promise<void> {
   const { revalidatePath } = await import('next/cache');
   revalidatePath('/conversationRoom/', 'page');
+  revalidatePath('/gayChat/', 'page');
   revalidatePath('/messages/', 'page');
 }
 

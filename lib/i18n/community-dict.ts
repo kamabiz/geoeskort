@@ -146,6 +146,23 @@ export type CommunityDict = {
     guestLogin: string;
     guestLimitClose: string;
   };
+  gayChat: {
+    title: string;
+    lead: string;
+    metaTitle: string;
+    metaDescription: string;
+    metaKeywords: string;
+    loginRequired: string;
+    guestBanner: string;
+    guestBannerUsed: string;
+    guestLimitTitle: string;
+    guestLimitBody: string;
+    guestRegister: string;
+    guestLogin: string;
+    guestLimitClose: string;
+    tabGeneral: string;
+    tabGay: string;
+  };
   chat: {
     title: string;
     lead: string;
@@ -509,6 +526,25 @@ const ka: CommunityDict = {
     guestRegister: 'რეგისტრაცია',
     guestLogin: 'შესვლა',
     guestLimitClose: 'დახურვა',
+  },
+  gayChat: {
+    title: 'გეი ჩათი',
+    lead: 'LGBTQ+ საუბრის ოთახი — გეი, ლესბოსური და ქვიარ საზოგადოებისთვის. უფასო ონლაინ ჩათი საქართველოში.',
+    metaTitle: 'გეი ჩათი საქართველოში — უფასო LGBTQ+ ონლაინ ჩათი | Intimgram',
+    metaDescription:
+      'გეი ჩათი საქართველოში — უფასო LGBTQ+ ონლაინ საუბარი. Gay chat Georgia, LGBT chat, გეი ჩათი ონლაინ. შემოუერთდი და ილაპარაკე ანონიმურად ან რეგისტრაციით.',
+    metaKeywords:
+      'გეი ჩათი, gay chat, gay chat georgia, lgbt chat, lgbtq chat, გეი ჩათი ონლაინ, gay chat tbilisi, ქვიარ ჩათი',
+    loginRequired: 'გეი ჩათში ჩასართავად შედით ანგარიშში.',
+    guestBanner: 'სტუმარი — გაქვს 1 შეტყობინება. დარეგისტრირდი სრული წვდომისთვის 🏳️‍🌈',
+    guestBannerUsed: 'ლიმიტი ამოიწურა. დარეგისტრირდი გეი ჩათის გასაგრძელებლად!',
+    guestLimitTitle: 'გააგრძელე გეი ჩათში საუბარი!',
+    guestLimitBody: 'სტუმრად მხოლოდ 1 შეტყობინება შეგიძლია. დარეგისტრირდი უფასოდ და ილაპარაკე განუსაზღვრელად!',
+    guestRegister: 'რეგისტრაცია',
+    guestLogin: 'შესვლა',
+    guestLimitClose: 'დახურვა',
+    tabGeneral: 'სასაუბრო ოთახი',
+    tabGay: 'გეი ჩათი',
   },
   chat: {
     title: 'LIVE ჩათი',
