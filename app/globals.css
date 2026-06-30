@@ -2074,19 +2074,6 @@ button, .btn, .nav-toggle {
   padding: clamp(2.5rem, 5vw, 4rem) 0;
 }
 
-.partner-banner {
-  display: block;
-  text-align: center;
-  margin: 2rem auto;
-  max-width: 728px;
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  opacity: 0.9;
-  transition: opacity 0.2s;
-}
-.partner-banner:hover { opacity: 1; }
-.partner-banner img { width: 100%; height: auto; display: block; max-width: 728px; }
-
 .section--alt { background: var(--bg-elevated); }
 
 .section__head {
@@ -3003,6 +2990,12 @@ button, .btn, .nav-toggle {
   color: var(--text-muted);
 }
 
+.footer-counters {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .footer-topge-counter {
   display: flex;
   align-items: center;
@@ -3016,13 +3009,28 @@ button, .btn, .nav-toggle {
   min-width: 0;
 }
 
+.footer-kama-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 88px;
+  height: 31px;
+  overflow: hidden;
+  border-radius: 3px;
+  flex-shrink: 0;
+  opacity: 0.9;
+  transition: opacity 0.2s;
+}
+.footer-kama-banner:hover { opacity: 1; }
+.footer-kama-banner img { width: 88px; height: 31px; object-fit: cover; display: block; }
+
 @media (max-width: 640px) {
   .footer-bottom {
     flex-direction: column;
     text-align: center;
   }
 
-  .footer-topge-counter {
+  .footer-counters {
     order: -1;
   }
 }
