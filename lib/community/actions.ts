@@ -14,6 +14,7 @@ import {
 } from '@/lib/community/auth';
 import { buildDefaultAvatarDataUri, parseAvatarGender } from '@/lib/community/avatar';
 import { isCommunityCategorySlug, getCommunityPostViewPath, resolveSubmitCategory } from '@/lib/community/categories';
+import { generateUniquePostSlug } from '@/lib/community/post-slug';
 import { PREMIUM_POINTS_COST, PREMIUM_DAYS, awardPoints } from '@/lib/community/points';
 import { isPremiumEnabled } from '@/lib/community/premium-config';
 import { computeReadingTimeMinutes } from '@/lib/community/text';
@@ -21,6 +22,18 @@ import { touchUserActivity } from '@/lib/community/presence';
 
 function parseTags(raw: string): string[] {
   return [...new Set(raw.split(',').map((t) => t.trim().toLowerCase()).filter(Boolean))].slice(0, 8);
+}
+
+async function revalidatePostPages(postId: string) {
+  const post = await prisma.post.findUnique({
+    where: { id: postId },
+    select: { category: true, slug: true },
+  });
+  if (!post) return;
+  revalidatePath(getCommunityPostViewPath(post.category, post.slug), 'page');
+  revalidatePath('/history/', 'page');
+  revalidatePath('/questions/', 'page');
+  revalidatePath('/', 'page');
 }
 
 const TAG_STOP_WORDS = new Set([
@@ -168,12 +181,15 @@ export async function submitPost(formData: FormData) {
     orderBy: { createdAt: 'desc' },
   });
   if (duplicate) {
-    redirect(getCommunityPostViewPath(duplicate.category, duplicate.id));
+    redirect(getCommunityPostViewPath(duplicate.category, duplicate.slug));
   }
+
+  const slug = await generateUniquePostSlug(title);
 
   const post = await prisma.post.create({
     data: {
       title,
+      slug,
       body,
       category,
       tags,
@@ -193,8 +209,8 @@ export async function submitPost(formData: FormData) {
   revalidatePath('/');
   revalidatePath('/history/', 'page');
   revalidatePath('/questions/', 'page');
-  revalidatePath(getCommunityPostViewPath(post.category, post.id), 'page');
-  redirect(getCommunityPostViewPath(post.category, post.id));
+  revalidatePath(getCommunityPostViewPath(post.category, post.slug), 'page');
+  redirect(getCommunityPostViewPath(post.category, post.slug));
 }
 
 export async function createComment(formData: FormData) {
@@ -227,9 +243,28 @@ export async function createComment(formData: FormData) {
   }
   if (user) await touchUserActivity(user.id);
 
-  revalidatePath('/p/' + postId + '/');
-  revalidatePath('/history/view/' + postId + '/', 'page');
-  revalidatePath('/questions/view/' + postId + '/', 'page');
+  await revalidatePostPages(postId);
+}
+
+export async function deleteComment(formData: FormData) {
+  const user = await getCurrentUser();
+  if (!user) throw new Error('Login required');
+
+  const commentId = String(formData.get('commentId') || '');
+  if (!commentId) throw new Error('Comment not found');
+
+  const comment = await prisma.comment.findUnique({
+    where: { id: commentId },
+    select: { id: true, authorId: true, postId: true },
+  });
+  if (!comment || comment.authorId !== user.id) throw new Error('Forbidden');
+
+  await prisma.comment.update({
+    where: { id: commentId },
+    data: { archivedAt: new Date() },
+  });
+
+  await revalidatePostPages(comment.postId);
 }
 
 export async function upvotePost(postId: string) {
@@ -247,12 +282,7 @@ export async function upvotePost(postId: string) {
   await prisma.postUpvote.create({ data: { userId: user.id, postId } });
   if (post.authorId) await awardPoints(post.authorId, 'POST_UPVOTED', postId);
   await touchUserActivity(user.id);
-  revalidatePath('/p/' + postId + '/');
-  revalidatePath('/history/view/' + postId + '/', 'page');
-  revalidatePath('/questions/view/' + postId + '/', 'page');
-  revalidatePath('/history/', 'page');
-  revalidatePath('/questions/', 'page');
-  revalidatePath('/', 'page');
+  await revalidatePostPages(postId);
 }
 
 export async function upvoteComment(commentId: string, postId: string) {
@@ -273,9 +303,7 @@ export async function upvoteComment(commentId: string, postId: string) {
   await prisma.commentUpvote.create({ data: { userId: user.id, commentId } });
   if (comment.authorId) await awardPoints(comment.authorId, 'COMMENT_UPVOTED', commentId);
   await touchUserActivity(user.id);
-  revalidatePath('/p/' + postId + '/');
-  revalidatePath('/history/view/' + postId + '/', 'page');
-  revalidatePath('/questions/view/' + postId + '/', 'page');
+  await revalidatePostPages(postId);
 }
 
 export async function redeemPremiumWithPoints() {

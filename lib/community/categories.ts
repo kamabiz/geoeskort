@@ -124,15 +124,15 @@ export function getCommunityCategoryEmoji(slug: string): string {
   return '📝';
 }
 
-export function getStoryViewPath(id: string): string {
-  return `/history/view/${id}/`;
+export function getStoryViewPath(slug: string): string {
+  return `/history/${slug}/`;
 }
 
-export function getCommunityPostViewPath(category: string, id: string): string {
-  if (category === 'questions-advice') return `/questions/view/${id}/`;
-  if (isStoryCategorySlug(category)) return getStoryViewPath(id);
-  if (isModuleCategorySlug(category)) return `/p/${id}/`;
-  return `/p/${id}/`;
+export function getCommunityPostViewPath(category: string, slug: string): string {
+  if (category === 'questions-advice') return `/questions/${slug}/`;
+  if (isStoryCategorySlug(category)) return getStoryViewPath(slug);
+  if (isModuleCategorySlug(category)) return `/p/${slug}/`;
+  return `/p/${slug}/`;
 }
 
 export function getCommunityPostListPath(category: string): string {

@@ -12,7 +12,7 @@ export async function PATCH(request: Request, { params }: Params) {
   const { id } = await params;
   const existing = await prisma.comment.findUnique({
     where: { id },
-    include: { post: { select: { id: true, category: true } } },
+    include: { post: { select: { id: true, category: true, slug: true } } },
   });
   if (!existing) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
@@ -30,7 +30,7 @@ export async function PATCH(request: Request, { params }: Params) {
   if (typeof body.isAnonymous === 'boolean') data.isAnonymous = body.isAnonymous;
 
   const comment = await prisma.comment.update({ where: { id }, data });
-  await revalidateCommunityComment(existing.post.id, existing.post.category);
+  await revalidateCommunityComment(existing.post.id, existing.post.category, existing.post.slug);
   return NextResponse.json({ ok: true, comment });
 }
 
@@ -41,11 +41,11 @@ export async function DELETE(_request: Request, { params }: Params) {
   const { id } = await params;
   const existing = await prisma.comment.findUnique({
     where: { id },
-    include: { post: { select: { id: true, category: true } } },
+    include: { post: { select: { id: true, category: true, slug: true } } },
   });
   if (!existing) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
   await prisma.comment.delete({ where: { id } });
-  await revalidateCommunityComment(existing.post.id, existing.post.category);
+  await revalidateCommunityComment(existing.post.id, existing.post.category, existing.post.slug);
   return NextResponse.json({ ok: true });
 }

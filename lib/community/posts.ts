@@ -108,6 +108,13 @@ export async function getPostById(id: string) {
   });
 }
 
+export async function getPostBySlug(slug: string) {
+  return prisma.post.findUnique({
+    where: { slug },
+    include: postInclude,
+  });
+}
+
 export async function incrementPostViews(id: string): Promise<void> {
   await prisma.post.update({
     where: { id },
@@ -122,7 +129,7 @@ export async function getLatestComments(limit = 5) {
     orderBy: { createdAt: 'desc' },
     include: {
       author: { select: { id: true, username: true, avatar: true } },
-      post: { select: { id: true, title: true, category: true } },
+      post: { select: { id: true, title: true, category: true, slug: true } },
     },
   });
 }

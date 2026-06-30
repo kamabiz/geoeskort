@@ -11,29 +11,35 @@ import { prisma } from '@/lib/prisma';
 
 const PAGE_SIZE = 50;
 
-export function getCommunityPostPublicPath(category: string, id: string): string {
-  if (isStoryCategorySlug(category)) return getCommunityPostViewPath(category, id);
+export function getCommunityPostPublicPath(category: string, slug: string): string {
+  if (isStoryCategorySlug(category)) return getCommunityPostViewPath(category, slug);
   const mod = MODULE_CATEGORIES[category as ModuleCategorySlug];
   if (mod && category !== 'questions-advice') return mod.route;
-  return getCommunityPostViewPath(category, id);
+  return getCommunityPostViewPath(category, slug);
 }
 
-export async function revalidateCommunityPost(post: { id: string; category: string }): Promise<void> {
+export async function revalidateCommunityPost(post: { id: string; category: string; slug: string }): Promise<void> {
   const { revalidatePath } = await import('next/cache');
   revalidatePath('/', 'page');
   revalidatePath('/history/', 'page');
   revalidatePath('/questions/', 'page');
-  revalidatePath(`/history/view/${post.id}/`, 'page');
-  revalidatePath(`/questions/view/${post.id}/`, 'page');
-  revalidatePath(`/p/${post.id}/`, 'page');
+  revalidatePath(getCommunityPostViewPath(post.category, post.slug), 'page');
+  revalidatePath(`/p/${post.slug}/`, 'page');
   revalidatePath(`/c/${post.category}/`, 'page');
 }
 
-export async function revalidateCommunityComment(postId: string, category?: string): Promise<void> {
+export async function revalidateCommunityComment(postId: string, category?: string, slug?: string): Promise<void> {
   const { revalidatePath } = await import('next/cache');
-  revalidatePath(`/history/view/${postId}/`, 'page');
-  revalidatePath(`/questions/view/${postId}/`, 'page');
-  revalidatePath(`/p/${postId}/`, 'page');
+  if (slug && category) {
+    revalidatePath(getCommunityPostViewPath(category, slug), 'page');
+  } else {
+    const post = await prisma.post.findUnique({
+      where: { id: postId },
+      select: { category: true, slug: true },
+    });
+    if (post) revalidatePath(getCommunityPostViewPath(post.category, post.slug), 'page');
+  }
+  revalidatePath(`/p/${slug ?? postId}/`, 'page');
   if (category) revalidatePath(`/c/${category}/`, 'page');
   revalidatePath('/', 'page');
 }
@@ -132,7 +138,7 @@ export async function getCommunityAuditComments(options: {
       where,
       include: {
         author: { select: { id: true, username: true } },
-        post: { select: { id: true, title: true, category: true } },
+        post: { select: { id: true, title: true, category: true, slug: true } },
       },
       orderBy: { createdAt: 'desc' },
       take: PAGE_SIZE,

@@ -64,7 +64,7 @@ export function HomeMobileHub({
       <div className="home-spotlight">
         {topStory ? (
           <Link
-            href={localePath(locale, getStoryViewPath(topStory.id))}
+            href={localePath(locale, getStoryViewPath(topStory.slug))}
             className="home-spotlight__item home-spotlight__item--top"
           >
             <span className="home-spotlight__icon" aria-hidden>🔥</span>
@@ -88,7 +88,7 @@ export function HomeMobileHub({
 
         {latestPost ? (
           <Link
-            href={localePath(locale, getStoryViewPath(latestPost.id))}
+            href={localePath(locale, getStoryViewPath(latestPost.slug))}
             className="home-spotlight__item home-spotlight__item--new"
           >
             <span className="home-spotlight__icon home-spotlight__icon--new" aria-hidden>✨</span>

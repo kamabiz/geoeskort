@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { CommunityAvatar } from '@/components/community/CommunityAvatar';
-import { getCommunityCategoryLabel } from '@/lib/community/categories';
+import { getCommunityCategoryLabel, getCommunityPostViewPath } from '@/lib/community/categories';
 import { getCommunityDict } from '@/lib/i18n/community-dict';
 import { localePath } from '@/lib/i18n/paths';
 import { formatDateKa } from '@/lib/format-date';
@@ -12,7 +12,7 @@ type CommentItem = {
   createdAt: Date;
   isAnonymous: boolean;
   author: { username: string; avatar: string | null } | null;
-  post: { id: string; title: string; category: string };
+  post: { id: string; title: string; category: string; slug: string };
 };
 
 type Props = {
@@ -37,7 +37,7 @@ export function LatestCommentsSidebar({ locale, comments, variant = 'default' }:
         <ul className="forum-panel__comments">
           {comments.map((comment) => (
             <li key={comment.id}>
-              <Link href={localePath(locale, `/history/view/${comment.post.id}/`)}>
+              <Link href={localePath(locale, getCommunityPostViewPath(comment.post.category, comment.post.slug))}>
                 <span className="forum-panel__comment-user">
                   <CommunityAvatar
                     username={displayCommentUser(comment)}

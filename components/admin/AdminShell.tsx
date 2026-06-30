@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { AdminLogoutButton } from '@/components/admin/AdminLogoutButton';
 
-type Section = 'blog' | 'community';
+type Section = 'blog' | 'sexology' | 'community';
 
 type Props = {
   children: React.ReactNode;
@@ -46,6 +46,12 @@ export function AdminShell({
             className={`admin-btn admin-btn--ghost admin-btn--sm${section === 'blog' ? ' admin-btn--nav-active' : ''}`}
           >
             Blog
+          </Link>
+          <Link
+            href="/admin/sexology/"
+            className={`admin-btn admin-btn--ghost admin-btn--sm${section === 'sexology' ? ' admin-btn--nav-active' : ''}`}
+          >
+            სექსოლოგია
           </Link>
           <Link
             href="/admin/community/"

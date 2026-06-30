@@ -1,7 +1,16 @@
 const WORDS_PER_MINUTE = 200;
 
+function looksLikeHtml(text: string): boolean {
+  const trimmed = text.trim();
+  return /^<[a-z][\s\S]*>/i.test(trimmed) || /<(h[1-6]|p|ul|ol|div|blockquote|section)\b/i.test(trimmed);
+}
+
 export function stripMarkdown(text: string): string {
-  return text
+  let source = text;
+  if (looksLikeHtml(source)) {
+    source = source.replace(/<[^>]+>/g, ' ');
+  }
+  return source
     .replace(/```[\s\S]*?```/g, ' ')
     .replace(/`[^`]+`/g, ' ')
     .replace(/!\[[^\]]*]\([^)]+\)/g, ' ')
@@ -75,7 +84,27 @@ function escapeHtml(text: string): string {
   return text
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+const URL_REGEX = /\b(https?:\/\/[^\s<]+[^\s<.,;:!?)}\]'"])/gi;
+
+export function linkifyText(text: string): string {
+  return text
+    .split(URL_REGEX)
+    .map((part, index) => {
+      if (index % 2 === 1) {
+        const safe = escapeHtml(part);
+        return `<a href="${safe}" target="_blank" rel="noopener noreferrer nofollow">${safe}</a>`;
+      }
+      return escapeHtml(part);
+    })
+    .join('');
+}
+
+export function renderCommentBody(body: string): string {
+  return linkifyText(body).replace(/\n/g, '<br />');
 }
 
 function applyInlineMarkdown(text: string): string {
@@ -133,4 +162,9 @@ function blockToHtml(block: string): string {
 
 export function markdownToHtml(body: string): string {
   return splitBodyIntoBlocks(body).map(blockToHtml).join('');
+}
+
+export function renderPostBody(body: string): string {
+  if (looksLikeHtml(body)) return body.trim();
+  return markdownToHtml(body);
 }

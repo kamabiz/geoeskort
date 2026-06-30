@@ -307,6 +307,7 @@ export type CommunityDict = {
     anonymous: string;
     post: string;
     reply: string;
+    delete: string;
     empty: string;
     latest: string;
     latestCaps: string;
@@ -693,6 +694,7 @@ const ka: CommunityDict = {
     anonymous: 'ანონიმურად',
     post: 'გამოქვეყნება',
     reply: 'პასუხი',
+    delete: 'წაშლა',
     empty: 'ჯერ კომენტარი არ არის.',
     latest: 'ბოლო კომენტარები',
     latestCaps: 'ᲑᲝᲚᲝ ᲙᲝᲛᲔᲜᲢᲐᲠᲔᲑᲘ',

@@ -15,7 +15,7 @@ export default async function EditCommunityCommentPage({ params }: Props) {
     where: { id },
     include: {
       author: { select: { username: true } },
-      post: { select: { id: true, title: true, category: true } },
+      post: { select: { id: true, title: true, category: true, slug: true } },
     },
   });
   if (!comment) notFound();
@@ -39,7 +39,7 @@ export default async function EditCommunityCommentPage({ params }: Props) {
               id: comment.post.id,
               title: comment.post.title,
               category: comment.post.category,
-              publicPath: getCommunityPostPublicPath(comment.post.category, comment.post.id),
+              publicPath: getCommunityPostPublicPath(comment.post.category, comment.post.slug),
             },
           }}
         />

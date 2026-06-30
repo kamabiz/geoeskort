@@ -37,7 +37,7 @@ export default async function EditCommunityPostPage({ params }: Props) {
             isPremium: post.isPremium,
             authorLabel: displayAuthor(post),
             createdAt: post.createdAt.toISOString(),
-            publicPath: getCommunityPostPublicPath(post.category, post.id),
+            publicPath: getCommunityPostPublicPath(post.category, post.slug),
           }}
         />
       </main>

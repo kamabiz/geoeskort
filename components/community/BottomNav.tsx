@@ -22,8 +22,8 @@ export function BottomNav({ locale, username }: Props) {
     { href: localePath(locale, '/'), label: cd.bottomNav.home, icon: '🏠', match: (p: string) => p === localePath(locale, '/') || p === `/${locale}` || p === `/${locale}/` },
     {
       href: localePath(locale, '/conversationRoom/'),
-      label: cd.nav.conversation,
-      icon: '🗣️',
+      label: cd.bottomNav.chat,
+      icon: '💬',
       match: (p: string) => p.startsWith(localePath(locale, '/conversationRoom')),
     },
     { href: localePath(locale, '/messages/'), label: cd.bottomNav.messages, icon: '✉️', match: (p: string) => p.startsWith(localePath(locale, '/messages')) },

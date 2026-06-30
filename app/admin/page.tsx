@@ -5,6 +5,7 @@ import { recordPrimaryTitle } from '@/lib/admin-blog';
 import { getCommunityAuditStats } from '@/lib/admin-community';
 import { requireAuth } from '@/lib/auth';
 import { getAllRecordsAsync, getStorageMode } from '@/lib/blog-store';
+import { getSexologyArticleCount } from '@/lib/admin-sexology';
 import { safeCommunity } from '@/lib/community/safe';
 
 export default async function AdminDashboardPage() {
@@ -15,6 +16,7 @@ export default async function AdminDashboardPage() {
     () => getCommunityAuditStats(),
     { posts: 0, comments: 0, messages: 0, users: 0, archivedPosts: 0, archivedComments: 0, archivedMessages: 0 },
   );
+  const sexologyCount = await safeCommunity(() => getSexologyArticleCount(), 0);
 
   return (
     <AdminShell section="blog">
@@ -41,6 +43,12 @@ export default async function AdminDashboardPage() {
               + New blog post
             </Link>
           </div>
+          <Link href="/admin/sexology/" className="admin-hub__card">
+            <span className="admin-hub__label">Medical library</span>
+            <strong className="admin-hub__title">სექსოლოგია</strong>
+            <p className="admin-muted">{sexologyCount} published articles</p>
+            <span className="admin-hub__cta">Manage articles →</span>
+          </Link>
         </div>
 
         {storage === 'database' && (

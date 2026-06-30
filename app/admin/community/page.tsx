@@ -198,7 +198,7 @@ export default async function AdminCommunityPage({ searchParams }: Props) {
                       />
                       {post.status === 'PUBLISHED' && (
                         <a
-                          href={getCommunityPostPublicPath(post.category, post.id)}
+                          href={getCommunityPostPublicPath(post.category, post.slug)}
                           className="admin-btn admin-btn--sm admin-btn--ghost"
                           target="_blank"
                           rel="noopener"
@@ -233,7 +233,7 @@ export default async function AdminCommunityPage({ searchParams }: Props) {
                     <td>{comment.isAnonymous || !comment.author ? 'anon' : comment.author.username}</td>
                     <td>
                       <a
-                        href={getCommunityPostPublicPath(comment.post.category, comment.post.id)}
+                        href={getCommunityPostPublicPath(comment.post.category, comment.post.slug)}
                         target="_blank"
                         rel="noopener"
                       >

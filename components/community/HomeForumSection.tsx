@@ -15,7 +15,7 @@ type CommentItem = {
   createdAt: Date;
   isAnonymous: boolean;
   author: { username: string; avatar: string | null } | null;
-  post: { id: string; title: string; category: string };
+  post: { id: string; title: string; category: string; slug: string };
 };
 
 type Props = {

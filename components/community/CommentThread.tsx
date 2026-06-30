@@ -1,10 +1,11 @@
 import Link from 'next/link';
 import { CommunityAvatar } from '@/components/community/CommunityAvatar';
 import { VoteColumn } from '@/components/community/VoteColumn';
-import { createComment } from '@/lib/community/actions';
+import { createComment, deleteComment } from '@/lib/community/actions';
 import { getCommunityDict } from '@/lib/i18n/community-dict';
 import { formatDateKa } from '@/lib/format-date';
 import { localePath } from '@/lib/i18n/paths';
+import { renderCommentBody } from '@/lib/community/text';
 import type { Locale } from '@/lib/i18n/types';
 
 type CommentNode = {
@@ -13,7 +14,8 @@ type CommentNode = {
   createdAt: Date;
   isAnonymous: boolean;
   parentId: string | null;
-  author: { username: string; avatar: string | null } | null;
+  authorId: string | null;
+  author: { id: string; username: string; avatar: string | null } | null;
   replies?: CommentNode[];
   _count?: { upvotes: number };
 };
@@ -24,6 +26,7 @@ type Props = {
   comments: CommentNode[];
   commentCount?: number;
   isLoggedIn: boolean;
+  currentUserId?: string | null;
   upvotedCommentIds: Set<string>;
 };
 
@@ -41,6 +44,7 @@ function CommentBody({
   comment,
   cd,
   isLoggedIn,
+  currentUserId,
   upvotedCommentIds,
   nested = false,
 }: {
@@ -49,11 +53,13 @@ function CommentBody({
   comment: CommentNode;
   cd: ReturnType<typeof getCommunityDict>;
   isLoggedIn: boolean;
+  currentUserId: string | null;
   upvotedCommentIds: Set<string>;
   nested?: boolean;
 }) {
   const isPublicAuthor = !!comment.author && !comment.isAnonymous;
   const name = displayName(comment, cd.post.anonymous);
+  const canDelete = !!currentUserId && comment.authorId === currentUserId;
 
   return (
     <div className={`reddit-comment${nested ? ' reddit-comment--nested' : ''}`}>
@@ -87,19 +93,32 @@ function CommentBody({
           </span>
           <time dateTime={comment.createdAt.toISOString()}>{formatDateKa(comment.createdAt.toISOString())}</time>
         </div>
-        <p className="reddit-comment__body">{comment.body}</p>
-        <details className="reddit-reply">
-          <summary className="reddit-reply__toggle">{cd.comments.reply}</summary>
-          <form action={createComment} className="community-form community-form--compact reddit-reply__form">
-            <input type="hidden" name="postId" value={postId} />
-            <input type="hidden" name="parentId" value={comment.id} />
-            <label>
-              <span className="visually-hidden">{cd.comments.reply}</span>
-              <textarea name="body" required rows={2} placeholder={cd.comments.placeholder} />
-            </label>
-            <button type="submit" className="btn btn--ghost btn--sm">{cd.comments.reply}</button>
-          </form>
-        </details>
+        <div
+          className="reddit-comment__body"
+          dangerouslySetInnerHTML={{ __html: renderCommentBody(comment.body) }}
+        />
+        <div className="reddit-comment__actions">
+          <details className="reddit-reply">
+            <summary className="reddit-reply__toggle">{cd.comments.reply}</summary>
+            <form action={createComment} className="community-form community-form--compact reddit-reply__form">
+              <input type="hidden" name="postId" value={postId} />
+              <input type="hidden" name="parentId" value={comment.id} />
+              <label>
+                <span className="visually-hidden">{cd.comments.reply}</span>
+                <textarea name="body" required rows={2} placeholder={cd.comments.placeholder} />
+              </label>
+              <button type="submit" className="btn btn--ghost btn--sm">{cd.comments.reply}</button>
+            </form>
+          </details>
+          {canDelete && (
+            <form action={deleteComment} className="reddit-comment__delete">
+              <input type="hidden" name="commentId" value={comment.id} />
+              <button type="submit" className="reddit-reply__toggle reddit-comment__delete-btn">
+                {cd.comments.delete}
+              </button>
+            </form>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -111,6 +130,7 @@ export function CommentThread({
   comments,
   commentCount,
   isLoggedIn,
+  currentUserId = null,
   upvotedCommentIds,
 }: Props) {
   const cd = getCommunityDict(locale);
@@ -136,6 +156,7 @@ export function CommentThread({
                 comment={comment}
                 cd={cd}
                 isLoggedIn={isLoggedIn}
+                currentUserId={currentUserId}
                 upvotedCommentIds={upvotedCommentIds}
               />
               {(comment.replies ?? []).length > 0 && (
@@ -148,6 +169,7 @@ export function CommentThread({
                       comment={reply}
                       cd={cd}
                       isLoggedIn={isLoggedIn}
+                      currentUserId={currentUserId}
                       upvotedCommentIds={upvotedCommentIds}
                       nested
                     />

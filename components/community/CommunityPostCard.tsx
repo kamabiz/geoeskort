@@ -42,10 +42,10 @@ export function CommunityPostCard({
   const cd = getCommunityDict(locale);
   const href =
     viewPath === 'history'
-      ? localePath(locale, getStoryViewPath(post.id))
+      ? localePath(locale, getStoryViewPath(post.slug))
       : viewPath === 'questions'
-        ? localePath(locale, `/questions/view/${post.id}/`)
-        : localePath(locale, getCommunityPostViewPath(post.category, post.id));
+        ? localePath(locale, getCommunityPostViewPath('questions-advice', post.slug))
+        : localePath(locale, getCommunityPostViewPath(post.category, post.slug));
   const author = displayAuthor(post, cd.post.anonymous);
   const showAuthorAvatar = !post.isAnonymous && !!post.author;
   const excerptMax = excerptLength ?? (showExcerpt ? 140 : variant === 'compact' ? 90 : 160);

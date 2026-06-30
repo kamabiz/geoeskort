@@ -1,13 +1,13 @@
 import { prisma } from '@/lib/prisma';
 
 const commentInclude = {
-  author: { select: { username: true, avatar: true } },
+  author: { select: { id: true, username: true, avatar: true } },
   _count: { select: { upvotes: true } },
   replies: {
     where: { archivedAt: null },
     orderBy: { createdAt: 'asc' as const },
     include: {
-      author: { select: { username: true, avatar: true } },
+      author: { select: { id: true, username: true, avatar: true } },
       _count: { select: { upvotes: true } },
     },
   },

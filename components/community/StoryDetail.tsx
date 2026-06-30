@@ -10,7 +10,7 @@ import {
 } from '@/lib/community/categories';
 import { getCommunityDict } from '@/lib/i18n/community-dict';
 import { displayAuthor, type PostWithAuthor } from '@/lib/community/posts';
-import { markdownToHtml } from '@/lib/community/text';
+import { renderPostBody } from '@/lib/community/text';
 import { formatDateKa } from '@/lib/format-date';
 import { localePath } from '@/lib/i18n/paths';
 import type { Locale } from '@/lib/i18n/types';
@@ -21,7 +21,8 @@ type CommentNode = {
   createdAt: Date;
   isAnonymous: boolean;
   parentId: string | null;
-  author: { username: string; avatar: string | null } | null;
+  authorId: string | null;
+  author: { id: string; username: string; avatar: string | null } | null;
   replies?: CommentNode[];
   _count?: { upvotes: number };
 };
@@ -33,6 +34,7 @@ type Props = {
   canView: boolean;
   backHref?: string;
   isLoggedIn: boolean;
+  currentUserId?: string | null;
   hasUpvoted?: boolean;
   upvotedCommentIds?: Set<string>;
 };
@@ -44,6 +46,7 @@ export function StoryDetail({
   canView,
   backHref,
   isLoggedIn,
+  currentUserId = null,
   hasUpvoted = false,
   upvotedCommentIds = new Set(),
 }: Props) {
@@ -115,7 +118,7 @@ export function StoryDetail({
             {canView ? (
               <div
                 className="post-content post-content--reddit"
-                dangerouslySetInnerHTML={{ __html: markdownToHtml(post.body) }}
+                dangerouslySetInnerHTML={{ __html: renderPostBody(post.body) }}
               />
             ) : (
               <PremiumLockedBody locale={locale} />
@@ -139,6 +142,7 @@ export function StoryDetail({
               comments={comments}
               commentCount={commentCount}
               isLoggedIn={isLoggedIn}
+              currentUserId={currentUserId}
               upvotedCommentIds={upvotedCommentIds}
             />
           </div>
@@ -148,6 +152,6 @@ export function StoryDetail({
   );
 }
 
-export function storyDetailPath(id: string): string {
-  return getStoryViewPath(id);
+export function storyDetailPath(slug: string): string {
+  return getStoryViewPath(slug);
 }

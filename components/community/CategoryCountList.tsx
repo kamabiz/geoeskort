@@ -18,10 +18,41 @@ type Props = {
   maxPrimaryChips?: number;
 };
 
+type PrimaryChipItem = StoryCategorySlug | 'all-stories' | keyof typeof MODULE_CATEGORIES;
+
+const INLINE_MODULES_AFTER: Partial<
+  Record<StoryCategorySlug, (keyof typeof MODULE_CATEGORIES)[]>
+> = {
+  'lesbian-stories': ['questions-advice'],
+};
+
+function buildPrimaryChipItems(
+  categorySlugs: StoryCategorySlug[],
+  showVarious: boolean,
+  premiumStorySlugs: StoryCategorySlug[],
+): PrimaryChipItem[] {
+  const items: PrimaryChipItem[] = [];
+
+  for (const slug of categorySlugs) {
+    items.push(slug);
+    const inlineModules = INLINE_MODULES_AFTER[slug];
+    if (inlineModules) items.push(...inlineModules);
+  }
+
+  if (showVarious) items.push('various');
+  items.push(...premiumStorySlugs, 'all-stories');
+
+  return items;
+}
+
 function getVisibleStorySlugs(): StoryCategorySlug[] {
   return STORY_CATEGORY_SLUGS.filter(
     (slug) => isPremiumEnabled() || !STORY_CATEGORIES[slug].isPremiumOnly,
   );
+}
+
+function isModuleChipItem(item: PrimaryChipItem): item is keyof typeof MODULE_CATEGORIES {
+  return item in MODULE_CATEGORIES;
 }
 
 export function CategoryCountList({
@@ -89,20 +120,21 @@ export function CategoryCountList({
   };
 
   const moduleSlugs: (keyof typeof MODULE_CATEGORIES)[] = [
-    'questions-advice',
     'sexology',
     'zodiac-compatibility',
+  ];
+
+  const primaryTrailingModuleSlugs: (keyof typeof MODULE_CATEGORIES)[] = [
     'dating-crush',
     'positions-education',
   ];
 
   if (variant === 'chips') {
-    const primaryChipItems: (StoryCategorySlug | 'all-stories')[] = [
-      ...categorySlugs,
-      'all-stories',
-      ...premiumStorySlugs,
-      ...(showVarious ? ['various' as const] : []),
-    ];
+    const primaryChipItems = buildPrimaryChipItems(
+      categorySlugs,
+      showVarious,
+      premiumStorySlugs,
+    );
     const visiblePrimaryChipItems =
       typeof maxPrimaryChips === 'number' && maxPrimaryChips > 0
         ? primaryChipItems.slice(0, maxPrimaryChips)
@@ -113,9 +145,12 @@ export function CategoryCountList({
         <div className="forum-chips-section">
           {showSectionTitles && <p className="forum-chips-section__title">ისტორიები</p>}
           <div className="forum-chips forum-chips--primary">
-            {visiblePrimaryChipItems.map((item) =>
-              item === 'all-stories' ? renderAllStoriesChip() : renderStoryChip(item),
-            )}
+            {visiblePrimaryChipItems.map((item) => {
+              if (item === 'all-stories') return renderAllStoriesChip();
+              if (isModuleChipItem(item)) return renderModuleChip(item);
+              return renderStoryChip(item);
+            })}
+            {primaryTrailingModuleSlugs.map(renderModuleChip)}
           </div>
         </div>
         <div className="forum-chips-section">
@@ -140,10 +175,15 @@ export function CategoryCountList({
           <strong>{countMap.get(slug) ?? 0}</strong>
         </Link>
       ))}
-      <Link href={localePath(locale, '/history/')} className="community-categories__item">
-        <span>📚 {cd.home.allStoriesChip}</span>
-        <strong>{allStoriesCount}</strong>
-      </Link>
+      {showVarious && (
+        <Link
+          href={localePath(locale, '/history/?category=various')}
+          className="community-categories__item"
+        >
+          <span>{STORY_CATEGORIES.various.emoji} {STORY_CATEGORIES.various.label}</span>
+          <strong>{countMap.get('various') ?? 0}</strong>
+        </Link>
+      )}
       {premiumStorySlugs.map((slug) => (
         <Link
           key={slug}
@@ -154,15 +194,10 @@ export function CategoryCountList({
           <strong>{countMap.get(slug) ?? 0}</strong>
         </Link>
       ))}
-      {showVarious && (
-        <Link
-          href={localePath(locale, '/history/?category=various')}
-          className="community-categories__item"
-        >
-          <span>{STORY_CATEGORIES.various.emoji} {STORY_CATEGORIES.various.label}</span>
-          <strong>{countMap.get('various') ?? 0}</strong>
-        </Link>
-      )}
+      <Link href={localePath(locale, '/history/')} className="community-categories__item">
+        <span>📚 {cd.home.allStoriesChip}</span>
+        <strong>{allStoriesCount}</strong>
+      </Link>
     </div>
   );
 }
