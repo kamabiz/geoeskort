@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { ChatRoom } from '@/components/community/ChatRoom';
 import { getCurrentUser } from '@/lib/community/auth';
 import { getCommunityDict } from '@/lib/i18n/community-dict';
@@ -26,27 +25,29 @@ export default async function ConversationRoomPage({ params }: Props) {
   const user = await getCurrentUser();
 
   return (
-    <main className="container community-page">
-      <div className="page-header">
-        <h1>{cd.conversation.title}</h1>
-        <p className="community-page__lead">{cd.conversation.lead}</p>
-      </div>
-      {!user ? (
-        <p>
-          {cd.conversation.loginRequired}{' '}
-          <Link href={localePath(locale, '/login/')}>{cd.auth.login}</Link>
-        </p>
-      ) : (
-        <ChatRoom
-          title={cd.conversation.title}
-          roomId="general"
-          labels={{
-            send: cd.chat.send,
-            placeholder: cd.chat.sendPlaceholder,
-            loginRequired: cd.conversation.loginRequired,
-          }}
-        />
-      )}
+    <main className="chat-page-root">
+      <ChatRoom
+        title={cd.conversation.title}
+        roomId="general"
+        currentUserId={user?.id}
+        labels={{
+          send: cd.chat.send,
+          placeholder: cd.chat.sendPlaceholder,
+          loginRequired: cd.conversation.loginRequired,
+        }}
+        guestMode={!user}
+        guestLabels={!user ? {
+          limitTitle: cd.conversation.guestLimitTitle,
+          limitBody: cd.conversation.guestLimitBody,
+          register: cd.conversation.guestRegister,
+          login: cd.conversation.guestLogin,
+          close: cd.conversation.guestLimitClose,
+          banner: cd.conversation.guestBanner,
+          bannerUsed: cd.conversation.guestBannerUsed,
+        } : undefined}
+        registerHref={localePath(locale, '/register/')}
+        loginHref={localePath(locale, '/login/')}
+      />
     </main>
   );
 }

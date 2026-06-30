@@ -138,6 +138,13 @@ export type CommunityDict = {
     title: string;
     lead: string;
     loginRequired: string;
+    guestBanner: string;
+    guestBannerUsed: string;
+    guestLimitTitle: string;
+    guestLimitBody: string;
+    guestRegister: string;
+    guestLogin: string;
+    guestLimitClose: string;
   };
   chat: {
     title: string;
@@ -495,6 +502,13 @@ const ka: CommunityDict = {
     title: 'სასაუბრო ოთახი',
     lead: 'საჯარო სივრცე თავისუფალი საუბრისთვის — ყველას შეუძლია ჩართვა.',
     loginRequired: 'სასაუბრო ოთახში ჩასართავად შედით ანგარიშში.',
+    guestBanner: 'სტუმარი — გაქვს 1 შეტყობინება. დარეგისტრირდი სრული წვდომისთვის 🎉',
+    guestBannerUsed: 'ლიმიტი ამოიწურა. დარეგისტრირდი საუბრის გასაგრძელებლად!',
+    guestLimitTitle: 'გააგრძელე საუბარი!',
+    guestLimitBody: 'სტუმრად მხოლოდ 1 შეტყობინება შეგიძლია. დარეგისტრირდი უფასოდ და ილაპარაკე განუსაზღვრელად!',
+    guestRegister: 'რეგისტრაცია',
+    guestLogin: 'შესვლა',
+    guestLimitClose: 'დახურვა',
   },
   chat: {
     title: 'LIVE ჩათი',

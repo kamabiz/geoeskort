@@ -33,8 +33,10 @@ function serializeMessage(m: {
   };
 }
 
+const GUEST_ALLOWED_ROOMS = [SOCKET_CONFIG.liveRoomId, SOCKET_CONFIG.generalRoomId];
+
 function guestStatusResponse(roomId: string, recipientId: string | null) {
-  if (roomId !== SOCKET_CONFIG.liveRoomId || recipientId) return null;
+  if (!GUEST_ALLOWED_ROOMS.includes(roomId) || recipientId) return null;
   return getGuestChatSession().then((session) => ({
     messagesRemaining: guestMessagesRemaining(session),
     limit: GUEST_MESSAGE_LIMIT,
@@ -70,7 +72,7 @@ export async function GET(request: NextRequest) {
 
   const user = await getCurrentUser();
   const guestStatus =
-    !user && roomId === SOCKET_CONFIG.liveRoomId && !recipientId
+    !user && GUEST_ALLOWED_ROOMS.includes(roomId) && !recipientId
       ? await guestStatusResponse(roomId, recipientId)
       : null;
 
@@ -100,7 +102,7 @@ export async function POST(request: NextRequest) {
   }
 
   if (!user) {
-    if (roomId !== SOCKET_CONFIG.liveRoomId || recipientId) {
+    if (!GUEST_ALLOWED_ROOMS.includes(roomId) || recipientId) {
       return NextResponse.json({ error: 'Login required' }, { status: 401 });
     }
 

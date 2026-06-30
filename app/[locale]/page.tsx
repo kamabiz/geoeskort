@@ -111,6 +111,13 @@ export default async function HomePage({ params }: Props) {
         topLeaders={topLeaders}
         />
 
+        <div className="container">
+          <a href="https://kama.biz" className="partner-banner" target="_blank">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/banner-kama.png" alt="Escorts in Georgia — kama.biz" width={728} height={90} loading="lazy" />
+          </a>
+        </div>
+
         <section className="section section--home">
         <div className="container">
           <div className="section__head">
