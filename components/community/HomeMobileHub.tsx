@@ -46,15 +46,12 @@ export function HomeMobileHub({
   };
 
   const HUB_MODULES: HubModule[] = [
-    { key: 'history',        href: '/history/',                         icon: '📚', label: cd.nav.history,      count: storyTotal },
-    { key: 'conversation',   href: '/conversationRoom/',                icon: '💬', label: cd.nav.chat,         count: onlineCount },
-    { key: 'questions',      href: '/questions/',                       icon: '❓', label: cd.nav.questions,    count: countMap.get('questions-advice') ?? 0 },
-    { key: 'crush',          href: '/crush/',                           icon: '💕', label: cd.nav.crush,        count: countMap.get('dating-crush') ?? 0 },
-    { key: 'dating',         href: '/dating/',                          icon: '💘', label: cd.nav.dating,       count: 0 },
-    { key: 'sexology',       href: '/medical/',                         icon: '🩺', label: cd.nav.medical,      count: countMap.get('sexology') ?? 0 },
-    { key: 'talk',           href: '/conversationRoom/',                icon: '🗣️', label: cd.nav.conversation, count: onlineCount },
-    { key: 'womens-stories', href: '/history/?category=womens-stories', icon: '👩', label: 'ქალები',            count: countMap.get('womens-stories') ?? 0 },
-    { key: 'mens-stories',   href: '/history/?category=mens-stories',   icon: '👨', label: 'კაცები',            count: countMap.get('mens-stories') ?? 0 },
+    { key: 'history',      href: '/history/',        icon: '📚', label: cd.nav.history,   count: storyTotal },
+    { key: 'conversation', href: '/conversationRoom/', icon: '💬', label: cd.nav.chat,    count: onlineCount },
+    { key: 'dating',       href: '/dating/',          icon: '💘', label: cd.nav.dating,   count: 0 },
+    { key: 'questions',    href: '/questions/',       icon: '❓', label: cd.nav.questions, count: countMap.get('questions-advice') ?? 0 },
+    { key: 'sexology',     href: '/medical/',         icon: '🩺', label: cd.nav.medical,  count: countMap.get('sexology') ?? 0 },
+    { key: 'crush',        href: '/crush/',           icon: '💕', label: cd.nav.crush,    count: countMap.get('dating-crush') ?? 0 },
   ];
 
   const spotlightExcerpt = (post: PostWithAuthor) =>

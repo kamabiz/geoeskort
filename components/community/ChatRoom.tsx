@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { ChatGuestLimitModal } from '@/components/community/ChatGuestLimitModal';
 import { SOCKET_CONFIG, type ChatMessagePayload } from '@/lib/community/socket-config';
@@ -83,15 +83,30 @@ export function ChatRoom({
   const [guestModalOpen, setGuestModalOpen] = useState(false);
   const [isAtBottom, setIsAtBottom] = useState(true);
   const [newCount, setNewCount] = useState(0);
+  const [inputExpanded, setInputExpanded] = useState(false);
 
   const messagesContainerRef = useRef<HTMLUListElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const seenIdsRef = useRef<Set<string>>(new Set());
 
   const MAX_CHARS = 280;
+  const MAX_INPUT_HEIGHT = 128;
 
   const guestLimitReached =
     guestMode && guestStatus !== null && guestStatus.messagesRemaining <= 0;
+
+  const resizeInput = useCallback(() => {
+    const el = inputRef.current;
+    if (!el) return;
+    el.style.height = '0px';
+    const nextHeight = Math.min(el.scrollHeight, MAX_INPUT_HEIGHT);
+    el.style.height = `${nextHeight}px`;
+    setInputExpanded(nextHeight > 36);
+  }, []);
+
+  useLayoutEffect(() => {
+    resizeInput();
+  }, [body, resizeInput]);
 
   const scrollToBottom = useCallback((smooth = true) => {
     const el = messagesContainerRef.current;
@@ -245,7 +260,7 @@ export function ChatRoom({
     }
   }
 
-  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+  function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       e.currentTarget.form?.requestSubmit();
@@ -365,13 +380,14 @@ export function ChatRoom({
         {/* Input */}
         <div className="chat-room__input-bar">
           {error && <p className="chat-room__error" role="alert">{error}</p>}
-          <form onSubmit={handleSubmit} className="chat-room__form">
+          <form onSubmit={handleSubmit} className={`chat-room__form${inputExpanded ? ' chat-room__form--multiline' : ''}`}>
             <label className="visually-hidden" htmlFor="chat-input">{labels.placeholder}</label>
-            <input
+            <textarea
               id="chat-input"
               ref={inputRef}
               name="body"
               value={body}
+              rows={1}
               onChange={(e) => {
                 if (e.target.value.length <= MAX_CHARS) {
                   setBody(e.target.value);
