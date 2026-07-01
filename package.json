@@ -11,7 +11,7 @@
     "db:generate": "prisma generate",
     "db:migrate": "dotenv -e .env.local -- prisma migrate dev",
     "db:push": "dotenv -e .env.local -- prisma db push",
-    "git:push": "dotenv -e .env.local -- sh -c 'git push https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/kamabiz/geoeskort.git main:main'",
+    "git:push": "GIT_SSH_COMMAND=\"ssh -i $(pwd)/.deploy-keys/geoeskort_deploy -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new\" git push origin main",
     "postinstall": "prisma generate"
   },
   "dependencies": {

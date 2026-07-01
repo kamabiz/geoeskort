@@ -3009,17 +3009,22 @@ button, .btn, .nav-toggle {
   min-width: 0;
 }
 
-.footer-kama-banner {
-  display: flex;
-  align-items: center;
-  height: 31px;
-  border-radius: 3px;
-  flex-shrink: 0;
-  opacity: 0.9;
-  transition: opacity 0.2s;
+.footer-kama-link {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: rgba(240, 238, 245, 0.45);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.2s;
 }
-.footer-kama-banner:hover { opacity: 1; }
-.footer-kama-banner img { height: 31px; width: auto; display: block; }
+
+.footer-kama-link:hover {
+  color: rgba(240, 238, 245, 0.72);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
 
 @media (max-width: 640px) {
   .footer-bottom {

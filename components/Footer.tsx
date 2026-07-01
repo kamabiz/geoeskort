@@ -77,9 +77,13 @@ export function Footer({ locale, dict, username }: Props) {
           <span>&copy; 2026 Intimgram</span>
           <div className="footer-counters">
             <TopGeCounter />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <a href="https://kama.biz" className="footer-kama-banner" target="_blank">
-              <img src="/banner-kama.png" alt="Escorts in Georgia — kama.biz" height={31} />
+            <a
+              href="https://kama.biz"
+              className="footer-kama-link"
+              target="_blank"
+              rel="noopener"
+            >
+              Find a sex partner, now
             </a>
           </div>
           <span>{dict.footer.legal}</span>
