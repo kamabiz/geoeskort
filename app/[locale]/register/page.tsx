@@ -61,7 +61,7 @@ export default async function RegisterPage({ params }: Props) {
           </select>
         </label>
       </AuthForm>
-      <SocialLoginButtons />
+      <SocialLoginButtons mode="register" />
       <p>
         {cd.auth.hasAccount} <Link href={localePath(locale, '/login/')}>{cd.auth.login}</Link>
       </p>

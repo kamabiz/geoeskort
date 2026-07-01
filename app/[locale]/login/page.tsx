@@ -49,7 +49,7 @@ export default async function LoginPage({ params }: Props) {
           <input name="password" type="password" required autoComplete="current-password" />
         </label>
       </AuthForm>
-      <SocialLoginButtons />
+      <SocialLoginButtons mode="login" />
       <p>
         {cd.auth.noAccount} <Link href={localePath(locale, '/register/')}>{cd.auth.register}</Link>
       </p>
