@@ -27,32 +27,34 @@ export default async function LoginPage({ params }: Props) {
 
   return (
     <main className="container community-page">
-      <h1>{cd.auth.login}</h1>
-      <AuthForm
-        action={loginUser}
-        submitLabel={cd.auth.submitLogin}
-        errors={{
-          invalidCredentials: cd.auth.errorInvalidCredentials,
-          usernameTaken: cd.auth.errorUsernameTaken,
-          usernameTooShort: cd.auth.errorUsernameTooShort,
-          passwordTooShort: cd.auth.errorPasswordTooShort,
-          invalidGender: cd.auth.errorInvalidGender,
-          serviceUnavailable: cd.auth.errorServiceUnavailable,
-        }}
-      >
-        <label>
-          {cd.auth.username}
-          <input name="username" required autoComplete="username" />
-        </label>
-        <label>
-          {cd.auth.password}
-          <input name="password" type="password" required autoComplete="current-password" />
-        </label>
-      </AuthForm>
-      <SocialLoginButtons mode="login" />
-      <p>
-        {cd.auth.noAccount} <Link href={localePath(locale, '/register/')}>{cd.auth.register}</Link>
-      </p>
+      <div className="auth-layout">
+        <h1 className="auth-layout__title">{cd.auth.login}</h1>
+        <SocialLoginButtons mode="login" />
+        <AuthForm
+          action={loginUser}
+          submitLabel={cd.auth.submitLogin}
+          errors={{
+            invalidCredentials: cd.auth.errorInvalidCredentials,
+            usernameTaken: cd.auth.errorUsernameTaken,
+            usernameTooShort: cd.auth.errorUsernameTooShort,
+            passwordTooShort: cd.auth.errorPasswordTooShort,
+            invalidGender: cd.auth.errorInvalidGender,
+            serviceUnavailable: cd.auth.errorServiceUnavailable,
+          }}
+        >
+          <label>
+            {cd.auth.username}
+            <input name="username" required autoComplete="username" />
+          </label>
+          <label>
+            {cd.auth.password}
+            <input name="password" type="password" required autoComplete="current-password" />
+          </label>
+        </AuthForm>
+        <p className="auth-layout__switch">
+          {cd.auth.noAccount} <Link href={localePath(locale, '/register/')}>{cd.auth.register}</Link>
+        </p>
+      </div>
     </main>
   );
 }

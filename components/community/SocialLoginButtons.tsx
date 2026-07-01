@@ -6,15 +6,10 @@ type Props = {
 
 export function SocialLoginButtons({ mode = 'login' }: Props) {
   const label = mode === 'register' ? 'Google-ით რეგისტრაცია' : 'Google-ით შესვლა';
+  const dividerText = mode === 'register' ? 'ან პაროლით რეგისტრაცია' : 'ან პაროლით შესვლა';
 
   return (
     <div className="social-login">
-      <div className="social-login__divider">
-        <span className="social-login__divider-line" />
-        <span className="social-login__divider-text">ან</span>
-        <span className="social-login__divider-line" />
-      </div>
-
       <a href="/api/auth/google" className="social-login__google">
         <span className="social-login__google-icon">
           <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
@@ -26,6 +21,12 @@ export function SocialLoginButtons({ mode = 'login' }: Props) {
         </span>
         <span className="social-login__google-label">{label}</span>
       </a>
+
+      <div className="social-login__divider">
+        <span className="social-login__divider-line" />
+        <span className="social-login__divider-text">{dividerText}</span>
+        <span className="social-login__divider-line" />
+      </div>
     </div>
   );
 }
