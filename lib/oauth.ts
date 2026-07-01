@@ -6,7 +6,13 @@ import { buildDefaultAvatarDataUri } from '@/lib/community/avatar';
 import { normalizeUsername } from '@/lib/community/auth';
 
 function getBaseUrl(): string {
-  return process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') ?? 'http://localhost:3000';
+  if (process.env.NEXT_PUBLIC_SITE_URL) {
+    return process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, '');
+  }
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+  return 'http://localhost:3000';
 }
 
 export function createGoogleProvider() {
