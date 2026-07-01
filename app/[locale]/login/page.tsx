@@ -29,7 +29,6 @@ export default async function LoginPage({ params }: Props) {
     <main className="container community-page">
       <div className="auth-layout">
         <h1 className="auth-layout__title">{cd.auth.login}</h1>
-        <SocialLoginButtons mode="login" />
         <AuthForm
           action={loginUser}
           submitLabel={cd.auth.submitLogin}
@@ -51,6 +50,7 @@ export default async function LoginPage({ params }: Props) {
             <input name="password" type="password" required autoComplete="current-password" />
           </label>
         </AuthForm>
+        <SocialLoginButtons mode="login" />
         <p className="auth-layout__switch">
           {cd.auth.noAccount} <Link href={localePath(locale, '/register/')}>{cd.auth.register}</Link>
         </p>

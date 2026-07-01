@@ -29,7 +29,6 @@ export default async function RegisterPage({ params }: Props) {
     <main className="container community-page">
       <div className="auth-layout">
         <h1 className="auth-layout__title">{cd.auth.register}</h1>
-        <SocialLoginButtons mode="register" />
         <AuthForm
           action={registerUser}
           submitLabel={cd.auth.submitRegister}
@@ -63,6 +62,7 @@ export default async function RegisterPage({ params }: Props) {
             </select>
           </label>
         </AuthForm>
+        <SocialLoginButtons mode="register" />
         <p className="auth-layout__switch">
           {cd.auth.hasAccount} <Link href={localePath(locale, '/login/')}>{cd.auth.login}</Link>
         </p>
