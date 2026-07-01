@@ -62,17 +62,31 @@ model User {
   createdAt            DateTime  @default(now())
   lastActiveAt         DateTime  @default(now())
 
-  posts         Post[]
-  comments      Comment[]
-  sentMessages  Message[]    @relation("SentMessages")
-  receivedMessages Message[] @relation("ReceivedMessages")
-  pointEvents   PointEvent[]
-  postUpvotes   PostUpvote[]
+  posts          Post[]
+  comments       Comment[]
+  sentMessages   Message[]      @relation("SentMessages")
+  receivedMessages Message[]    @relation("ReceivedMessages")
+  pointEvents    PointEvent[]
+  postUpvotes    PostUpvote[]
   commentUpvotes CommentUpvote[]
-  datingProfile DatingProfile?
+  datingProfile  DatingProfile?
+  oauthAccounts  OAuthAccount[]
 
   @@index([lastActiveAt])
   @@index([points(sort: Desc)])
+}
+
+model OAuthAccount {
+  id                String   @id @default(cuid())
+  userId            String
+  provider          String
+  providerAccountId String
+  createdAt         DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
 }
 
 model DatingProfile {

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { AuthForm } from '@/components/community/AuthForm';
+import { SocialLoginButtons } from '@/components/community/SocialLoginButtons';
 import { registerUser } from '@/lib/community/actions';
 import { getCommunityDict } from '@/lib/i18n/community-dict';
 import { isLocale } from '@/lib/i18n/config';
@@ -60,6 +61,7 @@ export default async function RegisterPage({ params }: Props) {
           </select>
         </label>
       </AuthForm>
+      <SocialLoginButtons />
       <p>
         {cd.auth.hasAccount} <Link href={localePath(locale, '/login/')}>{cd.auth.login}</Link>
       </p>

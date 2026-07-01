@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { AuthForm } from '@/components/community/AuthForm';
+import { SocialLoginButtons } from '@/components/community/SocialLoginButtons';
 import { loginUser } from '@/lib/community/actions';
 import { getCommunityDict } from '@/lib/i18n/community-dict';
 import { isLocale } from '@/lib/i18n/config';
@@ -48,6 +49,7 @@ export default async function LoginPage({ params }: Props) {
           <input name="password" type="password" required autoComplete="current-password" />
         </label>
       </AuthForm>
+      <SocialLoginButtons />
       <p>
         {cd.auth.noAccount} <Link href={localePath(locale, '/register/')}>{cd.auth.register}</Link>
       </p>
